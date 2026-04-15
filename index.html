@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SE Asia Trip Hub — 85 Days</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+  :root {
+    --accent:#6c5ce7;--teal:#0d9488;
+    --bg:#0f172a;--card:#1e293b;--surface:#334155;
+    --text:#f1f5f9;--muted:#94a3b8;--dim:#64748b;--border:#334155;
+    --vietnam:#dc2626;--laos:#b45309;--thailand:#7c3aed;
+    --philippines:#2563eb;--indonesia:#e11d48;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;}
+
+  /* Hero */
+  .hero{padding:48px 24px 40px;text-align:center;background:linear-gradient(160deg,#1a1040 0%,#0f172a 40%,#0c1a2e 100%);position:relative;overflow:hidden;}
+  .hero::before{content:'';position:absolute;top:-40%;left:-20%;width:60%;height:180%;background:radial-gradient(ellipse,rgba(108,92,231,.12) 0%,transparent 70%);pointer-events:none;}
+  .hero::after{content:'';position:absolute;top:-30%;right:-20%;width:50%;height:160%;background:radial-gradient(ellipse,rgba(13,148,136,.08) 0%,transparent 70%);pointer-events:none;}
+  .hero h1{font-size:2.6rem;font-weight:900;background:linear-gradient(135deg,#a78bfa,#6c5ce7,#0d9488,#5eead4);background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-.5px;animation:gradient 8s ease infinite;position:relative;}
+  @keyframes gradient{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .hero .subtitle{color:var(--muted);font-size:1rem;margin-top:8px;font-weight:400;position:relative;}
+  .hero .dates{display:inline-block;margin-top:14px;padding:6px 18px;border-radius:20px;background:rgba(108,92,231,.15);border:1px solid rgba(108,92,231,.25);color:#a78bfa;font-size:.82rem;font-weight:600;position:relative;}
+
+  /* Country Route */
+  .route{display:flex;justify-content:center;align-items:center;gap:0;padding:20px 16px;background:var(--card);border-bottom:1px solid var(--border);flex-wrap:wrap;}
+  .route-stop{display:flex;align-items:center;gap:6px;padding:6px 14px;font-size:.78rem;font-weight:600;color:var(--text);white-space:nowrap;}
+  .route-flag{font-size:1.1rem;}
+  .route-arrow{color:var(--dim);font-size:.7rem;padding:0 2px;}
+
+  /* Stats Bar */
+  .stats{display:flex;justify-content:center;gap:32px;padding:18px 16px;border-bottom:1px solid var(--border);flex-wrap:wrap;}
+  .stat{text-align:center;}
+  .stat-n{font-size:1.6rem;font-weight:800;color:var(--teal);}
+  .stat-l{font-size:.65rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--dim);margin-top:2px;}
+
+  /* Countdown */
+  .countdown{text-align:center;padding:20px 16px;background:linear-gradient(135deg,rgba(108,92,231,.08),rgba(13,148,136,.08));border-bottom:1px solid var(--border);}
+  .countdown-label{font-size:.75rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--dim);margin-bottom:8px;}
+  .countdown-grid{display:flex;justify-content:center;gap:16px;}
+  .cd-unit{text-align:center;}
+  .cd-num{font-size:2rem;font-weight:800;color:var(--accent);line-height:1;}
+  .cd-lab{font-size:.6rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-top:4px;}
+
+  /* Cards */
+  .cards{max-width:800px;margin:0 auto;padding:28px 16px 40px;}
+  .section-title{font-size:.7rem;text-transform:uppercase;letter-spacing:2px;color:var(--dim);margin-bottom:16px;padding-left:4px;}
+  .card{display:flex;align-items:center;gap:16px;padding:18px 20px;background:var(--card);border:1px solid var(--border);border-radius:14px;margin-bottom:12px;cursor:pointer;transition:all .2s ease;text-decoration:none;color:inherit;}
+  .card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 24px rgba(108,92,231,.15);}
+  .card:active{transform:translateY(0);box-shadow:none;}
+  .card-icon{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;flex-shrink:0;}
+  .card-icon.itinerary{background:linear-gradient(135deg,rgba(108,92,231,.2),rgba(108,92,231,.05));}
+  .card-icon.bookings{background:linear-gradient(135deg,rgba(13,148,136,.2),rgba(13,148,136,.05));}
+  .card-icon.map{background:linear-gradient(135deg,rgba(37,99,235,.2),rgba(37,99,235,.05));}
+  .card-icon.budget{background:linear-gradient(135deg,rgba(245,158,11,.2),rgba(245,158,11,.05));}
+  .card-icon.gmaps{background:linear-gradient(135deg,rgba(220,38,38,.2),rgba(220,38,38,.05));}
+  .card-body{flex:1;min-width:0;}
+  .card-title{font-size:1.05rem;font-weight:700;margin-bottom:2px;}
+  .card-desc{font-size:.82rem;color:var(--muted);line-height:1.4;}
+  .card-arrow{color:var(--dim);font-size:1.2rem;flex-shrink:0;transition:transform .2s;}
+  .card:hover .card-arrow{transform:translateX(4px);color:var(--accent);}
+  .card-badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-left:8px;vertical-align:middle;}
+  .badge-live{background:rgba(16,185,129,.15);color:#34d399;}
+  .badge-offline{background:rgba(148,163,184,.15);color:var(--muted);}
+
+  /* Quick Links */
+  .quick-links{max-width:800px;margin:0 auto;padding:0 16px 20px;}
+  .ql-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
+  .ql{text-align:center;padding:14px 8px;background:var(--card);border:1px solid var(--border);border-radius:10px;text-decoration:none;color:var(--text);transition:all .15s;}
+  .ql:hover{border-color:var(--accent);background:rgba(108,92,231,.08);}
+  .ql-flag{font-size:1.4rem;display:block;margin-bottom:4px;}
+  .ql-name{font-size:.65rem;font-weight:600;color:var(--muted);}
+  .ql-days{font-size:.58rem;color:var(--dim);margin-top:2px;}
+
+  /* GitHub Section */
+  .github-info{max-width:800px;margin:0 auto;padding:0 16px 40px;}
+  .gh-box{padding:18px 20px;background:var(--card);border:1px solid var(--border);border-radius:14px;font-size:.82rem;color:var(--muted);}
+  .gh-box h3{font-size:.9rem;font-weight:700;color:var(--text);margin-bottom:8px;}
+  .gh-box code{background:var(--surface);padding:2px 7px;border-radius:4px;font-size:.78rem;color:#a78bfa;}
+
+  /* Footer */
+  footer{text-align:center;padding:24px 16px 32px;color:var(--dim);font-size:.72rem;}
+  footer a{color:var(--accent);text-decoration:none;}
+
+  /* Responsive */
+  @media(max-width:600px){
+    .hero h1{font-size:1.8rem;}
+    .stats{gap:20px;}
+    .stat-n{font-size:1.3rem;}
+    .ql-grid{grid-template-columns:repeat(3,1fr);}
+    .card{padding:14px 16px;gap:12px;}
+    .card-icon{width:44px;height:44px;font-size:1.3rem;}
+    .countdown-grid{gap:12px;}
+    .cd-num{font-size:1.5rem;}
+  }
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<div class="hero">
+  <h1>SE Asia Adventure</h1>
+  <p class="subtitle">85 Days Across 5 Countries</p>
+  <span class="dates">May 23 — Aug 15, 2026</span>
+</div>
+
+<!-- Route -->
+<div class="route">
+  <span class="route-stop"><span class="route-flag">🇻🇳</span> Vietnam</span>
+  <span class="route-arrow">→</span>
+  <span class="route-stop"><span class="route-flag">🇱🇦</span> Laos</span>
+  <span class="route-arrow">→</span>
+  <span class="route-stop"><span class="route-flag">🇹🇭</span> Thailand</span>
+  <span class="route-arrow">→</span>
+  <span class="route-stop"><span class="route-flag">🇵🇭</span> Philippines</span>
+  <span class="route-arrow">→</span>
+  <span class="route-stop"><span class="route-flag">🇮🇩</span> Indonesia</span>
+</div>
+
+<!-- Stats -->
+<div class="stats">
+  <div class="stat"><div class="stat-n">85</div><div class="stat-l">Days</div></div>
+  <div class="stat"><div class="stat-n">5</div><div class="stat-l">Countries</div></div>
+  <div class="stat"><div class="stat-n">24</div><div class="stat-l">Destinations</div></div>
+  <div class="stat"><div class="stat-n">173+</div><div class="stat-l">Places</div></div>
+</div>
+
+<!-- Countdown -->
+<div class="countdown">
+  <div class="countdown-label">Departure Countdown</div>
+  <div class="countdown-grid" id="countdown">
+    <div class="cd-unit"><div class="cd-num" id="cd-days">--</div><div class="cd-lab">Days</div></div>
+    <div class="cd-unit"><div class="cd-num" id="cd-hours">--</div><div class="cd-lab">Hours</div></div>
+    <div class="cd-unit"><div class="cd-num" id="cd-mins">--</div><div class="cd-lab">Mins</div></div>
+    <div class="cd-unit"><div class="cd-num" id="cd-secs">--</div><div class="cd-lab">Secs</div></div>
+  </div>
+</div>
+
+<!-- Document Cards -->
+<div class="cards">
+  <div class="section-title">Trip Documents</div>
+
+  <a href="southeast-asia-vietnam-start.html" class="card">
+    <div class="card-icon itinerary">📋</div>
+    <div class="card-body">
+      <div class="card-title">Itinerary <span class="card-badge badge-live">Main</span></div>
+      <div class="card-desc">Day-by-day plan with map, transport, budget breakdown, and activities for all 85 days across 5 countries.</div>
+    </div>
+    <span class="card-arrow">→</span>
+  </a>
+
+  <a href="booking-reference.html" class="card">
+    <div class="card-icon bookings">✅</div>
+    <div class="card-body">
+      <div class="card-title">Booking Checklist</div>
+      <div class="card-desc">152 items to book — accommodation, activities, and transport organized by country and destination.</div>
+    </div>
+    <span class="card-arrow">→</span>
+  </a>
+
+  <a href="trip-map-detailed.html" class="card">
+    <div class="card-icon map">🗺️</div>
+    <div class="card-body">
+      <div class="card-title">Interactive Map</div>
+      <div class="card-desc">Leaflet-powered map with all 173+ locations, country filters, and route visualization.</div>
+    </div>
+    <span class="card-arrow">→</span>
+  </a>
+
+  <a href="trip-budget-tracker.html" class="card">
+    <div class="card-icon budget">💰</div>
+    <div class="card-body">
+      <div class="card-title">Budget Tracker <span class="card-badge badge-live">New</span></div>
+      <div class="card-desc">Track predicted vs actual expenses. Tick off planned costs, enter actuals, add manual expenses, and export data.</div>
+    </div>
+    <span class="card-arrow">→</span>
+  </a>
+</div>
+
+<!-- Quick Country Links -->
+<div class="quick-links">
+  <div class="section-title" style="padding-left:4px;margin-bottom:12px;">Countries at a Glance</div>
+  <div class="ql-grid">
+    <a href="southeast-asia-vietnam-start.html#vietnam" class="ql">
+      <span class="ql-flag">🇻🇳</span>
+      <span class="ql-name">Vietnam</span>
+      <span class="ql-days">Days 1–18</span>
+    </a>
+    <a href="southeast-asia-vietnam-start.html#laos" class="ql">
+      <span class="ql-flag">🇱🇦</span>
+      <span class="ql-name">Laos</span>
+      <span class="ql-days">Days 19–28</span>
+    </a>
+    <a href="southeast-asia-vietnam-start.html#thailand" class="ql">
+      <span class="ql-flag">🇹🇭</span>
+      <span class="ql-name">Thailand</span>
+      <span class="ql-days">Days 29–51</span>
+    </a>
+    <a href="southeast-asia-vietnam-start.html#philippines" class="ql">
+      <span class="ql-flag">🇵🇭</span>
+      <span class="ql-name">Philippines</span>
+      <span class="ql-days">Days 52–68</span>
+    </a>
+    <a href="southeast-asia-vietnam-start.html#indonesia" class="ql">
+      <span class="ql-flag">🇮🇩</span>
+      <span class="ql-name">Indonesia</span>
+      <span class="ql-days">Days 69–85</span>
+    </a>
+  </div>
+</div>
+
+<!-- GitHub Info -->
+<div class="github-info">
+  <div class="gh-box">
+    <h3>How This Works</h3>
+    <p style="margin-bottom:8px;">This site is hosted for free on <strong>GitHub Pages</strong>. All files are static HTML — no server needed. To update on the go:</p>
+    <p>1. Tell Claude what to change → Claude updates the file</p>
+    <p>2. Push to GitHub via the mobile app or <code>github.dev</code></p>
+    <p>3. Changes go live automatically in ~1 min</p>
+  </div>
+</div>
+
+<footer>
+  Built with ☕ and Claude — April 2026<br>
+  <a href="https://github.com" target="_blank">View on GitHub</a> (update link after setup)
+</footer>
+
+<script>
+  // Countdown to May 23, 2026
+  const departure = new Date('2026-05-23T00:00:00');
+  function updateCountdown() {
+    const now = new Date();
+    const diff = departure - now;
+    if (diff <= 0) {
+      document.getElementById('cd-days').textContent = '🎉';
+      document.getElementById('cd-hours').textContent = '';
+      document.getElementById('cd-mins').textContent = '';
+      document.getElementById('cd-secs').textContent = '';
+      document.querySelector('.countdown-label').textContent = "You're on your way!";
+      return;
+    }
+    const days = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff % 86400000) / 3600000);
+    const mins = Math.floor((diff % 3600000) / 60000);
+    const secs = Math.floor((diff % 60000) / 1000);
+    document.getElementById('cd-days').textContent = days;
+    document.getElementById('cd-hours').textContent = hours;
+    document.getElementById('cd-mins').textContent = mins;
+    document.getElementById('cd-secs').textContent = secs;
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+</script>
+</body>
+</html>

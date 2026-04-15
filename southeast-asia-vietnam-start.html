@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SE Asia — Vietnam Start (Hanoi → Laos → Thailand)</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+  :root {
+    --bg:#ffffff;--card:#f7f8fa;--surface:#eef1f5;--accent:#6c5ce7;--teal:#0d9488;
+    --text:#1a1a2e;--muted:#64748b;--dim:#94a3b8;--border:#e2e8f0;
+    --thailand:#7c3aed;--laos:#b45309;--vietnam:#dc2626;
+    --philippines:#2563eb;--indonesia:#e11d48;--transit:#64748b;
+    --train:#b45309;--ferry:#2563eb;--bus:#059669;--flight:#dc2626;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  .hero{padding:60px 24px 32px;text-align:center;background:linear-gradient(160deg,#f8f9ff 0%,#eef1ff 50%,#f8f9ff 100%);border-bottom:1px solid var(--border);}
+  .hero h1{font-size:2.4rem;font-weight:800;background:linear-gradient(135deg,#6c5ce7,#0d9488);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-.5px;}
+  .hero .sub{color:var(--muted);font-size:.95rem;margin-top:8px;}
+  .stats{display:flex;justify-content:center;gap:36px;padding:20px;flex-wrap:wrap;border-bottom:1px solid var(--border);background:var(--card);}
+  .stat-n{font-size:1.8rem;font-weight:800;color:var(--teal);}
+  .stat-l{font-size:.7rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);}
+  .approach{max-width:860px;margin:24px auto;padding:16px 20px;background:var(--surface);border:1px solid var(--border);border-radius:10px;font-size:.88rem;color:var(--muted);}
+  .approach strong{color:var(--teal);}
+  .route-box{max-width:860px;margin:0 auto 24px;padding:16px 20px;background:linear-gradient(135deg,#f8f9ff,#eef1ff);border:1px solid #c4b5fd;border-radius:10px;font-size:.88rem;}
+  .route-box h3{color:var(--accent);font-size:1rem;margin-bottom:8px;}
+  .route-box .route-flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:.82rem;}
+  .route-box .rf-stop{background:#fff;padding:4px 10px;border-radius:6px;font-weight:600;white-space:nowrap;border:1px solid var(--border);box-shadow:0 1px 2px rgba(0,0,0,.04);}
+  .route-box .rf-arrow{color:var(--dim);font-size:.7rem;}
+  .route-box .rf-arrow.train{color:var(--train);}
+  .route-box .rf-arrow.ferry{color:var(--ferry);}
+  .route-box .rf-arrow.bus{color:var(--bus);}
+  .route-box .rf-arrow.flight{color:var(--flight);}
+  .decision-box{max-width:860px;margin:0 auto 24px;padding:16px 20px;background:linear-gradient(135deg,#fffbeb,#fef3c7);border:1px solid #fbbf2466;border-radius:10px;font-size:.85rem;}
+  .decision-box h3{color:#92400e;font-size:.95rem;margin-bottom:6px;}
+  .decision-box .verdict{color:var(--teal);font-weight:700;margin-top:10px;}
+  .transport-philosophy{max-width:860px;margin:24px auto;padding:16px 20px;background:linear-gradient(135deg,#ecfdf5,#d1fae5);border:1px solid #6ee7b744;border-radius:10px;font-size:.85rem;}
+  .transport-philosophy h3{color:#065f46;font-size:.95rem;margin-bottom:6px;}
+  .transport-philosophy .mode-key{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px;}
+  .transport-philosophy .mk{display:flex;align-items:center;gap:5px;font-size:.78rem;color:var(--muted);}
+  .transport-philosophy .mk-dot{width:10px;height:10px;border-radius:50%;}
+  #map{width:100%;border-bottom:1px solid var(--border);}
+  .wrap{max-width:880px;margin:0 auto;padding:28px 20px 60px;}
+  .country{margin-bottom:52px;}
+  .c-head{display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:2px solid var(--border);margin-bottom:4px;}
+  .c-flag{font-size:1.8rem;}
+  .c-head h2{font-size:1.5rem;font-weight:800;}
+  .c-head .c-dates{margin-left:auto;font-size:.82rem;color:var(--muted);text-align:right;}
+  .c-sum{padding:12px 16px;margin:10px 0 16px;background:var(--card);border-radius:10px;border-left:3px solid var(--dim);font-size:.88rem;color:var(--muted);}
+  .photo-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0;}
+  .photo-row.triple{grid-template-columns:1fr 1fr 1fr;}
+  .photo-card{position:relative;border-radius:12px;overflow:hidden;aspect-ratio:16/9;box-shadow:0 2px 8px rgba(0,0,0,.08);}
+  .photo-card img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s;}
+  .photo-card:hover img{transform:scale(1.03);}
+  .photo-card .caption{position:absolute;bottom:0;left:0;right:0;padding:8px 12px;background:linear-gradient(transparent,rgba(0,0,0,.7));font-size:.75rem;color:#fff;font-weight:600;}
+  .photo-single{border-radius:12px;overflow:hidden;margin:14px 0;aspect-ratio:21/9;position:relative;box-shadow:0 2px 8px rgba(0,0,0,.08);}
+  .photo-single img{width:100%;height:100%;object-fit:cover;display:block;}
+  .photo-single .caption{position:absolute;bottom:0;left:0;right:0;padding:10px 14px;background:linear-gradient(transparent,rgba(0,0,0,.75));font-size:.8rem;color:#fff;font-weight:600;}
+  .day{display:grid;grid-template-columns:62px 1fr;margin-bottom:1px;}
+  .day-l{padding:10px 0;text-align:center;position:relative;}
+  .day-l .dn{font-size:.68rem;text-transform:uppercase;letter-spacing:1px;color:var(--dim);font-weight:600;}
+  .day-l .dv{font-size:1.1rem;font-weight:700;color:var(--teal);}
+  .day-l::after{content:'';position:absolute;right:0;top:0;bottom:0;width:2px;background:var(--border);}
+  .day-l .dd{font-size:.58rem;color:var(--dim);font-weight:400;margin-top:1px;letter-spacing:.3px;}
+  .day-l .dot{position:absolute;right:-5px;top:16px;width:10px;height:10px;border-radius:50%;border:2px solid var(--bg);z-index:1;}
+  .day-r{padding:8px 0 8px 18px;}
+  .day-r .loc{font-weight:700;font-size:.93rem;}
+  .day-r .act{font-size:.85rem;color:var(--muted);margin-top:2px;}
+  .t{display:inline-block;font-size:.65rem;padding:2px 7px;border-radius:4px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-right:3px;vertical-align:middle;}
+  .t-dive{background:#dbeafe;color:#1d4ed8;}.t-climb{background:#fee2e2;color:#b91c1c;}
+  .t-cave{background:#fef3c7;color:#92400e;}.t-trek{background:#d1fae5;color:#065f46;}
+  .t-wild{background:#ede9fe;color:#5b21b6;}.t-water{background:#ccfbf1;color:#0f766e;}
+  .t-go{background:#f1f5f9;color:#64748b;}.t-flex{background:#f8fafc;color:#94a3b8;}
+  .t-moto{background:#ffe4e6;color:#be123c;}
+  .transit{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin:14px 0;font-size:.84rem;color:var(--muted);}
+  .transit strong{color:var(--text);}
+  .transit .mode{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-right:4px;}
+  .transit .mode-train{background:#fef3c7;color:#92400e;border:1px solid #fbbf2444;}
+  .transit .mode-ferry{background:#dbeafe;color:#1d4ed8;border:1px solid #60a5fa44;}
+  .transit .mode-bus{background:#d1fae5;color:#065f46;border:1px solid #34d39944;}
+  .transit .mode-fly{background:#fee2e2;color:#b91c1c;border:1px solid #f43f5e44;}
+  .transit .mode-van{background:#ede9fe;color:#5b21b6;border:1px solid #a78bfa44;}
+  .transit .mode-road{background:#f1f5f9;color:#64748b;border:1px solid #94a3b844;}
+  .transit .cost{color:#b45309;font-weight:600;font-size:.78rem;}
+  .transit .time{color:var(--accent);font-weight:600;font-size:.78rem;}
+  .transit .tip{display:block;margin-top:6px;font-size:.78rem;color:var(--dim);font-style:italic;}
+  .transit .overnight{display:inline-block;background:#fef3c7;color:#92400e;padding:2px 7px;border-radius:4px;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-left:4px;}
+  .why{background:#f8f9ff;border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:12px 16px;margin:8px 0 14px;font-size:.82rem;color:var(--muted);font-style:italic;}
+  .weather{background:#eff6ff;border-left:3px solid #3b82f6;border-radius:0 10px 10px 0;padding:12px 16px;margin:8px 0 14px;font-size:.82rem;color:var(--muted);}
+  .weather::before{content:'Weather: ';color:#2563eb;font-weight:700;font-style:normal;}
+  .dropped{background:#fef2f2;border-left:3px solid #ef4444;border-radius:0 10px 10px 0;padding:12px 16px;margin:8px 0 14px;font-size:.82rem;color:var(--muted);}
+  .dropped::before{content:'Dropped: ';color:#dc2626;font-weight:700;}
+  .sec-title{font-size:1.2rem;font-weight:800;margin:40px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--border);}
+  .alt-route{max-width:860px;margin:16px auto;padding:18px 20px;background:linear-gradient(135deg,#faf5ff,#f3e8ff);border:1px solid #c4b5fd66;border-radius:12px;font-size:.84rem;}
+  .alt-route h4{color:#6d28d9;font-size:.9rem;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+  .alt-route h4::before{content:'↕';font-size:1.1rem;}
+  .alt-route .alt-opt{padding:10px 14px;margin:8px 0;background:#fff;border-radius:8px;border-left:3px solid var(--dim);box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .alt-route .alt-opt.recommended{border-left-color:var(--teal);}
+  .alt-route .alt-opt .alt-label{font-weight:700;font-size:.78rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
+  .alt-route .alt-opt.recommended .alt-label{color:var(--teal);}
+  .alt-route .alt-opt .alt-label.alt-b{color:var(--dim);}
+  .alt-route .alt-verdict{margin-top:10px;font-size:.8rem;color:var(--muted);font-style:italic;padding-top:8px;border-top:1px solid #e2e8f0;}
+  .info-g{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0;}
+  .info-c{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;}
+  .info-c h4{font-size:.8rem;color:var(--teal);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;}
+  .info-c p{font-size:.82rem;color:var(--muted);}
+  .budget-country{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;font-size:.82rem;margin-bottom:12px;}
+  .budget-country h4{font-size:.85rem;font-weight:700;margin-bottom:8px;}
+  .budget-country .bc-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+  .budget-country .bc-item{text-align:center;padding:8px;background:#fff;border-radius:8px;border:1px solid var(--border);}
+  .budget-country .bc-item .bc-cat{font-size:.68rem;color:var(--dim);text-transform:uppercase;letter-spacing:.5px;}
+  .budget-country .bc-item .bc-cost{font-size:.92rem;font-weight:700;color:var(--teal);margin-top:2px;}
+  .budget-country .bc-daily{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:flex;justify-content:space-between;}
+  .budget-country .bc-daily .bc-total-label{color:var(--muted);font-weight:600;}
+  .budget-country .bc-daily .bc-total-val{color:var(--teal);font-weight:700;font-size:.95rem;}
+  .budget-total{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border:1px solid #6ee7b744;border-radius:12px;padding:20px;margin-top:16px;text-align:center;}
+  .budget-total h3{color:#065f46;font-size:1rem;margin-bottom:12px;}
+  .budget-total .bt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;}
+  .budget-total .bt-item .bt-label{font-size:.7rem;color:var(--dim);text-transform:uppercase;letter-spacing:.5px;}
+  .budget-total .bt-item .bt-val{font-size:1.2rem;font-weight:800;color:#065f46;margin-top:2px;}
+  .budget-total .bt-note{font-size:.78rem;color:var(--muted);margin-top:8px;}
+  .gear{columns:2;column-gap:20px;font-size:.85rem;color:var(--muted);list-style:none;}
+  .gear li{padding:3px 0;}.gear li::before{content:'+ ';color:var(--teal);font-weight:700;}
+  .flight-table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.82rem;}
+  .flight-table th{text-align:left;padding:8px 10px;background:var(--card);color:var(--teal);font-size:.72rem;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border);}
+  .flight-table td{padding:8px 10px;border-bottom:1px solid var(--border);color:var(--muted);}
+  .flight-table tr:hover td{background:var(--surface);}
+  .flight-table .route-col{color:var(--text);font-weight:600;}
+  .flight-table .mode-badge{display:inline-block;padding:2px 7px;border-radius:4px;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.3px;}
+  .flight-table .mb-train{background:#fef3c7;color:#92400e;}
+  .flight-table .mb-ferry{background:#dbeafe;color:#1d4ed8;}
+  .flight-table .mb-bus{background:#d1fae5;color:#065f46;}
+  .flight-table .mb-fly{background:#fee2e2;color:#b91c1c;}
+  .flight-table .mb-van{background:#ede9fe;color:#5b21b6;}
+  .flight-table .mb-moto{background:#ffe4e6;color:#be123c;}
+  @media(max-width:700px){
+    .hero h1{font-size:1.5rem;}.stats{gap:16px;}.info-g{grid-template-columns:1fr;}
+    .c-head{flex-direction:column;align-items:flex-start;gap:4px;}.c-head .c-dates{margin-left:0;text-align:left;}
+    .gear{columns:1;}#map{height:400px!important;}.photo-row{grid-template-columns:1fr;}.photo-row.triple{grid-template-columns:1fr;}
+    .budget-total .bt-grid{grid-template-columns:1fr;}
+  }
+  .alt-detour{max-width:860px;margin:14px auto;padding:16px 20px;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:2px dashed #86efac;border-radius:12px;font-size:.85rem;position:relative;}
+  .alt-detour::before{content:'OPTIONAL SIDE TRIP';position:absolute;top:-10px;left:20px;background:#22c55e;color:#fff;font-size:.65rem;font-weight:800;letter-spacing:1px;padding:2px 10px;border-radius:4px;}
+  .alt-detour h4{color:#15803d;font-size:.92rem;margin-bottom:8px;margin-top:6px;}
+  .alt-detour p{color:var(--muted);margin-bottom:6px;}
+  .alt-detour .alt-highlights{color:var(--text);font-weight:600;margin-top:8px;}
+  .alt-detour .alt-logistics{font-size:.8rem;color:var(--dim);margin-top:6px;font-style:italic;}
+  .leaflet-popup-content-wrapper{background:#fff!important;color:var(--text)!important;border-radius:10px!important;box-shadow:0 4px 20px rgba(0,0,0,.12)!important;}
+  .leaflet-popup-tip{background:#fff!important;}
+  .leaflet-popup-content{font-family:inherit!important;font-size:.83rem!important;line-height:1.5!important;}
+  .pp-t{font-weight:700;font-size:.9rem;margin-bottom:3px;}
+  .trip-nav{position:sticky;top:0;z-index:9999;background:linear-gradient(135deg,#6c5ce7,#0d9488);padding:10px 0;box-shadow:0 4px 20px rgba(0,0,0,.15);}
+  .trip-nav-inner{max-width:880px;margin:0 auto;padding:0 20px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
+  .trip-nav a{color:white;text-decoration:none;font-size:.85rem;font-weight:500;padding:5px 12px;border-radius:6px;transition:background .2s;}
+  .trip-nav a:hover{background:rgba(255,255,255,.2);}
+  .trip-nav a.active{background:rgba(255,255,255,.25);border-bottom:2px solid white;}
+</style>
+</head>
+<body>
+<div class="trip-nav"><div class="trip-nav-inner">
+<a href="index.html">Hub</a>
+<a href="southeast-asia-vietnam-start.html" class="active">Itinerary</a>
+<a href="booking-reference.html">Bookings</a>
+<a href="trip-map-detailed.html">Map</a>
+<a href="trip-budget-tracker.html">Budget</a>
+</div></div>
+
+<div class="hero">
+  <h1>SE Asia — Vietnam Start Route</h1>
+  <p class="sub">~85 days · 5 countries · May 23 – Aug 15 · Hanoi first, south through Laos, overland into Thailand</p>
+</div>
+
+<div class="stats">
+  <div><div class="stat-n">~85</div><div class="stat-l">Days</div></div>
+  <div><div class="stat-n">5</div><div class="stat-l">Countries</div></div>
+  <div><div class="stat-n">8</div><div class="stat-l">Flights</div></div>
+  <div><div class="stat-n">5</div><div class="stat-l">Overnight Trains</div></div>
+  <div><div class="stat-n">0</div><div class="stat-l">Backtrack Days</div></div>
+</div>
+
+<div class="transport-philosophy">
+  <h3>Transport Philosophy — Trains &amp; Ground First</h3>
+  <p>Overnight trains where possible — save a hotel night and travel while you sleep. The Lao-China Railway (opened 2021) replaces gruelling 6-hour mountain buses with 1–2 hour train rides. Flights only where there's no sane land route: international crossings, island hops, and connections where buses would take 20+ hours.</p>
+  <div class="mode-key">
+    <div class="mk"><div class="mk-dot" style="background:var(--train)"></div> Overnight train / rail</div>
+    <div class="mk"><div class="mk-dot" style="background:var(--bus)"></div> Bus / minivan</div>
+    <div class="mk"><div class="mk-dot" style="background:var(--ferry)"></div> Ferry / boat</div>
+    <div class="mk"><div class="mk-dot" style="background:var(--flight)"></div> Flight (necessary only)</div>
+  </div>
+</div>
+
+<div class="approach">
+  <strong>Route:</strong> Hanoi → <em>(bus)</em> → Ha Giang Loop → <em>(road)</em> → Sapa → <em>(overnight train)</em> → Hanoi → <em>(bus+ferry)</em> → Cat Ba / Ha Long Bay → <em>(overnight train)</em> → Phong Nha → <em>(day train, Hai Van Pass)</em> → Hoi An → <em>(fly via Hanoi/BKK)</em> → Luang Prabang → <em>(Lao-China Railway)</em> → Vang Vieng → Vientiane → <em>(Friendship Bridge + overnight train)</em> → Bangkok → <em>(overnight trains)</em> → Gulf Islands → Chiang Mai → Pai → <em>(fly CM→BKK→Cebu)</em> → Philippines → <em>(fly)</em> → Indonesia
+</div>
+
+<div class="route-box">
+  <h3>Route at a Glance</h3>
+  <div class="route-flow">
+    <span class="rf-stop" style="color:var(--vietnam)">Hanoi</span><span class="rf-arrow bus">bus →</span>
+    <span class="rf-stop" style="color:var(--vietnam)">Ha Giang Loop</span><span class="rf-arrow bus">road →</span>
+    <span class="rf-stop" style="color:var(--vietnam)">Sapa</span><span class="rf-arrow train">train →</span>
+    <span class="rf-stop" style="color:var(--vietnam)">Hanoi</span><span class="rf-arrow ferry">ferry →</span>
+    <span class="rf-stop" style="color:var(--vietnam)">Cat Ba / Ha Long Bay</span><span class="rf-arrow train">train →</span>
+    <span class="rf-stop" style="color:var(--vietnam)">Phong Nha</span><span class="rf-arrow train">train →</span>
+    <span class="rf-stop" style="color:var(--vietnam)">Hoi An</span><span class="rf-arrow flight">fly →</span>
+    <span class="rf-stop" style="color:var(--laos)">Luang Prabang</span><span class="rf-arrow train">train →</span>
+    <span class="rf-stop" style="color:var(--laos)">Vang Vieng</span><span class="rf-arrow train">train →</span>
+    <span class="rf-stop" style="color:var(--laos)">Vientiane</span><span class="rf-arrow train">train →</span>
+    <span class="rf-stop" style="color:var(--thailand)">Bangkok</span><span class="rf-arrow train">train →</span>
+    <span class="rf-stop" style="color:var(--thailand)">Koh Phangan</span><span class="rf-arrow ferry">ferry →</span>
+    <span class="rf-stop" style="color:var(--thailand)">Koh Tao</span><span class="rf-arrow train">train →</span>
+    <span class="rf-stop" style="color:var(--thailand)">Bangkok</span><span class="rf-arrow train">train →</span>
+    <span class="rf-stop" style="color:var(--thailand)">Chiang Mai</span><span class="rf-arrow bus">van →</span>
+    <span class="rf-stop" style="color:var(--thailand)">Pai</span><span class="rf-arrow bus">van →</span>
+    <span class="rf-stop" style="color:var(--thailand)">Chiang Mai</span><span class="rf-arrow flight">fly →</span>
+    <span class="rf-stop" style="color:var(--thailand)">Bangkok</span><span class="rf-arrow flight">fly →</span>
+    <span class="rf-stop" style="color:var(--philippines)">Cebu</span><span class="rf-arrow ferry">ferry →</span>
+    <span class="rf-stop" style="color:var(--philippines)">Bohol</span><span class="rf-arrow flight">fly →</span>
+    <span class="rf-stop" style="color:var(--philippines)">Palawan</span><span class="rf-arrow ferry">ferry →</span>
+    <span class="rf-stop" style="color:var(--philippines)">Coron</span><span class="rf-arrow flight">fly →</span>
+    <span class="rf-stop" style="color:var(--indonesia)">Bali</span><span class="rf-arrow flight">fly →</span>
+    <span class="rf-stop" style="color:var(--indonesia)">Komodo / Flores</span><span class="rf-arrow ferry">boat →</span>
+    <span class="rf-stop" style="color:var(--indonesia)">Gilis</span>
+  </div>
+</div>
+
+<div class="decision-box">
+  <h3>Key Decisions</h3>
+  <p><strong>Vietnam first:</strong> Start Hanoi, loop north (Ha Giang, Sapa), return for Cat Ba / Ha Long Bay, then one-way south by train through Phong Nha and Hoi An. Skip HCMC.</p>
+  <p><strong>Da Nang → Laos:</strong> No direct Da Nang → LP flights exist — all route via Hanoi, HCMC, or Bangkok. Best options: fly via Hanoi or Bangkok (see alternatives). <strong>Or flip Laos upside-down</strong> — fly Da Nang → Bangkok (cheap direct), cross into Laos from Vientiane, go bottom-to-top, slow boat or fly LP → Chiang Mai.</p>
+  <p><strong>Lao-China Railway:</strong> The 2021 railway cuts Laos transit from 10+ hours of mountain buses to 3 hours of comfortable trains. Works both directions — LP → Vientiane or Vientiane → LP.</p>
+  <p><strong>Pai added:</strong> 762 curves from Chiang Mai to Pai. Jungle hot springs, Pai Canyon, night market. Two days of mountain chill.</p>
+  <p><strong>BKK → Cebu:</strong> Fly via Bangkok to the Philippines — daily flights on Cebu Pacific, AirAsia, PAL. Way more options and better prices than connecting from Chiang Mai.</p>
+  <div class="verdict">8 flights total · 5 overnight trains · Lao-China Railway · Friendship Bridge crossing · Alternative: Laos bottom-to-top + Mekong slow boat</div>
+</div>
+
+<div id="map" style="height:600px;"></div>
+<div id="map-key"></div>
+
+<div class="wrap">
+
+<!-- ===================== VIETNAM ===================== -->
+<div class="country">
+  <div class="c-head" style="border-color:var(--vietnam)">
+    <div class="c-flag">🇻🇳</div>
+    <div><h2 style="color:var(--vietnam)">Vietnam</h2><div>Hanoi → Ha Giang → Sapa → Cat Ba / Ha Long Bay → Phong Nha → Hoi An</div></div>
+    <div class="c-dates">Days 1–18 · May 23 – Jun 9</div>
+  </div>
+
+  <div class="photo-row">
+    <div class="photo-card"><img src="https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=600&h=340&fit=crop&auto=format" alt="Hanoi Hoan Kiem Lake" loading="lazy"><div class="caption">Hanoi — Hoan Kiem Lake at dawn</div></div>
+    <div class="photo-card"><img src="https://images.unsplash.com/photo-1682134899372-198258967bfa?w=600&h=340&fit=crop&auto=format" alt="Ha Giang mountains" loading="lazy"><div class="caption">Ha Giang — Ma Pi Leng Pass</div></div>
+  </div>
+  <div class="photo-row">
+    <div class="photo-card"><img src="https://images.unsplash.com/photo-1528127269322-539801943592?w=600&h=340&fit=crop&auto=format" alt="Sapa rice terraces" loading="lazy"><div class="caption">Sapa — terraced rice paddies in the mist</div></div>
+    <div class="photo-card"><img src="https://images.unsplash.com/photo-1737484126640-7381808c768b?w=600&h=340&fit=crop&auto=format" alt="Ha Long Bay" loading="lazy"><div class="caption">Ha Long Bay — kayaking through karst towers</div></div>
+  </div>
+  <div class="photo-row">
+    <div class="photo-card"><img src="https://images.unsplash.com/photo-1554285859-6ac081ea54b9?w=600&h=340&fit=crop&auto=format" alt="Phong Nha caves" loading="lazy"><div class="caption">Phong Nha — cathedral-sized cave chambers</div></div>
+    <div class="photo-card"><img src="https://images.unsplash.com/photo-1562005094-c724030f99bd?w=600&h=340&fit=crop&auto=format" alt="Hoi An lanterns" loading="lazy"><div class="caption">Hoi An — lantern-lit ancient town</div></div>
+  </div>
+
+  <div class="c-sum">Start in Hanoi. Loop north for Ha Giang (Vietnam's most dramatic road) and Sapa valley villages. Return for Cat Ba climbing and Ha Long Bay kayaking — 1,600+ limestone karsts rising from emerald water. Then one-way south by overnight train to Phong Nha's caves and scenic day train over the Hai Van Pass to Hoi An. <strong>18 days — 2 overnight trains, zero flights within Vietnam.</strong></div>
+  <div class="weather">Northern Vietnam: warm, green, occasional afternoon showers — perfect for lush rice terraces. Central Vietnam (Phong Nha / Hoi An): hot, mostly dry. 7–8/10 overall.</div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">1</div><div class="dd">23 May</div><div class="dot" style="background:var(--vietnam)"></div></div>
+  <div class="day-r"><div class="loc">Arrive Hanoi</div><div class="act"><span class="t t-flex">Arrive</span> Land Noi Bai airport. SIM card at arrivals (Viettel — best rural coverage, critical for Ha Giang). Grab to Old Quarter (~A$12). Egg coffee at Cafe Giang. Wander the 36 streets. Bia hoi corner on Ta Hien (fresh draught beer, ~A$0.50/glass). Bun cha for dinner.</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">2</div><div class="dd">24 May</div><div class="dot" style="background:var(--vietnam)"></div></div>
+  <div class="day-r"><div class="loc">Hanoi — Full Day</div><div class="act"><span class="t t-flex">Flex</span> Hoan Kiem Lake sunrise walk. Temple of Literature (Vietnam's first university, 1070). Ho Chi Minh Mausoleum + One Pillar Pagoda. Train Street (sip coffee as trains pass 2 metres away). Pho for lunch. Night market on Hang Dao.</div></div></div>
+
+  <div class="transit">
+    <strong>Day 3 early AM:</strong> <span class="mode mode-bus">Limousine Bus</span> Hanoi → Ha Giang <span class="time">6–7 hrs</span> <span class="cost">~A$19–23</span><br>
+    Depart My Dinh station ~7am. Comfortable reclining seats with blankets and WiFi. Arrive early afternoon. Rent motorbike (A$17–25/day, Honda XR150 recommended) or book an Easy Rider guide (A$60–96/day — they drive, you ride pillion and soak in the views).
+    <span class="tip">Easy Riders handle navigation on Ha Giang's mountain switchbacks. Highly recommended if not confident on motorbikes. If renting: check brakes, tyres, horn. Get automatic if inexperienced. International driving permit technically required.</span>
+  </div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">3</div><div class="dd">25 May</div><div class="dot" style="background:var(--vietnam)"></div></div>
+  <div class="day-r"><div class="loc">Arrive Ha Giang</div><div class="act"><span class="t t-flex">Arrive</span> Arrive afternoon. Rent bike or meet Easy Rider. Prep for the loop — buy a rain poncho, check gear. Local pho dinner, early night.</div></div></div>
+
+  <div class="photo-single"><img src="https://images.unsplash.com/photo-1682134936734-6cc2a4258a77?w=860&h=360&fit=crop&auto=format" alt="Ha Giang Loop" loading="lazy"><div class="caption">Ha Giang Loop — Heaven's Gate to Ma Pi Leng Pass, 300 km through the northern mountains</div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">4</div><div class="dd">26 May</div><div class="dot" style="background:var(--vietnam)"></div></div>
+  <div class="day-r"><div class="loc">Ha Giang Loop — Day 1</div><div class="act"><span class="t t-moto">Moto</span> Ha Giang → Quan Ba (Heaven's Gate viewpoint — twin mountains) → Yen Minh. ~100 km. H'mong villages in the valleys, rice terraces on every slope, mountain roads carved into cliff faces. Stay Yen Minh.</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">5</div><div class="dd">27 May</div><div class="dot" style="background:var(--vietnam)"></div></div>
+  <div class="day-r"><div class="loc">Ha Giang Loop — Day 2 (The Big One)</div><div class="act"><span class="t t-moto">Moto</span> Yen Minh → Dong Van (stone plateau, Dong Van Karst UNESCO Geopark) → <strong>Ma Pi Leng Pass</strong> — 2,000m above the turquoise Nho Que River gorge. One of Vietnam's most photographed roads. → Meo Vac. ~90 km. This is THE day.</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">6</div><div class="dd">28 May</div><div class="dot" style="background:var(--vietnam)"></div></div>
+  <div class="day-r"><div class="loc">Ha Giang Loop — Day 3</div><div class="act"><span class="t t-moto">Moto</span> <span class="t t-water">Water</span> Meo Vac → Du Gia valley (quieter southern route). Optional: boat on the turquoise Nho Que River (A$12–19). Return to Ha Giang via the southern loop. ~120 km.</div></div></div>
+
+  <div class="transit">
+    <strong>Transit Day 7:</strong> <span class="mode mode-van">Minivan</span> Ha Giang → Sapa <span class="time">6–7 hrs</span> <span class="cost">~A$23–31</span><br>
+    Private transfer or shared minivan — book through your hostel. Mountain roads with spectacular scenery. Depart early, arrive afternoon.
+  </div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">7</div><div class="dd">29 May</div><div class="dot" style="background:var(--vietnam)"></div></div>
+  <div class="day-r"><div class="loc">Arrive Sapa</div><div class="act"><span class="t t-flex">Arrive</span> Arrive afternoon. Settle. Sapa town walk, Love Waterfall viewpoint. Rest legs after 3 days of riding.</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">8</div><div class="dd">30 May</div><div class="dot" style="background:var(--vietnam)"></div></div>
+  <div class="day-r"><div class="loc">Sapa — Explore + Depart</div><div class="act"><span class="t t-trek">Trek</span> <span class="t t-flex">Flex</span> Morning walk through Muong Hoa Valley — terraced rice paddies, bamboo bridges, Black H'mong villages. Cat Cat village waterfall. Afternoon: Sapa town markets + viewpoints. Late afternoon taxi to Lao Cai station (30 min, A$8) for overnight train.</div></div></div>
+  <div class="transit">
+    <strong>Day 8 night:</strong> <span class="mode mode-train">Overnight Train</span> Lao Cai → Hanoi <span class="overnight">Sleeper</span><br>
+    <span class="time">8 hrs</span> <span class="cost">~A$29–60 (soft sleeper)</span><br>
+    Sapaly Express or King Express. Depart ~8–9pm, arrive Hanoi ~5–6am. 4-berth cabin, air-con, clean sheets, gentle rocking.
+    <span class="tip">Sapa explore → taxi to Lao Cai → board sleeper → wake up in Hanoi. Saves a hotel night. Book via baolau.com or 12Go.asia 2–3 days ahead.</span>
+  </div>
+
+  <div class="transit">
+    <strong>Day 9 morning:</strong> <span class="mode mode-ferry">Bus+Ferry</span> Hanoi → Cat Ba Island <span class="time">3.5 hrs</span> <span class="cost">~A$19–23</span><br>
+    Arrive Hanoi ~5am. Bus+ferry combo from Luong Yen station — depart 7:30am. Cat Ba Express or Hoang Long. One ticket, seamless transfer.
+  </div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">9</div><div class="dd">31 May</div><div class="dot" style="background:var(--vietnam)"></div></div>
+  <div class="day-r"><div class="loc">Arrive Cat Ba Island</div><div class="act"><span class="t t-flex">Arrive</span> Arrive late morning. Fresh seafood lunch on the harbour. Afternoon: Hospital Cave (wartime bunker hidden in the jungle) or Cannon Fort viewpoint for panoramic Ha Long Bay views at sunset.</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">10</div><div class="dd">1 Jun</div><div class="dot" style="background:var(--vietnam)"></div></div>
+  <div class="day-r"><div class="loc">Cat Ba — Sport Climbing + Deep-Water Soloing</div><div class="act"><span class="t t-climb">Climb</span> 700+ bolted limestone routes. Morning: warm up at Climbing Barn crag. Afternoon: deep-water soloing on Ha Long Bay's karst towers — boat out, climb overhanging limestone 5–15m above the sea, fall into warm emerald water. One of Asia's best DWS spots.</div></div></div>
+
+  <div class="photo-single"><img src="https://images.unsplash.com/photo-1737484126640-7381808c768b?w=860&h=360&fit=crop&auto=format" alt="Ha Long Bay" loading="lazy"><div class="caption">Ha Long Bay — 1,600 limestone karsts rising from emerald water, UNESCO World Heritage Site</div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">11</div><div class="dd">2 Jun</div><div class="dot" style="background:var(--vietnam)"></div></div>
+  <div class="day-r"><div class="loc">Ha Long Bay — Full Day Kayaking</div><div class="act"><span class="t t-water">Watersport</span> <span class="t t-wild">Wildlife</span> Full-day kayak tour through Lan Ha Bay (quieter side of Ha Long Bay — fewer tourist junks, more wildlife). Paddle through hidden lagoons, cave grottoes, limestone arches. Overnight on a traditional junk boat optional (A$60–90 — sleep on the bay under the stars).</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">12</div><div class="dd">3 Jun</div><div class="dot" style="background:var(--vietnam)"></div></div>
+  <div class="day-r"><div class="loc">Cat Ba → Hanoi</div><div class="act"><span class="t t-go">Transit</span> Morning ferry+bus back (3.5 hrs, A$19). Arrive Hanoi afternoon. Last Old Quarter evening — stock up on supplies, eat everything one more time.</div></div></div>
+
+  <div class="transit">
+    <strong>Day 12 night:</strong> <span class="mode mode-train">Overnight Train</span> Hanoi → Dong Hoi <span class="overnight">Sleeper</span><br>
+    <span class="time">8–10 hrs</span> <span class="cost">~A$36–60 (soft sleeper)</span><br>
+    Reunification Express southbound. Depart Hanoi ~7–8pm, arrive Dong Hoi ~4–6am. SE1 or SE3 trains (newest rolling stock). Shuttle Dong Hoi → Phong Nha (45 min, A$8).
+    <span class="tip">Book soft sleeper (4-berth, air-con) via dsvn.vn or 12Go.asia. Lower berth slightly more expensive but worth it for the extra space.</span>
+  </div>
+
+  <div class="alt-detour">
+    <h4>Ninh Binh / Tam Coc — "Ha Long Bay on Land"</h4>
+    <p>Instead of taking the overnight train to Phong Nha on Day 12 evening, detour south to Ninh Binh (2 hrs by bus from Hanoi, ~A$8). Spend a day exploring, then catch the overnight train to Phong Nha the following evening.</p>
+    <div class="alt-highlights">Highlights: Tam Coc rowboat through cave grottoes and flooded rice paddies · Mua Cave viewpoint (500 steps to a dragon statue with panoramic karst views) · Trang An boat complex (UNESCO) · Bich Dong Pagoda built into a cliff face</div>
+    <div class="alt-logistics">Adds ~1 day. Bus Hanoi → Ninh Binh A$8 (2 hrs). Rent a bicycle to explore (A$3/day). Overnight train Ninh Binh → Dong Hoi runs direct. Hostels A$8–14/night.</div>
+  </div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">13</div><div class="dd">4 Jun</div><div class="dot" style="background:var(--vietnam)"></div></div>
+  <div class="day-r"><div class="loc">Arrive Phong Nha</div><div class="act"><span class="t t-flex">Arrive</span> Early morning shuttle from Dong Hoi. Check in. Afternoon: rent a bicycle and explore Son Trach village along the river. Easy day after the overnight train. Pub with Cold Beer for sunset drinks.</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">14</div><div class="dd">5 Jun</div><div class="dot" style="background:var(--vietnam)"></div></div>
+  <div class="day-r"><div class="loc">Phong Nha — Paradise Cave</div><div class="act"><span class="t t-cave">Cave</span> 31 km of passages, cathedral-sized chambers with stalactites older than humanity. Walk the standard 1 km boardwalk (A$12) or pay extra to trek 7.5 km into the dark with headlamp and guide (A$96 — worth every cent).</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">15</div><div class="dd">6 Jun</div><div class="dot" style="background:var(--vietnam)"></div></div>
+  <div class="day-r"><div class="loc">Phong Nha — Dark Cave</div><div class="act"><span class="t t-cave">Cave</span> <span class="t t-water">Water</span> Zipline 400m across the river into the cave mouth. Swim through underground river in total darkness. Mud bath inside the cave (mud wrestling optional). Kayak back along the river at sunset into Phong Nha Cave.</div></div></div>
+
+  <div class="transit">
+    <strong>Transit Day 16:</strong> <span class="mode mode-train">Day Train</span> Dong Hoi → Da Nang <span class="time">4.5–5 hrs</span> <span class="cost">~A$12–23</span><br>
+    Shuttle Phong Nha → Dong Hoi station (45 min). Board the Reunification Express ~8am, arrive Da Nang ~12:30pm. <strong>Crosses the Hai Van Pass</strong> — mountains plunging into the South China Sea. One of Vietnam's most scenic rail sections. Grab/taxi Da Nang → Hoi An (30 min, A$5).
+    <span class="tip">Sit on the LEFT side of the train for Hai Van Pass ocean views. This is the section Top Gear called "one of the best coastal roads in the world" — you see it from the train above.</span>
+  </div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">16</div><div class="dd">7 Jun</div><div class="dot" style="background:var(--vietnam)"></div></div>
+  <div class="day-r"><div class="loc">Arrive Hoi An</div><div class="act"><span class="t t-flex">Arrive</span> Arrive afternoon. Ancient town walk — Japanese Covered Bridge, Chinese assembly halls, lantern-lit alleyways. Banh mi from Phuong (Bourdain's favourite). Get measured at a tailor if you want custom clothes (24-hr turnaround, suits from A$80, dresses from A$30).</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">17</div><div class="dd">8 Jun</div><div class="dot" style="background:var(--vietnam)"></div></div>
+  <div class="day-r"><div class="loc">Hoi An — Day 1</div><div class="act"><span class="t t-water">Watersport</span> Sunrise kayak on the Thu Bon River. Basket boat spinning in Cam Thanh coconut village. Cooking class — learn to make pho, spring rolls, and white rose dumplings (Hoi An specialty). Ancient town is magical after dark with thousands of lanterns reflected in the river.</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">18</div><div class="dd">9 Jun</div><div class="dot" style="background:var(--vietnam)"></div></div>
+  <div class="day-r"><div class="loc">Hoi An — Day 2</div><div class="act"><span class="t t-flex">Flex</span> My Son Sanctuary (Cham Hindu temples, Vietnam's answer to Angkor — 4th–13th century). An Bang Beach afternoon (rent a sunbed, drink fresh coconut). Pick up tailored clothes. Final sunset from the Japanese Bridge.</div></div></div>
+
+  <div class="why">Hanoi to Hoi An entirely by ground: two overnight trains + one scenic day train. Total rail cost: ~A$80–145. Quick Sapa stop for valley villages and rice terraces. The Hai Van Pass day train alone is worth choosing rail over flights.</div>
+
+  <div class="transit">
+    <strong>Transit Day 19:</strong> <span class="mode mode-fly">Fly</span> Da Nang → Luang Prabang <span class="time">~5–8 hrs (connection required)</span> <span class="cost">~A$120–250</span><br>
+    <strong>No direct flights exist.</strong> All routings connect via Hanoi, HCMC, or Bangkok. Shuttle Hoi An → Da Nang airport (30 min, A$8).
+    <span class="tip">Lao visa on arrival: US$35–42. Bring 1 passport photo + exact USD cash (they don't give change). Vietnam e-visa: apply at evisa.xuatnhapcanh.gov.vn 3+ days ahead.</span>
+  </div>
+
+  <div class="alt-route">
+    <h4>Alternate Route: Da Nang → Luang Prabang (no direct flights)</h4>
+    <div class="alt-opt recommended">
+      <div class="alt-label">✈ Option A — Via Hanoi (most common)</div>
+      <p>Da Nang → Hanoi (1 hr, Vietnam Airlines / Vietjet / Bamboo) + Hanoi → Luang Prabang (1.5 hrs, Vietnam Airlines / Lao Airlines). <strong>~5–8 hrs total with layover, A$120–220.</strong> Same-day connection if you time it right — aim for an early Da Nang departure. Can break the layover into a night in Hanoi if flights don't connect well.</p>
+    </div>
+    <div class="alt-opt recommended">
+      <div class="alt-label">✈ Option B — Via Bangkok (often cheaper)</div>
+      <p>Da Nang → Bangkok (2.5 hrs, AirAsia / Vietjet) + Bangkok → Luang Prabang (1.5 hrs, AirAsia / Bangkok Airways / Lao Airlines). <strong>~6–8 hrs total, A$100–200.</strong> More frequent connections and often cheaper than the Hanoi routing. BKK has better airport facilities for layovers.</p>
+    </div>
+    <div class="alt-opt">
+      <div class="alt-label alt-b">✈ Option C — Via HCMC</div>
+      <p>Da Nang → Ho Chi Minh City (1.5 hrs) + HCMC → Luang Prabang (2 hrs, Vietnam Airlines). <strong>~6–9 hrs total, A$130–250.</strong> The longest routing — fly south only to fly north again. Least efficient but sometimes cheapest on sale fares.</p>
+    </div>
+    <div class="alt-opt">
+      <div class="alt-label alt-b">🚌 Option D — Overland via Hanoi</div>
+      <p>Reunification Express Hoi An → Hanoi (15–17 hrs overnight, A$48–80). Then Hanoi → Luang Prabang by sleeper bus via Dien Bien Phu (22–26 hrs, A$36–48). Two border crossings, rough mountain roads, cramped sleeper bus. <strong>Total: ~40 hrs over 2 days, A$84–128.</strong> Only for dedicated overland travellers.</p>
+    </div>
+    <div class="alt-verdict">Via Hanoi is fastest if flights connect; via Bangkok is often cheapest and has better layover facilities. Check Skyscanner for both routings — prices vary wildly by date. Book the two legs separately for best prices.</div>
+  </div>
+</div>
+
+
+<!-- ===================== LAOS ===================== -->
+<div class="country">
+  <div class="c-head" style="border-color:var(--laos)">
+    <div class="c-flag">🇱🇦</div>
+    <div><h2 style="color:var(--laos)">Laos</h2><div>Luang Prabang → Vang Vieng → Vientiane</div></div>
+    <div class="c-dates">Days 19–26 · Jun 10 – Jun 17</div>
+  </div>
+
+  <div class="photo-row">
+    <div class="photo-card"><img src="https://images.unsplash.com/photo-1593994603100-9cd7cb22aaf1?w=600&h=340&fit=crop&auto=format" alt="Kuang Si Falls" loading="lazy"><div class="caption">Kuang Si Falls — turquoise cascading pools</div></div>
+    <div class="photo-card"><img src="https://images.unsplash.com/photo-1748339687566-e2a20640830c?w=600&h=340&fit=crop&auto=format" alt="Vang Vieng karsts" loading="lazy"><div class="caption">Vang Vieng — karst climbing paradise</div></div>
+  </div>
+
+  <div class="c-sum">Waterfalls, limestone climbing, cave tubing, river floating. The Lao-China Railway makes it a breeze — LP to Vientiane in 3 hours total instead of 10+. <strong>8 days of escape in Southeast Asia's most laid-back country.</strong></div>
+  <div class="weather">Wet season — everything is lush green, rivers are full and flowing. Afternoon storms (1–2 hours, then sun). Climbing walls can be wet but still climbable. 6–8/10.</div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">19</div><div class="dd">10 Jun</div><div class="dot" style="background:var(--laos)"></div></div>
+  <div class="day-r"><div class="loc">Arrive Luang Prabang</div><div class="act"><span class="t t-flex">Arrive</span> Fly in from Da Nang. Phousi Hill sunset — 328 steps to a golden stupa with 360° views over the Mekong and Nam Khan rivers. Night market on Sisavangvong Road — handicrafts, grilled meats, coconut pancakes. Beerlao on the riverfront.</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">20</div><div class="dd">11 Jun</div><div class="dot" style="background:var(--laos)"></div></div>
+  <div class="day-r"><div class="loc">Kuang Si Falls</div><div class="act"><span class="t t-trek">Trek</span> <span class="t t-wild">Wildlife</span> Turquoise cascading pools surrounded by jungle. Swim in the lower tiers (the water is cool and unreal). Free the Bears rescue centre at the entrance. 30 min tuk-tuk each way (A$8–12 return). Hike to the top for an empty pool with a rope swing.</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">21</div><div class="dd">12 Jun</div><div class="dot" style="background:var(--laos)"></div></div>
+  <div class="day-r"><div class="loc">Luang Prabang — Explore</div><div class="act"><span class="t t-flex">Flex</span> 5:30am alms giving ceremony — hundreds of saffron-robed monks walk silently through the old town collecting rice (observe quietly, don't flash cameras). Wat Xieng Thong (LP's most beautiful temple). Royal Palace Museum. Mekong riverfront sunset with Beerlao.</div></div></div>
+
+  <div class="transit">
+    <strong>Transit Day 22:</strong> <span class="mode mode-train">Lao-China Railway</span> Luang Prabang → Vang Vieng <span class="time">~2 hrs</span> <span class="cost">~A$10–18</span><br>
+    Modern Chinese-built railway. Multiple daily departures from LP station (15 min tuk-tuk from town). Air-con, comfortable seats, scenic mountain tunnels and valley views. Arrives Vang Vieng station (7 km from town, tuk-tuk A$3).
+    <span class="tip">What used to be a nauseating 6-hour mountain bus ride is now a smooth 2-hour train. Buy tickets at the station or via the LCR app — they rarely sell out in wet season.</span>
+  </div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">22</div><div class="dd">13 Jun</div><div class="dot" style="background:var(--laos)"></div></div>
+  <div class="day-r"><div class="loc">Arrive Vang Vieng</div><div class="act"><span class="t t-flex">Arrive</span> Arrive late morning. Settle near the river. Rent a bicycle (A$3/day) and explore. Sunset over the karst towers from a riverside bar is stunning.</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">23</div><div class="dd">14 Jun</div><div class="dot" style="background:var(--laos)"></div></div>
+  <div class="day-r"><div class="loc">Climbing Day 1</div><div class="act"><span class="t t-climb">Climb</span> Green Climbers Home — Thaiwand Wall and Sleeping Wall. Bolted limestone, 5a–7c+. Karst towers rising straight out of rice paddies. Beginner courses available. Half-day or full-day with equipment rental (A$25–40).</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">24</div><div class="dd">15 Jun</div><div class="dot" style="background:var(--laos)"></div></div>
+  <div class="day-r"><div class="loc">Climbing Day 2 + Blue Lagoon</div><div class="act"><span class="t t-climb">Climb</span> <span class="t t-cave">Cave</span> <span class="t t-water">Water</span> Morning: multi-pitch on the karst towers (Pha Ngern faces). Afternoon: Tham Phu Kham cave (climb into the cave mouth, explore with headlamp) then swim in the turquoise Blue Lagoon below.</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">25</div><div class="dd">16 Jun</div><div class="dot" style="background:var(--laos)"></div></div>
+  <div class="day-r"><div class="loc">River Tubing + Kayaking</div><div class="act"><span class="t t-water">Watersport</span> Float the Nam Song river through the karst valley. Cliff jumping spots along the route. Kayak option for more control and speed. The river's calmer now than the wild party days — it's actually a beautiful, peaceful float.</div></div></div>
+
+  <div class="transit">
+    <strong>Transit Day 26:</strong> <span class="mode mode-train">Lao-China Railway</span> Vang Vieng → Vientiane <span class="time">~1 hr</span> <span class="cost">~A$8–12</span><br>
+    Quick and painless. Arrive Vientiane with the whole day ahead.
+  </div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">26</div><div class="dd">17 Jun</div><div class="dot" style="background:var(--laos)"></div></div>
+  <div class="day-r"><div class="loc">Vientiane</div><div class="act"><span class="t t-flex">Flex</span> Patuxai Victory Gate — Laos' Arc de Triomphe, climb to the top for city views. Pha That Luang (golden stupa, Laos' national symbol). COPE Visitor Centre (UXO awareness — Laos is the most bombed country per capita in history). Mekong riverfront sunset. Last Beerlao.</div></div></div>
+
+  <div class="alt-route">
+    <h4>Alternate Route: Through Laos</h4>
+    <div class="alt-opt recommended">
+      <div class="alt-label">🚆 Recommended — Lao-China Railway</div>
+      <p>LP → Vang Vieng (2 hrs, A$10–18) → Vientiane (1 hr, A$8–12). Modern, air-conditioned, scenic. <strong>Total: 3 hrs, A$18–30.</strong></p>
+    </div>
+    <div class="alt-opt">
+      <div class="alt-label alt-b">🚌 Alternative — VIP Bus (the old way)</div>
+      <p>LP → Vang Vieng (5–6 hrs mountain switchbacks, A$19–23) → Vientiane (3.5–4 hrs, A$12–16). The pre-2021 backpacker route. More scenery from the mountain roads, more "adventure" (read: motion sickness). <strong>Total: ~10 hrs, A$31–39.</strong></p>
+    </div>
+    <div class="alt-verdict">The train is faster, cheaper, and more comfortable. Bus only if you specifically want the winding mountain road experience.</div>
+  </div>
+
+  <div class="transit">
+    <strong>Day 26 evening — Cross to Thailand:</strong><br><br>
+    <span class="mode mode-bus">Tuk-tuk</span> Vientiane → Thai-Lao Friendship Bridge <span class="time">20 min</span> <span class="cost">~A$3–5</span><br>
+    Lao exit stamp → walk/shuttle across the Mekong on the Friendship Bridge (A$2) → Thai entry stamp (free, 30 days). Arrive Nong Khai, Thailand. The whole crossing takes ~1 hour.<br><br>
+    <span class="mode mode-train">Overnight Train</span> Nong Khai → Bangkok <span class="overnight">Sleeper</span><br>
+    <span class="time">10–11 hrs</span> <span class="cost">~A$29–54 (2nd class sleeper)</span><br>
+    State Railway of Thailand. Depart ~6:30pm, arrive Bangkok Hua Lamphong ~5am. Cross an international border and sleep your way to Bangkok in one evening. 2nd class sleeper: air-con, clean sheets, gentle rocking.
+    <span class="tip">Cross the Friendship Bridge before 5pm to catch the 6:30pm train. Book train tickets in advance via 12Go.asia or at Nong Khai station. Lower berth = wider + window.</span>
+  </div>
+
+  <div class="alt-route">
+    <h4>Alternate Route: Vientiane → Bangkok</h4>
+    <div class="alt-opt recommended">
+      <div class="alt-label">🚆 Recommended — Friendship Bridge + Overnight Train</div>
+      <p>Walk across the Mekong, board the sleeper to Bangkok. <strong>~11 hrs total, A$34–61.</strong> Save a hotel night, arrive Bangkok ready to go. The border crossing itself is an experience — you walk between countries over one of the world's great rivers.</p>
+    </div>
+    <div class="alt-opt">
+      <div class="alt-label alt-b">✈ Alternative — Fly Vientiane → Bangkok</div>
+      <p>AirAsia, Nok Air, or Thai Smile. <strong>1 hr, A$50–120.</strong> Fast and easy. But you miss the border crossing experience, need a hotel that night in Bangkok, and it's often more expensive than the train.</p>
+    </div>
+    <div class="alt-verdict">The train is the better story, saves a hotel night, and is usually cheaper. Fly only if the train is sold out or you're short on time.</div>
+  </div>
+</div>
+
+
+<!-- ===================== ALTERNATIVE: LAOS BOTTOM-TO-TOP ===================== -->
+<div class="decision-box" style="max-width:860px;margin:0 auto 24px;">
+  <h3>🔄 Major Alternative: Laos Bottom-to-Top + Slow Boat to Chiang Mai</h3>
+  <p style="margin-top:8px;">Instead of flying Da Nang → Luang Prabang (no direct flights — everything connects via Hanoi or Bangkok), flip Laos upside-down and avoid that awkward connection entirely. Fly Da Nang → Bangkok instead (easy, cheap, direct).</p>
+
+  <div class="alt-route" style="margin:14px 0;background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b744;">
+    <h4 style="color:#065f46;">Alternative Route Flow</h4>
+    <div style="font-size:.84rem;line-height:1.8;color:var(--muted);margin-bottom:12px;">
+      <strong style="color:var(--text);">After Hoi An (Day 21):</strong><br>
+      Hoi An → <span class="mode mode-fly" style="font-size:.72rem;">Fly</span> Da Nang → Bangkok (2.5 hrs, AirAsia/Vietjet, A$80–160 — <em>easy direct flight, multiple daily</em>)<br>
+      → <span class="mode mode-train" style="font-size:.72rem;">Overnight Train</span> Bangkok → Nong Khai (10 hrs, A$29–54)<br>
+      → <span class="mode mode-bus" style="font-size:.72rem;">Bridge</span> Cross Friendship Bridge into Vientiane<br>
+      → <span class="mode mode-train" style="font-size:.72rem;">Lao Railway</span> Vientiane → Vang Vieng (1 hr, A$8–12) — <em>climbing, tubing, karsts</em><br>
+      → <span class="mode mode-train" style="font-size:.72rem;">Lao Railway</span> Vang Vieng → Luang Prabang (2 hrs, A$10–18) — <em>waterfalls, monks, temples</em><br>
+      → <strong>Then choose your exit from LP:</strong>
+    </div>
+
+    <div class="alt-opt recommended" style="border-left-color:#065f46;">
+      <div class="alt-label" style="color:#065f46;">🚢 Option A — Mekong Slow Boat LP → Chiang Mai (~4–5 days)</div>
+      <p>The legendary 2-day slow boat down the Mekong: Luang Prabang → Pak Beng (overnight in riverside guesthouse) → Huay Xai (Lao border town). Cross to Chiang Khong, Thailand. Minibus to Chiang Rai (2 hrs) — explore White Temple, Blue Temple, Night Bazaar for a day. Then bus/van Chiang Rai → Chiang Mai (3 hrs). <strong>Total: ~4–5 days, A$60–100 (boat + buses + 2–3 nights).</strong> Slow, scenic, unforgettable — the Mekong winds through jungle-covered mountains for two full days. One of SE Asia's great overland journeys.</p>
+    </div>
+    <div class="alt-opt">
+      <div class="alt-label alt-b">✈ Option B — Fly LP → Chiang Mai (1 hour)</div>
+      <p>Lao Airlines or Bangkok Airways. Direct flights, ~1 hour. <strong>A$80–180.</strong> Fast and easy — saves 4 days. Use those days in Chiang Mai / Pai instead.</p>
+    </div>
+
+    <div style="font-size:.84rem;line-height:1.8;color:var(--muted);margin-top:12px;padding-top:12px;border-top:1px solid #e2e8f0;">
+      <strong style="color:var(--text);">Then from Chiang Mai:</strong><br>
+      Do Chiang Mai (temples, Doi Inthanon, Crazy Horse climbing, Elephant Nature Park)<br>
+      → Minivan to Pai (762 curves, 3 hrs) — hot springs, canyon, night market → return to Chiang Mai<br>
+      → <span class="mode mode-fly" style="font-size:.72rem;">Fly</span> Chiang Mai → Bangkok (1 hr, A$40–90, AirAsia/Nok Air/Thai Smile — multiple daily)<br>
+      → Bangkok day (Wat Pho, Chatuchak, rooftop bars) + overnight train to Gulf Islands<br>
+      → Islands (Koh Phangan, Koh Tao) → ferry+train back to Bangkok<br>
+      → <span class="mode mode-fly" style="font-size:.72rem;">Fly</span> Bangkok → Cebu (3 hrs, A$80–200, Cebu Pacific/AirAsia/Philippine Airlines — daily flights)
+    </div>
+
+    <div class="alt-verdict" style="margin-top:14px;">
+      <strong>Why this route works:</strong> Eliminates the Da Nang → LP problem flight entirely (Da Nang → Bangkok is cheap and direct). You see all the same Laos stops in reverse order. The slow boat from LP adds one of SE Asia's most iconic overland legs. Bangkok → Cebu has far more flight options and is often cheaper than Chiang Mai → Cebu. And you still hit the Gulf Islands — just after Chiang Mai instead of before.<br><br>
+      <strong>Trade-offs:</strong> You pass through Bangkok twice (but that just means more time for the things you missed). The slow boat adds 4–5 days. Net trip length is ~2–3 days longer with slow boat, or roughly the same if you fly LP → CM.
+    </div>
+  </div>
+</div>
+
+
+<!-- ===================== THAILAND ===================== -->
+<div class="country">
+  <div class="c-head" style="border-color:var(--thailand)">
+    <div class="c-flag">🇹🇭</div>
+    <div><h2 style="color:var(--thailand)">Thailand</h2><div>Bangkok → Gulf Islands → Chiang Mai → Pai</div></div>
+    <div class="c-dates">Days 27–42 · Jun 18 – Jul 3</div>
+  </div>
+
+  <div class="photo-row">
+    <div class="photo-card"><img src="https://images.unsplash.com/photo-1540110234959-2b69b1ffd2c8?w=600&h=340&fit=crop&auto=format" alt="Koh Phangan" loading="lazy"><div class="caption">Koh Phangan — beach paradise</div></div>
+    <div class="photo-card"><img src="https://images.unsplash.com/photo-1569671618687-9de58bd0a9cb?w=600&h=340&fit=crop&auto=format" alt="Koh Tao" loading="lazy"><div class="caption">Koh Tao — diver's island</div></div>
+  </div>
+  <div class="photo-row">
+    <div class="photo-card"><img src="https://images.unsplash.com/photo-1678455884083-bac5c34f2cfc?w=600&h=340&fit=crop&auto=format" alt="Chiang Mai temples" loading="lazy"><div class="caption">Chiang Mai — golden temples at dusk</div></div>
+    <div class="photo-card"><img src="https://images.unsplash.com/photo-1551966775-a4ddc8df052b?w=600&h=340&fit=crop&auto=format" alt="Doi Inthanon" loading="lazy"><div class="caption">Doi Inthanon — Thailand's roof</div></div>
+  </div>
+
+  <div class="c-sum">Arrive Bangkok by overnight train from Laos. Overnight train south to the Gulf Islands for Koh Phangan's jungle beaches and Koh Tao's world-class diving. Ferry back, two overnight trains north through Bangkok to Chiang Mai. Then 762 curves to Pai — hot springs, canyon walks, and night market hippie vibes. <strong>16 days — zero flights within Thailand.</strong></div>
+  <div class="weather">Gulf Islands: good season (monsoon is Oct–Dec, you're fine). 8/10. Chiang Mai / Pai: green season — warm mornings, afternoon thunderstorms, lush jungle. 7/10.</div>
+  <div class="dropped">Railay Beach (Andaman monsoon — wrong coast this time of year). Khao Yai (detour northeast). Climbing covered by Crazy Horse Buttress, Vang Vieng, and Cat Ba.</div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">27</div><div class="dd">18 Jun</div><div class="dot" style="background:var(--thailand)"></div></div>
+  <div class="day-r"><div class="loc">Arrive Bangkok</div><div class="act"><span class="t t-flex">Arrive</span> Arrive ~5am from the Nong Khai sleeper. Drop bags at hostel near Hua Lamphong station. Yaowarat (Chinatown) for pad thai and mango sticky rice. Wat Arun at golden hour (cross the river by ferry, A$0.50). Grand Palace. Thai massage (A$8–12 for an hour). Khao San Road if you want chaos.</div></div></div>
+
+  <div class="transit">
+    <strong>Day 27 night:</strong> <span class="mode mode-train">Overnight Train</span> Bangkok → Surat Thani <span class="overnight">Sleeper</span><br>
+    <span class="time">10–11 hrs</span> <span class="cost">~A$29–60 (2nd class sleeper)</span><br>
+    Depart Hua Lamphong ~5–7pm. Arrive Surat Thani ~5–6am. Combined train+bus+ferry ticket available — one ticket gets you all the way to Koh Phangan.
+    <span class="tip">Buy the combined train+bus+ferry ticket at Bangkok station. One ticket, seamless journey. Lower berth = more space + window. Both comfortable.</span>
+  </div>
+
+  <div class="transit">
+    <strong>Day 28 morning:</strong> <span class="mode mode-bus">Bus</span> Surat Thani → Donsak Pier <span class="time">1.5 hrs</span> + <span class="mode mode-ferry">Ferry</span> Donsak → Koh Phangan <span class="time">2.5 hrs</span> <span class="cost">~A$29–36 combined</span><br>
+    Seatran Discovery or Raja Ferry. Arrive Thong Sala Pier ~10–11am.
+  </div>
+
+  <div class="alt-detour">
+    <h4>Khao Sok National Park — Floating Lake Bungalows</h4>
+    <p>When you arrive at Surat Thani, instead of heading straight to the ferry, detour to Khao Sok (2 hrs by bus). Spend a night in floating bungalows on Cheow Lan Lake — wake up surrounded by 300m limestone cliffs and morning mist over ancient rainforest (older than the Amazon). Continue to the islands the next day.</p>
+    <div class="alt-highlights">Highlights: Cheow Lan Lake floating raft houses · Jungle night safari (gibbons, hornbills, rare wildlife) · Kayaking through submerged caves · 160-million-year-old rainforest canopy</div>
+    <div class="alt-logistics">Adds ~1–2 days. Bus Surat Thani → Khao Sok A$8–12 (2 hrs). Floating bungalow + lake tour A$50–80/night. Bus Khao Sok → Donsak Pier A$12 (2.5 hrs). Works on the return trip too.</div>
+  </div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">28</div><div class="dd">19 Jun</div><div class="dot" style="background:var(--thailand)"></div></div>
+  <div class="day-r"><div class="loc">Arrive Koh Phangan</div><div class="act"><span class="t t-flex">Arrive</span> Settle afternoon. Rent scooter (A$8–12/day). Zen Beach sunset or Haad Rin viewpoint. Fresh grilled fish on the beach.</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">29</div><div class="dd">20 Jun</div><div class="dot" style="background:var(--thailand)"></div></div>
+  <div class="day-r"><div class="loc">Koh Phangan — Explore</div><div class="act"><span class="t t-trek">Trek</span> <span class="t t-water">Water</span> Bottle Beach (hike-in paradise — no road access). Than Sadet waterfall (royal waterfall — Thai kings carved their initials here). Thong Nai Pan bay for sunset.</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">30</div><div class="dd">21 Jun</div><div class="dot" style="background:var(--thailand)"></div></div>
+  <div class="day-r"><div class="loc">Koh Phangan — Flex</div><div class="act"><span class="t t-flex">Flex</span> Scooter the whole island. Snorkel Haad Khom (coral reef from shore). Hike Khao Ra (highest point, jungle viewpoint). Full Moon Party if timing aligns — otherwise, Half Moon or Jungle parties run weekly.</div></div></div>
+
+  <div class="alt-detour">
+    <h4>Koh Samui — Ang Thong Marine Park</h4>
+    <p>The ferry from Koh Phangan to Koh Tao passes right by Koh Samui. Stop for 1–2 days to explore Thailand's biggest Gulf island. The standout is Ang Thong Marine Park — a full-day boat trip to kayak through an emerald lagoon hidden inside a collapsed island.</p>
+    <div class="alt-highlights">Highlights: Ang Thong Marine Park boat trip (kayak emerald lagoon, hike to viewpoints, snorkel) · Na Muang waterfalls · Fisherman's Village night market (Bophut) · Big Buddha temple · Lad Koh viewpoint</div>
+    <div class="alt-logistics">Adds 1–2 days. Ferry Koh Phangan → Koh Samui A$8–12 (30 min). Ang Thong day trip A$40–60. Ferry Koh Samui → Koh Tao A$19–25 (2 hrs). Hostels A$12–20/night.</div>
+  </div>
+
+  <div class="transit">
+    <strong>Day 31 AM:</strong> <span class="mode mode-ferry">Ferry</span> Koh Phangan → Koh Tao <span class="time">1.5 hrs</span> <span class="cost">~A$19</span><br>
+    Lomprayah high-speed catamaran. Depart Thong Sala ~8:30am or 12:30pm.
+  </div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">31</div><div class="dd">22 Jun</div><div class="dot" style="background:var(--thailand)"></div></div>
+  <div class="day-r"><div class="loc">Arrive Koh Tao</div><div class="act"><span class="t t-water">Watersport</span> Settle Sairee Beach. Afternoon: snorkel Japanese Gardens (free — swim from shore). Book dive shop for tomorrow (50+ shops on the island, A$40–55/dive). Sairee Beach sunset.</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">32</div><div class="dd">23 Jun</div><div class="dot" style="background:var(--thailand)"></div></div>
+  <div class="day-r"><div class="loc">Koh Tao — Sail Rock</div><div class="act"><span class="t t-dive">Dive</span> Thailand's #1 dive site. Underwater chimney (swim-through at 18m), schooling batfish, barracuda walls, occasional bullsharks. Visibility 15–30m.</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">33</div><div class="dd">24 Jun</div><div class="dot" style="background:var(--thailand)"></div></div>
+  <div class="day-r"><div class="loc">Koh Tao — Chumphon Pinnacle</div><div class="act"><span class="t t-dive">Dive</span> Granite pinnacles rising from 30m. Massive barracuda tornadoes, batfish, grouper. Whale sharks March–August — you're in the window.</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">34</div><div class="dd">25 Jun</div><div class="dot" style="background:var(--thailand)"></div></div>
+  <div class="day-r"><div class="loc">Koh Tao — SW Pinnacle + Freediving</div><div class="act"><span class="t t-dive">Dive</span> <span class="t t-water">Watersport</span> Morning: SW Pinnacle (35m, whale shark hotspot). Afternoon: freediving intro course (A$50–80) or cliff jumping at Tanote Bay.</div></div></div>
+
+  <div class="transit">
+    <strong>Day 35:</strong> <span class="mode mode-ferry">Ferry</span> Koh Tao → Chumphon <span class="time">1.5 hrs</span> <span class="cost">~A$19</span> + <span class="mode mode-train">Overnight Train</span> Chumphon → Bangkok <span class="overnight">Sleeper</span><br>
+    <span class="time">8–9 hrs</span> <span class="cost">~A$25–48</span><br>
+    Lomprayah catamaran ~2:45pm. Arrive Chumphon, seafood dinner by the station, board ~7–8pm train. Wake up Bangkok ~4–5am.
+    <span class="tip">Lomprayah sells combined ferry+train tickets at their Koh Tao office. The afternoon ferry connects perfectly with the evening sleeper.</span>
+  </div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">36</div><div class="dd">27 Jun</div><div class="dot" style="background:var(--thailand)"></div></div>
+  <div class="day-r"><div class="loc">Bangkok — Round 2</div><div class="act"><span class="t t-flex">Flex</span> Arrive early AM. Hit what you missed: Wat Pho (the massive reclining Buddha), Jim Thompson House, Chatuchak Weekend Market (Sat/Sun — 15,000 stalls). Rooftop bar sunset. Second crack at Bangkok.</div></div></div>
+
+  <div class="transit">
+    <strong>Day 36 night:</strong> <span class="mode mode-train">Overnight Train</span> Bangkok → Chiang Mai <span class="overnight">Sleeper</span><br>
+    <span class="time">12–13 hrs</span> <span class="cost">~A$36–71 (2nd class sleeper)</span><br>
+    THE classic Thai backpacker train. Depart ~6:30pm. Dining car serves cold Chang beers and pad thai. Arrive Chiang Mai ~7–8am. This train is an experience in itself.
+    <span class="tip">Book 3–5 days ahead — this is Thailand's most popular train. 12Go.asia or at the station. 6:30pm departure is the one you want.</span>
+  </div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">37</div><div class="dd">28 Jun</div><div class="dot" style="background:var(--thailand)"></div></div>
+  <div class="day-r"><div class="loc">Arrive Chiang Mai</div><div class="act"><span class="t t-flex">Arrive</span> Arrive 7–8am. Settle in the Old City. Tha Phae Gate, Wat Phra Singh, Wat Chedi Luang (700-year-old ruined chedi). Khao soi for lunch — Chiang Mai's signature coconut curry noodles (try Khao Soi Khun Yai). Night bazaar.</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">38</div><div class="dd">29 Jun</div><div class="dot" style="background:var(--thailand)"></div></div>
+  <div class="day-r"><div class="loc">Doi Inthanon</div><div class="act"><span class="t t-trek">Trek</span> Thailand's highest peak (2,565m). King + Queen twin pagodas sitting in the clouds. Wachirathan waterfall. Cloud forest nature trail. Full-day trip (A$25–40 with transport).</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">39</div><div class="dd">30 Jun</div><div class="dot" style="background:var(--thailand)"></div></div>
+  <div class="day-r"><div class="loc">Crazy Horse Buttress</div><div class="act"><span class="t t-climb">Climb</span> Southeast Asia's premier sport climbing crag. 200+ bolted limestone routes from 5a to 8a, 45 min from the city. Full-day with guide + gear rental (A$31–48). Multiple sectors for all levels.</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">40</div><div class="dd">1 Jul</div><div class="dot" style="background:var(--thailand)"></div></div>
+  <div class="day-r"><div class="loc">Elephant Nature Park</div><div class="act"><span class="t t-wild">Wildlife</span> Ethical elephant sanctuary — feed, walk alongside, and bathe rescued elephants in the river. No riding, no chains. Book ahead (sells out). Half-day or full-day (A$62–80).</div></div></div>
+
+  <div class="transit">
+    <strong>Day 40 afternoon:</strong> <span class="mode mode-van">Minivan</span> Chiang Mai → Pai <span class="time">3 hrs (762 curves)</span> <span class="cost">~A$8–12</span><br>
+    Frequent departures from Chiang Mai Arcade bus station. The road has 762 counted curves through mountain jungle. Sit in front if you get carsick. Arrive Pai late afternoon.
+    <span class="tip">Take motion sickness pills 30 min before departure. Seriously. 762 curves is no joke. The return trip feels easier because you know what's coming.</span>
+  </div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">40</div><div class="dd">1 Jul</div><div class="dot" style="background:var(--thailand)"></div></div>
+  <div class="day-r"><div class="loc">Arrive Pai</div><div class="act"><span class="t t-flex">Arrive</span> Arrive late afternoon. Settle into a bamboo bungalow (A$8–15/night — Pai has some of Thailand's best budget stays). Pai Walking Street night market — pad thai, smoothie bowls, live music, handmade jewellery. The vibe here is unlike anywhere else in Thailand.</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">41</div><div class="dd">2 Jul</div><div class="dot" style="background:var(--thailand)"></div></div>
+  <div class="day-r"><div class="loc">Pai — Canyon + Hot Springs</div><div class="act"><span class="t t-trek">Trek</span> <span class="t t-water">Water</span> Pai Canyon at sunrise (narrow ridge walk with valley drops on both sides). Pam Bok waterfall swimming. Sai Ngam hot springs — natural hot pools in the jungle (A$5). Pai Land Split (earthquake crack you can walk into). Night market round 2.</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">42</div><div class="dd">3 Jul</div><div class="dot" style="background:var(--thailand)"></div></div>
+  <div class="day-r"><div class="loc">Pai — Waterfalls + Views</div><div class="act"><span class="t t-trek">Trek</span> <span class="t t-flex">Flex</span> Rent scooter (A$5–8/day). Mo Paeng waterfall (natural rock slides into pools). White Buddha viewpoint (panoramic valley). Pai Bamboo Bridge through the rice paddies. Yun Lai viewpoint for sunset. Afternoon: Thai cooking class or chill in a riverside hammock.</div></div></div>
+
+  <div class="transit">
+    <strong>Day 42 afternoon:</strong> <span class="mode mode-van">Minivan</span> Pai → Chiang Mai <span class="time">3 hrs</span> <span class="cost">~A$8–12</span><br>
+    Depart Pai ~1pm, arrive CM ~4pm. Head to airport for evening/next-day flight.<br><br>
+    <strong>Transit Day 43:</strong> <span class="mode mode-fly">Fly</span> Chiang Mai → Bangkok <span class="time">1 hr</span> <span class="cost">~A$40–90</span> + <span class="mode mode-fly">Fly</span> Bangkok → Cebu <span class="time">3 hrs</span> <span class="cost">~A$80–200</span><br>
+    Fly CM → BKK (AirAsia/Nok Air/Thai Smile — multiple daily, 1 hr). Then BKK → Cebu (Cebu Pacific/AirAsia/Philippine Airlines — daily, 3 hrs). Same-day connection or break it with a night in Bangkok.
+    <span class="tip">Philippines: free 30-day visa on arrival for most passports. Bus Cebu airport → Moalboal (3 hrs, A$12). Bangkok → Cebu has way more flight options than Chiang Mai → Cebu.</span>
+  </div>
+
+  <div class="alt-route">
+    <h4>Alternate Route: Thailand → Philippines</h4>
+    <div class="alt-opt recommended">
+      <div class="alt-label">✈ Recommended — Fly via Bangkok (BKK → Cebu)</div>
+      <p>Fly CM → Bangkok (1 hr, A$40–90) + Bangkok → Cebu (3 hrs, A$80–200). <strong>Total: A$120–290, multiple daily options.</strong> Cebu Pacific and AirAsia run daily BKK → Cebu with budget fares. Far more availability than trying to connect from CM. Can break the journey with a night in Bangkok — hit Chatuchak or a rooftop bar.</p>
+    </div>
+    <div class="alt-opt">
+      <div class="alt-label alt-b">🚆 Alternative — Night train CM → BKK + fly</div>
+      <p>Overnight sleeper train CM → Bangkok (12 hrs, A$36–71). Bangkok day, then fly BKK → Cebu next day (3 hrs, A$80–200). <strong>Total: ~A$116–271.</strong> Uses an extra day but saves on the CM → BKK flight. The classic backpacker train is an experience in itself.</p>
+    </div>
+    <div class="alt-opt">
+      <div class="alt-label alt-b">✈ Alternative — Fly Chiang Mai → Cebu direct routing</div>
+      <p>Via Manila or BKK connection, all on one ticket. <strong>~5–7 hrs, A$120–250.</strong> Less flexible but sometimes cheaper as a single booking. Cebu Pacific occasionally runs deals.</p>
+    </div>
+    <div class="alt-verdict">BKK → Cebu has the most flights and best prices. Book the legs separately on Skyscanner for cheapest fares. Breaking with a BKK night gives you a buffer day.</div>
+  </div>
+
+  <div class="why">Three overnight trains through Thailand: Bangkok→Surat Thani, Chumphon→Bangkok, Bangkok→Chiang Mai. Pai adds the perfect mountain chill. Then fly Chiang Mai → Bangkok → Cebu for the Philippines — BKK has the best connections and cheapest fares.</div>
+</div>
+
+
+<!-- ===================== PHILIPPINES ===================== -->
+<div class="country">
+  <div class="c-head" style="border-color:var(--philippines)">
+    <div class="c-flag">🇵🇭</div>
+    <div><h2 style="color:var(--philippines)">Philippines</h2><div>Cebu → Bohol → Palawan → El Nido → Coron</div></div>
+    <div class="c-dates">Days 43–62 · Jul 4 – Jul 23</div>
+  </div>
+
+  <div class="photo-row">
+    <div class="photo-card"><img src="https://images.unsplash.com/photo-1708353234006-5f1a3f92a63a?w=600&h=340&fit=crop&auto=format" alt="Chocolate Hills" loading="lazy"><div class="caption">Chocolate Hills — 1,268 geological mounds</div></div>
+    <div class="photo-card"><img src="https://images.unsplash.com/photo-1695051702427-1c24ce3682e7?w=600&h=340&fit=crop&auto=format" alt="El Nido lagoon" loading="lazy"><div class="caption">El Nido — Big Lagoon, Bacuit Archipelago</div></div>
+  </div>
+  <div class="photo-row">
+    <div class="photo-card"><img src="https://images.unsplash.com/photo-1685690063935-cb78d3b25c4c?w=600&h=340&fit=crop&auto=format" alt="Coron wrecks" loading="lazy"><div class="caption">Coron — WWII Japanese shipwrecks</div></div>
+    <div class="photo-card"><img src="https://images.unsplash.com/photo-1694442948802-00beebcf6448?w=600&h=340&fit=crop&auto=format" alt="Port Barton" loading="lazy"><div class="caption">Port Barton — off-grid island paradise</div></div>
+  </div>
+
+  <div class="c-sum">Sardine run at Moalboal, Chocolate Hills and tarsiers on Bohol, Underground River on Palawan, El Nido's lagoons, WWII wrecks in Coron. Ferries and vans between islands — only 1 unavoidable flight (Bohol→Palawan). <strong>20 days of island hopping.</strong></div>
+  <div class="weather">Habagat (SW monsoon). Cebu and Bohol are sheltered, 7/10. Palawan gets rougher seas, 5–6/10 — ferries can cancel. Wreck diving works fine in lower visibility.</div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">43</div><div class="dd">4 Jul</div><div class="dot" style="background:var(--philippines)"></div></div>
+  <div class="day-r"><div class="loc">Arrive Cebu → Moalboal</div><div class="act"><span class="t t-go">Transit</span> Fly in from Chiang Mai. Bus to Moalboal (3 hrs, A$12). Settle Panagsama Beach. Evening snorkel — the sardines are right off the shore.</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">44</div><div class="dd">5 Jul</div><div class="dot" style="background:var(--philippines)"></div></div>
+  <div class="day-r"><div class="loc">Moalboal — Sardine Run</div><div class="act"><span class="t t-dive">Dive</span> <span class="t t-wild">Wildlife</span> Millions of sardines in a massive swirling bait ball — snorkel from shore (free!) or scuba for the full 360° experience. Afternoon: Pescador Island wall dive (A$40–55).</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">45</div><div class="dd">6 Jul</div><div class="dot" style="background:var(--philippines)"></div></div>
+  <div class="day-r"><div class="loc">Kawasan Canyoneering</div><div class="act"><span class="t t-trek">Trek</span> <span class="t t-water">Water</span> Full-day adventure: cliff jumps (up to 10m), canyon swimming, waterfall rappels, natural slides. Ends at Kawasan Falls' turquoise pools. One of the Philippines' most popular activities (A$30–45 with guide).</div></div></div>
+
+  <div class="transit">
+    <strong>Transit Day 46:</strong> <span class="mode mode-bus">Bus</span> Moalboal → Cebu pier <span class="time">2.5 hrs</span> + <span class="mode mode-ferry">Ferry</span> Cebu → Tagbilaran (Bohol) <span class="time">2 hrs</span> <span class="cost">~A$23</span><br>
+    OceanJet fast ferry. Settle Panglao Island.
+  </div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">47</div><div class="dd">8 Jul</div><div class="dot" style="background:var(--philippines)"></div></div>
+  <div class="day-r"><div class="loc">Chocolate Hills + Tarsiers</div><div class="act"><span class="t t-wild">Wildlife</span> <span class="t t-cave">Cave</span> 1,268 perfectly shaped mounds (brown in dry season, green now). Philippine Tarsier Sanctuary (world's smallest primates — saucer eyes, fit in your palm). Hinagdanan Cave swim (underground pool lit by a skylight).</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">48</div><div class="dd">9 Jul</div><div class="dot" style="background:var(--philippines)"></div></div>
+  <div class="day-r"><div class="loc">Balicasag Island</div><div class="act"><span class="t t-dive">Dive</span> Barracuda tornado, green sea turtles at 15m, 70m vertical drop-off. UNESCO marine sanctuary. One of the Visayas' best dives.</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">49</div><div class="dd">10 Jul</div><div class="dot" style="background:var(--philippines)"></div></div>
+  <div class="day-r"><div class="loc">Panglao — Flex</div><div class="act"><span class="t t-dive">Dive</span> <span class="t t-flex">Flex</span> Alona Beach. Extra dive, island hop, or pure beach day. Lobster dinner on the sand (A$12–15).</div></div></div>
+
+  <div class="transit">
+    <strong>Transit Day 50:</strong> <span class="mode mode-fly">Fly</span> Bohol → Puerto Princesa (via Cebu) <span class="time">~3 hrs</span> <span class="cost">~A$78–125</span><br>
+    Cebu Pacific. No ferry connects Bohol to Palawan — flight is the only option.
+  </div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">51</div><div class="dd">12 Jul</div><div class="dot" style="background:var(--philippines)"></div></div>
+  <div class="day-r"><div class="loc">Underground River</div><div class="act"><span class="t t-cave">Cave</span> <span class="t t-wild">Wildlife</span> Puerto Princesa Subterranean River — 8.2 km navigable cave, UNESCO site, New 7 Wonders of Nature. Paddle boat through cathedral chambers with millions of bats overhead. Book a day ahead (A$25–35 with transport).</div></div></div>
+
+  <div class="transit">
+    <strong>Transit Day 52:</strong> <span class="mode mode-van">Van</span> Puerto Princesa → Port Barton <span class="time">3 hrs</span> <span class="cost">~A$12</span><br>
+    <span class="tip">No ATMs in Port Barton — withdraw cash in Puerto Princesa before leaving.</span>
+  </div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">53</div><div class="dd">14 Jul</div><div class="dot" style="background:var(--philippines)"></div></div>
+  <div class="day-r"><div class="loc">Port Barton — Island Hopping</div><div class="act"><span class="t t-water">Watersport</span> Boat to snorkel spots, coral gardens, Starfish Island. Port Barton is sheltered from habagat — calmer waters. Off-grid, no nightlife, just hammocks and sunsets.</div></div></div>
+
+  <div class="transit">
+    <strong>Transit Day 54:</strong> <span class="mode mode-van">Van</span> Port Barton → El Nido <span class="time">4 hrs</span> <span class="cost">~A$16</span>
+  </div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">55</div><div class="dd">16 Jul</div><div class="dot" style="background:var(--philippines)"></div></div>
+  <div class="day-r"><div class="loc">El Nido — Tour A</div><div class="act"><span class="t t-water">Watersport</span> <span class="t t-cave">Cave</span> The iconic island hop: Big Lagoon (kayak through a narrow channel into hidden emerald water), Small Lagoon, Secret Lagoon (swim through a hole in the cliff), Shimizu Island snorkel. A$25–35 with lunch.</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">56</div><div class="dd">17 Jul</div><div class="dot" style="background:var(--philippines)"></div></div>
+  <div class="day-r"><div class="loc">El Nido — Taraw Cliff + Tour C</div><div class="act"><span class="t t-climb">Climb</span> <span class="t t-trek">Trek</span> Sunrise: Taraw Cliff limestone scramble — panoramic views over Bacuit Bay. Afternoon: Tour C (Hidden Beach, Helicopter Island, Matinloc Shrine). Sunset from Nacpan Beach (twin beach, 4 km of sand).</div></div></div>
+
+  <div class="transit">
+    <strong>Transit Day 57:</strong> <span class="mode mode-ferry">Ferry</span> El Nido → Coron <span class="time">3.5 hrs</span> <span class="cost">~A$39–54</span><br>
+    Fast ferry (Montenegro Lines or Atienza). Book 1–2 days ahead — can cancel in rough monsoon seas.
+    <span class="tip">Build in a buffer day. The El Nido→Coron ferry is the most cancellation-prone route in the Philippines during habagat.</span>
+  </div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">58</div><div class="dd">19 Jul</div><div class="dot" style="background:var(--philippines)"></div></div>
+  <div class="day-r"><div class="loc">Coron — WWII Wrecks</div><div class="act"><span class="t t-dive">Dive</span> Olympia Maru (cargo ship, 25m) + Irako (refrigerator ship, penetration diving through corridors). Japanese fleet sunk by US aircraft in 1944. The densest WWII wreck diving in Asia. A$55–70 for 2 dives.</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">59</div><div class="dd">20 Jul</div><div class="dot" style="background:var(--philippines)"></div></div>
+  <div class="day-r"><div class="loc">Coron — Barracuda Lake + Kayangan</div><div class="act"><span class="t t-dive">Dive</span> <span class="t t-water">Water</span> Barracuda Lake — thermocline dive (hot and cold layers swap as you descend) in crystal-clear freshwater surrounded by limestone walls. Afternoon: Kayangan Lake (cleanest lake in Asia, swim in jade-green water).</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">60</div><div class="dd">21 Jul</div><div class="dot" style="background:var(--philippines)"></div></div>
+  <div class="day-r"><div class="loc">Coron — Flex</div><div class="act"><span class="t t-flex">Flex</span> Weather buffer or extra wreck dive. Island hop to Malcapuya or Banana Island if seas are calm (A$30–40 group tour).</div></div></div>
+
+  <div class="transit">
+    <strong>Transit Day 61:</strong> <span class="mode mode-fly">Fly</span> Coron → Manila <span class="time">1 hr</span> <span class="cost">~A$62–125</span><br>
+    Cebu Pacific or PAL. Island — no alternative.<br><br>
+    <strong>Transit Day 62:</strong> <span class="mode mode-fly">Fly</span> Manila → Bali <span class="time">4 hrs</span> <span class="cost">~A$125–230</span><br>
+    Cebu Pacific, AirAsia, or PAL. International. Shuttle Bali airport → Ubud (1.5 hrs, A$15–25).
+    <span class="tip">Stay near Manila airport (NAIA) the night before. Manila traffic is legendary — don't risk it for a morning flight.</span>
+  </div>
+</div>
+
+<!-- ===================== INDONESIA ===================== -->
+<div class="country">
+  <div class="c-head" style="border-color:var(--indonesia)">
+    <div class="c-flag">🇮🇩</div>
+    <div><h2 style="color:var(--indonesia)">Indonesia</h2><div>Bali → Komodo → Flores Overland → Gilis</div></div>
+    <div class="c-dates">Days 62–85+ · Jul 23 – Aug 15+</div>
+  </div>
+
+  <div class="photo-row triple">
+    <div class="photo-card"><img src="https://images.unsplash.com/photo-1604741885384-0ce5409947b6?w=400&h=300&fit=crop&auto=format" alt="Bali temple" loading="lazy"><div class="caption">Bali — temples</div></div>
+    <div class="photo-card"><img src="https://images.unsplash.com/photo-1660280274563-767dd6b56374?w=400&h=300&fit=crop&auto=format" alt="Komodo dragon" loading="lazy"><div class="caption">Komodo — dragon encounters</div></div>
+    <div class="photo-card"><img src="https://images.unsplash.com/photo-1631102403791-8e33d9be6603?w=400&h=300&fit=crop&auto=format" alt="Gili Trawangan" loading="lazy"><div class="caption">Gili Islands — sea turtle haven</div></div>
+  </div>
+
+  <div class="c-sum">Bali's volcanoes, rice terraces, and temples. Komodo dragons and manta rays. Four-day Flores overland through spider-web rice paddies and tri-coloured crater lakes. Gili sea turtles on every dive. <strong>Open-ended dry season paradise, ~23 days.</strong></div>
+  <div class="weather">Dry season — warm, clear water, minimal rain, perfect visibility for diving. 9.5/10.</div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">62</div><div class="dd">23 Jul</div><div class="dot" style="background:var(--indonesia)"></div></div>
+  <div class="day-r"><div class="loc">Arrive Ubud, Bali</div><div class="act"><span class="t t-flex">Arrive</span> Fly in from Manila. Settle Ubud. Tegallalang rice terraces (the famous cascading paddies). Sacred Monkey Forest. Warung nasi campur dinner (A$2–4). Art galleries on Jalan Raya.</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">63</div><div class="dd">24 Jul</div><div class="dot" style="background:var(--indonesia)"></div></div>
+  <div class="day-r"><div class="loc">Mount Batur Sunrise</div><div class="act"><span class="t t-trek">Trek</span> 2am pickup. Summit active volcano (1,717m) for sunrise over Mount Agung, the caldera lake, and Lombok in the distance. Breakfast eggs cooked in volcanic steam vents. Back in Ubud by midday. (A$35–50 with guide).</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">64</div><div class="dd">25 Jul</div><div class="dot" style="background:var(--indonesia)"></div></div>
+  <div class="day-r"><div class="loc">Ubud — Culture Day</div><div class="act"><span class="t t-flex">Flex</span> Tirta Empul water temple (holy spring purification — line up with Balinese worshippers). Gunung Kawi (ancient rock-carved temples in a river valley). Afternoon: Balinese cooking class. Evening: Kecak fire dance at Uluwatu or Ubud Palace.</div></div></div>
+
+  <div class="transit">
+    <strong>Transit Day 65:</strong> <span class="mode mode-road">Drive</span> Ubud → Amed <span class="time">2.5 hrs</span> <span class="cost">~A$19–31 (private driver)</span>
+  </div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">65</div><div class="dd">26 Jul</div><div class="dot" style="background:var(--indonesia)"></div></div>
+  <div class="day-r"><div class="loc">Amed — USS Liberty Wreck</div><div class="act"><span class="t t-dive">Dive</span> USAT Liberty — WWII shipwreck sitting 25m from shore in 5–30m of water. Covered in soft coral and fans, home to bumphead parrotfish. Night dive option for bioluminescence. Japanese Shipwreck as a second dive.</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">66</div><div class="dd">27 Jul</div><div class="dot" style="background:var(--indonesia)"></div></div>
+  <div class="day-r"><div class="loc">Amed — Jemeluk Bay</div><div class="act"><span class="t t-dive">Dive</span> <span class="t t-water">Watersport</span> Wall dive with pristine coral gardens. Snorkel the drop-off right from the beach (free). Black sand beach with Mount Agung towering behind.</div></div></div>
+
+  <div class="transit">
+    <strong>Transit Day 67:</strong> <span class="mode mode-ferry">Fast Boat</span> Amed → Nusa Penida <span class="time">1.5 hrs</span> <span class="cost">~A$23–36</span>
+  </div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">67</div><div class="dd">28 Jul</div><div class="dot" style="background:var(--indonesia)"></div></div>
+  <div class="day-r"><div class="loc">Nusa Penida — Manta Point</div><div class="act"><span class="t t-dive">Dive</span> <span class="t t-wild">Wildlife</span> Manta ray cleaning station — 3–5m wingspan oceanic mantas circling below you. Crystal Bay wall dive. Evening: Kelingking Beach viewpoint (the famous T-Rex cliff).</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">68</div><div class="dd">29 Jul</div><div class="dot" style="background:var(--indonesia)"></div></div>
+  <div class="day-r"><div class="loc">Nusa Penida — Island Day</div><div class="act"><span class="t t-trek">Trek</span> <span class="t t-water">Water</span> Angel's Billabong (natural infinity pool at the cliff edge). Broken Beach (circular sea arch). Diamond Beach (white sand cove with dramatic cliffs). Snorkel Manta Bay if conditions allow.</div></div></div>
+
+  <div class="transit">
+    <strong>Transit Day 69:</strong> <span class="mode mode-ferry">Fast Boat</span> Nusa Penida → Sanur <span class="time">45 min</span> <span class="cost">~A$15–23</span> + drive to south Bali
+  </div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">69</div><div class="dd">30 Jul</div><div class="dot" style="background:var(--indonesia)"></div></div>
+  <div class="day-r"><div class="loc">Uluwatu</div><div class="act"><span class="t t-water">Watersport</span> Uluwatu Temple sunset — perched on a 70m cliff with the Indian Ocean crashing below. Kecak fire dance on the cliff edge. Surf Padang Padang or Balangan Beach. Seafood dinner at Jimbaran Bay (grilled on the beach).</div></div></div>
+
+  <div class="transit">
+    <strong>Transit Day 70:</strong> <span class="mode mode-fly">Fly</span> Bali → Labuan Bajo <span class="time">1.5 hrs</span> <span class="cost">~A$62–125</span><br>
+    Wings Air, NAM Air, or Citilink. Different island chain — flight necessary.
+  </div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">70</div><div class="dd">31 Jul</div><div class="dot" style="background:var(--indonesia)"></div></div>
+  <div class="day-r"><div class="loc">Komodo Boat Trip — Day 1</div><div class="act"><span class="t t-dive">Dive</span> <span class="t t-wild">Wildlife</span> Board liveaboard or day boat. Manta Alley — mantas virtually guaranteed in dry season. Padar Island sunset trek (iconic three-bay viewpoint). Sleep on the boat under stars. (A$60–120 for 2–3 day trip).</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">71</div><div class="dd">1 Aug</div><div class="dot" style="background:var(--indonesia)"></div></div>
+  <div class="day-r"><div class="loc">Komodo — Day 2</div><div class="act"><span class="t t-wild">Wildlife</span> <span class="t t-dive">Dive</span> Komodo Island — walk with rangers among Komodo dragons (3m, 70kg, venomous — keep your distance). Pink Beach snorkel (pink-tinted sand from red coral fragments). Castle Rock drift dive (sharks, mantas, trevally).</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">72</div><div class="dd">2 Aug</div><div class="dot" style="background:var(--indonesia)"></div></div>
+  <div class="day-r"><div class="loc">Komodo — Day 3</div><div class="act"><span class="t t-water">Watersport</span> Rinca Island for more dragon sightings. Kanawa Island snorkel. Return Labuan Bajo afternoon. Sunset from Bukit Cinta viewpoint over the islands.</div></div></div>
+
+  <div class="transit">
+    <strong>Flores Overland — Days 73–76:</strong> <span class="mode mode-road">Minivan</span> Labuan Bajo → Ruteng → Bajawa → Kelimutu → Ende<br>
+    <span class="time">4 days, 3–5 hrs per leg</span> <span class="cost">~A$50–80 total transport + A$24–48 homestays</span><br>
+    The real Flores — off every tourist trail. Spider-web rice paddies, volcanic hot springs, traditional villages, tri-coloured crater lakes. Homestays with local families who cook incredible food. Book transport through your homestay.
+  </div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">73</div><div class="dd">3 Aug</div><div class="dot" style="background:var(--indonesia)"></div></div>
+  <div class="day-r"><div class="loc">Ruteng — Spider-Web Paddies</div><div class="act"><span class="t t-trek">Trek</span> Cancar village — circular spider-web rice terraces (lingko), unique to Flores. Traditional Manggarai villages. Lingko viewpoint at golden hour — geometric rice fields stretching across the valley.</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">74</div><div class="dd">4 Aug</div><div class="dot" style="background:var(--indonesia)"></div></div>
+  <div class="day-r"><div class="loc">Bajawa — Hot Springs + Villages</div><div class="act"><span class="t t-trek">Trek</span> <span class="t t-water">Water</span> Ngada traditional villages (thatched-roof megalithic structures). Soa natural hot springs. Volcanic landscape. Ikat weaving demonstrations. Bajawa feels like stepping back in time.</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">75</div><div class="dd">5 Aug</div><div class="dot" style="background:var(--indonesia)"></div></div>
+  <div class="day-r"><div class="loc">Kelimutu — Tri-Coloured Crater Lakes</div><div class="act"><span class="t t-trek">Trek</span> 3am start. Three volcanic crater lakes, each a different colour — turquoise, emerald green, and black (they change periodically due to volcanic gases). Sunrise over volcanic mist. One of Indonesia's most surreal and undervisited sights. Entry A$3.</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">76</div><div class="dd">6 Aug</div><div class="dot" style="background:var(--indonesia)"></div></div>
+  <div class="day-r"><div class="loc">Ende → Bali</div><div class="act"><span class="t t-go">Transit</span> Morning in Ende (blue stone beach, colonial waterfront). Fly Ende → Bali (1.5 hrs, A$50–90). Arrive Bali, transfer to harbour for Gilis.</div></div></div>
+
+  <div class="transit">
+    <strong>Transit Day 77:</strong> <span class="mode mode-ferry">Fast Boat</span> Bali → Gili Trawangan <span class="time">1.5–2 hrs</span> <span class="cost">~A$23–36</span><br>
+    From Padang Bai or Serangan harbour. Multiple daily departures.
+  </div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">77</div><div class="dd">7 Aug</div><div class="dot" style="background:var(--indonesia)"></div></div>
+  <div class="day-r"><div class="loc">Gili T — Turtle Diving</div><div class="act"><span class="t t-dive">Dive</span> <span class="t t-wild">Wildlife</span> Green sea turtles on virtually every dive. Shark Point for reef sharks. No cars, no motorbikes — bicycle and horse-cart island. Sunset swings on the west beach with Mount Agung across the strait.</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">78</div><div class="dd">8 Aug</div><div class="dot" style="background:var(--indonesia)"></div></div>
+  <div class="day-r"><div class="loc">Gili Meno</div><div class="act"><span class="t t-dive">Dive</span> <span class="t t-water">Water</span> Boat to Gili Meno (10 min). BASK underwater sculpture garden (snorkel or dive among submerged human figures). Snorkel the Meno wall. The quietest of the three Gilis — tropical island perfection.</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">79</div><div class="dd">9 Aug</div><div class="dot" style="background:var(--indonesia)"></div></div>
+  <div class="day-r"><div class="loc">Gili T — Flex</div><div class="act"><span class="t t-flex">Flex</span> Extra dive, snorkel trip, or pure beach day. Night market street food (grilled fish, satay, fresh juices). Live reggae on the beach. Watch the sunset over Bali from the swings.</div></div></div>
+
+  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">82+</div><div class="dd">12 Aug</div><div class="dot" style="background:var(--indonesia)"></div></div>
+  <div class="day-r"><div class="loc">Open-Ended</div><div class="act"><span class="t t-flex">Flex</span> Fast boat back to Bali (2 hrs). Canggu surf scene, Seminyak for nightlife, or extend anywhere in the archipelago. You've earned the open ending.</div></div></div>
+
+  <div class="why">Indonesia's dry season delivers near-perfect conditions. Komodo mantas, Kelimutu crater lakes, Flores overland, and Gili turtles on every single dive.</div>
+</div>
+
+
+<!-- ===================== TRANSPORT TABLE ===================== -->
+<div class="sec-title">Transport Master Table</div>
+<table class="flight-table">
+  <thead><tr><th>Route</th><th>Mode</th><th>Time</th><th>Cost (AUD)</th></tr></thead>
+  <tbody>
+    <tr><td class="route-col">Hanoi → Ha Giang</td><td><span class="mode-badge mb-bus">Bus</span></td><td>6–7 hrs</td><td>$19–23</td></tr>
+    <tr><td class="route-col">Ha Giang Loop (3 days)</td><td><span class="mode-badge mb-moto">Moto</span></td><td>3 days</td><td>$51–75 rental / $180–288 Easy Rider</td></tr>
+    <tr><td class="route-col">Ha Giang → Sapa</td><td><span class="mode-badge mb-van">Van</span></td><td>6–7 hrs</td><td>$23–31</td></tr>
+    <tr><td class="route-col">Lao Cai → Hanoi</td><td><span class="mode-badge mb-train">Overnight Train</span></td><td>8 hrs</td><td>$29–60</td></tr>
+    <tr><td class="route-col">Hanoi ↔ Cat Ba</td><td><span class="mode-badge mb-ferry">Bus+Ferry</span></td><td>3.5 hrs</td><td>$19–23</td></tr>
+    <tr><td class="route-col">Hanoi → Dong Hoi</td><td><span class="mode-badge mb-train">Overnight Train</span></td><td>8–10 hrs</td><td>$36–60</td></tr>
+    <tr><td class="route-col">Dong Hoi → Da Nang</td><td><span class="mode-badge mb-train">Day Train</span></td><td>4.5–5 hrs</td><td>$12–23</td></tr>
+    <tr><td class="route-col">Da Nang → Luang Prabang</td><td><span class="mode-badge mb-fly">Flight (via HAN/BKK)</span></td><td>5–8 hrs</td><td>$100–250</td></tr>
+    <tr><td class="route-col">LP → Vang Vieng</td><td><span class="mode-badge mb-train">Lao Railway</span></td><td>2 hrs</td><td>$10–18</td></tr>
+    <tr><td class="route-col">Vang Vieng → Vientiane</td><td><span class="mode-badge mb-train">Lao Railway</span></td><td>1 hr</td><td>$8–12</td></tr>
+    <tr><td class="route-col">Vientiane → Nong Khai</td><td><span class="mode-badge mb-bus">Bridge</span></td><td>1 hr</td><td>$5–7</td></tr>
+    <tr><td class="route-col">Nong Khai → Bangkok</td><td><span class="mode-badge mb-train">Overnight Train</span></td><td>10–11 hrs</td><td>$29–54</td></tr>
+    <tr><td class="route-col">Bangkok → Koh Phangan</td><td><span class="mode-badge mb-train">Train+Ferry</span></td><td>~15 hrs</td><td>$58–96</td></tr>
+    <tr><td class="route-col">Koh Phangan → Koh Tao</td><td><span class="mode-badge mb-ferry">Ferry</span></td><td>1.5 hrs</td><td>$19</td></tr>
+    <tr><td class="route-col">Koh Tao → Bangkok</td><td><span class="mode-badge mb-train">Ferry+Train</span></td><td>~12 hrs</td><td>$44–67</td></tr>
+    <tr><td class="route-col">Bangkok → Chiang Mai</td><td><span class="mode-badge mb-train">Overnight Train</span></td><td>12–13 hrs</td><td>$36–71</td></tr>
+    <tr><td class="route-col">Chiang Mai ↔ Pai</td><td><span class="mode-badge mb-van">Van</span></td><td>3 hrs</td><td>$8–12</td></tr>
+    <tr><td class="route-col">Chiang Mai → Bangkok</td><td><span class="mode-badge mb-fly">Flight</span></td><td>1 hr</td><td>$40–90</td></tr>
+    <tr><td class="route-col">Bangkok → Cebu</td><td><span class="mode-badge mb-fly">Flight</span></td><td>3 hrs</td><td>$80–200</td></tr>
+    <tr><td class="route-col">Cebu → Bohol</td><td><span class="mode-badge mb-ferry">Ferry</span></td><td>2 hrs</td><td>$23</td></tr>
+    <tr><td class="route-col">Bohol → Puerto Princesa</td><td><span class="mode-badge mb-fly">Flight</span></td><td>~3 hrs</td><td>$78–125</td></tr>
+    <tr><td class="route-col">El Nido → Coron</td><td><span class="mode-badge mb-ferry">Ferry</span></td><td>3.5 hrs</td><td>$39–54</td></tr>
+    <tr><td class="route-col">Coron → Manila</td><td><span class="mode-badge mb-fly">Flight</span></td><td>1 hr</td><td>$62–125</td></tr>
+    <tr><td class="route-col">Manila → Bali</td><td><span class="mode-badge mb-fly">Flight</span></td><td>4 hrs</td><td>$125–230</td></tr>
+    <tr><td class="route-col">Bali → Labuan Bajo</td><td><span class="mode-badge mb-fly">Flight</span></td><td>1.5 hrs</td><td>$62–125</td></tr>
+    <tr><td class="route-col">Flores overland (4 days)</td><td><span class="mode-badge mb-bus">Minivan</span></td><td>4 days</td><td>$50–80</td></tr>
+    <tr><td class="route-col">Ende → Bali</td><td><span class="mode-badge mb-fly">Flight</span></td><td>1.5 hrs</td><td>$50–90</td></tr>
+    <tr><td class="route-col">Bali → Gili T</td><td><span class="mode-badge mb-ferry">Fast Boat</span></td><td>1.5–2 hrs</td><td>$23–36</td></tr>
+  </tbody>
+</table>
+
+<!-- ===================== BUDGET ===================== -->
+<div class="sec-title">Budget Breakdown (AUD)</div>
+
+<div class="budget-country">
+  <h4><span style="color:var(--vietnam);">●</span> Vietnam (Days 1–18) — 18 days</h4>
+  <div class="bc-grid">
+    <div class="bc-item"><div class="bc-cat">Hostel</div><div class="bc-cost">A$8–18</div></div>
+    <div class="bc-item"><div class="bc-cat">Food</div><div class="bc-cost">A$8–15</div></div>
+    <div class="bc-item"><div class="bc-cat">Activities</div><div class="bc-cost">A$10–25</div></div>
+  </div>
+  <div class="bc-daily"><span class="bc-total-label">Daily total</span><span class="bc-total-val">~A$26–58/day</span></div>
+  <p style="font-size:.75rem;color:var(--dim);margin-top:6px;">Vietnam is backpacker-cheap. Pho A$1.50–3. Bia hoi A$0.50. Dorm A$6–12. Ha Giang motorbike A$17–25/day. Easy Rider A$60–96/day. Phong Nha caves A$12–19. Hoi An cooking class A$23–31. Tailored suit A$80–120.</p>
+</div>
+
+<div class="budget-country">
+  <h4><span style="color:var(--laos);">●</span> Laos (Days 19–26) — 8 days</h4>
+  <div class="bc-grid">
+    <div class="bc-item"><div class="bc-cat">Hostel</div><div class="bc-cost">A$8–16</div></div>
+    <div class="bc-item"><div class="bc-cat">Food</div><div class="bc-cost">A$8–15</div></div>
+    <div class="bc-item"><div class="bc-cat">Activities</div><div class="bc-cost">A$10–20</div></div>
+  </div>
+  <div class="bc-daily"><span class="bc-total-label">Daily total</span><span class="bc-total-val">~A$26–51/day</span></div>
+  <p style="font-size:.75rem;color:var(--dim);margin-top:6px;">Beerlao A$1.50. Laap + sticky rice A$2–4. Dorm A$8–12. Kuang Si tuk-tuk A$8–12. Green Climbers Home A$25–40/day. Tubing A$12–15. Lao Railway A$8–18/journey.</p>
+</div>
+
+<div class="budget-country">
+  <h4><span style="color:var(--thailand);">●</span> Thailand (Days 27–42) — 16 days</h4>
+  <div class="bc-grid">
+    <div class="bc-item"><div class="bc-cat">Hostel</div><div class="bc-cost">A$10–22</div></div>
+    <div class="bc-item"><div class="bc-cat">Food</div><div class="bc-cost">A$10–18</div></div>
+    <div class="bc-item"><div class="bc-cat">Activities</div><div class="bc-cost">A$12–30</div></div>
+  </div>
+  <div class="bc-daily"><span class="bc-total-label">Daily total</span><span class="bc-total-val">~A$32–70/day</span></div>
+  <p style="font-size:.75rem;color:var(--dim);margin-top:6px;">Pad thai A$2–4. Chang beer A$2–3. Dorm A$10–18. Koh Tao diving A$40–55/dive. Elephant Park A$62–80. Crazy Horse guide A$31–48. Pai bamboo bungalow A$8–15/night. Pai is very cheap.</p>
+</div>
+
+<div class="budget-country">
+  <h4><span style="color:var(--philippines);">●</span> Philippines (Days 43–62) — 20 days</h4>
+  <div class="bc-grid">
+    <div class="bc-item"><div class="bc-cat">Hostel</div><div class="bc-cost">A$10–20</div></div>
+    <div class="bc-item"><div class="bc-cat">Food</div><div class="bc-cost">A$8–15</div></div>
+    <div class="bc-item"><div class="bc-cat">Activities</div><div class="bc-cost">A$15–30</div></div>
+  </div>
+  <div class="bc-daily"><span class="bc-total-label">Daily total</span><span class="bc-total-val">~A$35–65/day</span></div>
+  <p style="font-size:.75rem;color:var(--dim);margin-top:6px;">Local meal A$3–5. San Mig beer A$1.50–2. Dorm A$10–15. Diving A$40–55/dive. El Nido Tour A A$25–35. Coron wrecks A$55–70/2 dives. Sardine run free (shore entry).</p>
+</div>
+
+<div class="budget-country">
+  <h4><span style="color:var(--indonesia);">●</span> Indonesia (Days 62–85) — 23 days</h4>
+  <div class="bc-grid">
+    <div class="bc-item"><div class="bc-cat">Hostel</div><div class="bc-cost">A$10–22</div></div>
+    <div class="bc-item"><div class="bc-cat">Food</div><div class="bc-cost">A$6–15</div></div>
+    <div class="bc-item"><div class="bc-cat">Activities</div><div class="bc-cost">A$12–25</div></div>
+  </div>
+  <div class="bc-daily"><span class="bc-total-label">Daily total</span><span class="bc-total-val">~A$30–62/day</span></div>
+  <p style="font-size:.75rem;color:var(--dim);margin-top:6px;">Warung nasi campur A$2–4. Bintang A$2–3. Bali dorm A$10–20. Komodo boat A$60–120. Flores homestay A$8–12/night. Gili diving A$50–70/dive. Kelimutu entry A$3.</p>
+</div>
+
+<div class="budget-total">
+  <h3>~85-Day Trip Total (AUD)</h3>
+  <div class="bt-grid">
+    <div class="bt-item"><div class="bt-label">Daily Costs</div><div class="bt-val">A$2,600–5,300</div></div>
+    <div class="bt-item"><div class="bt-label">Transport</div><div class="bt-val">A$1,200–2,200</div></div>
+    <div class="bt-item"><div class="bt-label">Diving (~15 dives)</div><div class="bt-val">A$600–900</div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:8px;">
+    <div class="bt-item"><div class="bt-label">Visas</div><div class="bt-val">A$90–150</div></div>
+    <div class="bt-item"><div class="bt-label">Travel Insurance</div><div class="bt-val">A$350–550</div></div>
+  </div>
+  <div style="border-top:1px solid #6ee7b744;padding-top:12px;margin-top:8px;">
+    <div class="bt-label">ESTIMATED TOTAL</div>
+    <div style="font-size:1.6rem;font-weight:800;color:#065f46;margin-top:4px;">A$4,840 – A$9,100</div>
+  </div>
+  <div class="bt-note">Based on hostel dorms, street food, overnight trains, and solid diving. Overnight trains save ~5 hotel nights (A$50–110). Vietnam + Laos are extremely cheap — under A$30/day is realistic. Add A$500–1,000 buffer for parties, splurge meals, unexpected adventures.</div>
+</div>
+
+<!-- ===================== PRACTICAL INFO ===================== -->
+<div class="sec-title">Practical Info</div>
+<div class="info-g">
+  <div class="info-c"><h4>Visas</h4><p><strong>Vietnam:</strong> E-visa (90 days, A$39). Apply evisa.xuatnhapcanh.gov.vn, 3+ working days. Print it.<br><strong>Laos:</strong> Visa on arrival (US$35–42). 1 passport photo + USD cash.<br><strong>Thailand:</strong> Free 30-day entry. Extendable 30 days at immigration (A$30).<br><strong>Philippines:</strong> Free 30-day entry.<br><strong>Indonesia:</strong> VOA 30 days (US$35), extendable once (A$30).</p></div>
+  <div class="info-c"><h4>SIM Cards</h4><p><strong>Vietnam:</strong> Viettel (best rural coverage for Ha Giang). A$5–8/30 days.<br><strong>Laos:</strong> Unitel at airport. A$3–5.<br><strong>Thailand:</strong> AIS or TrueMove. A$8–12.<br><strong>Philippines:</strong> Globe or Smart. A$5–8.<br><strong>Indonesia:</strong> Telkomsel. A$5–8.</p></div>
+  <div class="info-c"><h4>Money</h4><p>ATMs everywhere except remote areas (Port Barton, Flores villages, Ha Giang villages). Withdraw cash before heading rural. Wise or Revolut cards avoid foreign transaction fees. Vietnam and Laos are mostly cash. Thailand has widespread card acceptance in tourist areas.</p></div>
+  <div class="info-c"><h4>Booking</h4><p><strong>Trains:</strong> 12Go.asia, baolau.com, station counters.<br><strong>Lao Railway:</strong> LCR app or station.<br><strong>Buses:</strong> Vexere.com (Vietnam), station (Laos/Thailand).<br><strong>Ferries:</strong> Lomprayah.com (Thai islands), harbour offices.<br><strong>Flights:</strong> Skyscanner → book direct with airline for cheapest.</p></div>
+</div>
+
+<!-- ===================== PACKING LIST ===================== -->
+<div class="sec-title">Packing List</div>
+<ul class="gear">
+  <li>Climbing harness + ATC + quickdraws (2–3)</li>
+  <li>Climbing shoes</li>
+  <li>Climbing helmet (Petzl Boreo)</li>
+  <li>Dive computer (wrist)</li>
+  <li>Underwater camera (GoPro + red filter)</li>
+  <li>Reef-safe sunscreen (zinc oxide)</li>
+  <li>Rash guard (long-sleeve UPF50)</li>
+  <li>Quick-dry convertible trousers</li>
+  <li>Lightweight rain jacket</li>
+  <li>Trekking shoes (ankle support for Ha Giang + valley treks)</li>
+  <li>Flip-flops / reef shoes</li>
+  <li>Dry bag (20L) for tech + docs</li>
+  <li>Snorkel + mask (own fit saves rental hassle)</li>
+  <li>Microfibre towel</li>
+  <li>Earplugs + eye mask (essential for overnight trains)</li>
+  <li>Headlamp (Kelimutu + Batur pre-dawn starts)</li>
+  <li>Padlock for hostel lockers</li>
+  <li>First aid: blister tape, Imodium, pain relief, antibiotics</li>
+</ul>
+
+</div>
+
+<p style="text-align:center;padding:40px 20px;color:var(--muted);font-size:.85rem;max-width:880px;margin:0 auto;">
+  8 flights — only where there's no sane ground option · 5 overnight trains · Lao-China Railway through Laos · Friendship Bridge into Thailand · 762 curves to Pai · BKK → Cebu · ~85 days · May 23 – Aug 15 · Alternative: flip Laos bottom-to-top + Mekong slow boat to Chiang Mai.
+</p>
+
+<script>
+const S=[
+  {n:"Hanoi",lat:21.028,lng:105.854,c:"vietnam"},
+  {n:"Ha Giang",lat:22.823,lng:104.984,c:"vietnam"},
+  {n:"Dong Van",lat:23.274,lng:105.363,c:"vietnam"},
+  {n:"Meo Vac",lat:23.152,lng:105.413,c:"vietnam"},
+  {n:"Sapa",lat:22.336,lng:103.844,c:"vietnam"},
+  {n:"Cat Ba",lat:20.727,lng:106.981,c:"vietnam"},
+  {n:"Phong Nha",lat:17.590,lng:106.283,c:"vietnam"},
+  {n:"Hoi An",lat:15.880,lng:108.338,c:"vietnam"},
+  {n:"Luang Prabang",lat:19.884,lng:102.135,c:"laos"},
+  {n:"Vang Vieng",lat:18.922,lng:102.447,c:"laos"},
+  {n:"Vientiane",lat:17.976,lng:102.633,c:"laos"},
+  {n:"Bangkok",lat:13.756,lng:100.502,c:"thailand"},
+  {n:"Koh Phangan",lat:9.748,lng:100.030,c:"thailand"},
+  {n:"Koh Tao",lat:10.096,lng:99.838,c:"thailand"},
+  {n:"Chiang Mai",lat:18.787,lng:98.993,c:"thailand"},
+  {n:"Pai",lat:19.358,lng:98.440,c:"thailand"},
+  {n:"Moalboal",lat:9.956,lng:123.399,c:"philippines"},
+  {n:"Bohol",lat:9.824,lng:124.024,c:"philippines"},
+  {n:"Puerto Princesa",lat:9.749,lng:118.758,c:"philippines"},
+  {n:"El Nido",lat:11.178,lng:119.393,c:"philippines"},
+  {n:"Coron",lat:11.999,lng:120.204,c:"philippines"},
+  {n:"Manila",lat:14.599,lng:120.984,c:"philippines"},
+  {n:"Ubud",lat:-8.507,lng:115.263,c:"indonesia"},
+  {n:"Amed",lat:-8.352,lng:115.658,c:"indonesia"},
+  {n:"Nusa Penida",lat:-8.728,lng:115.544,c:"indonesia"},
+  {n:"Uluwatu",lat:-8.829,lng:115.085,c:"indonesia"},
+  {n:"Komodo",lat:-8.497,lng:119.888,c:"indonesia"},
+  {n:"Kelimutu",lat:-8.774,lng:121.814,c:"indonesia"},
+  {n:"Gili T",lat:-8.351,lng:116.035,c:"indonesia"}
+];
+const R=[
+  [0,1,"bus"],[1,2,"moto"],[2,3,"moto"],[3,1,"moto"],[1,4,"bus"],
+  [4,0,"train"],[0,5,"ferry"],[5,0,"ferry"],[0,6,"train"],[6,7,"train"],
+  [7,8,"flight"],[8,9,"train"],[9,10,"train"],[10,11,"train"],
+  [11,12,"train"],[12,13,"ferry"],[13,11,"train"],
+  [11,14,"train"],[14,15,"bus"],[15,14,"bus"],[14,16,"flight"],
+  [16,17,"ferry"],[17,18,"flight"],[18,19,"bus"],
+  [19,20,"ferry"],[20,21,"flight"],[21,22,"flight"],
+  [22,23,"bus"],[23,24,"ferry"],[24,25,"ferry"],
+  [25,26,"flight"],[26,27,"bus"],[27,22,"flight"],[22,28,"ferry"]
+];
+const COL={thailand:'#7c3aed',laos:'#b45309',vietnam:'#dc2626',philippines:'#2563eb',indonesia:'#e11d48'};
+const MC={train:'#b45309',ferry:'#2563eb',bus:'#059669',flight:'#dc2626',moto:'#be123c'};
+let m=L.map('map',{scrollWheelZoom:false}).setView([7,110],5);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'CartoDB',maxZoom:19}).addTo(m);
+m.fitBounds(L.latLngBounds(S.map(e=>[e.lat,e.lng])),{padding:[50,50]});
+R.forEach(([a,b,mode])=>{
+  let opts={color:MC[mode],weight:mode==='flight'?2:2.5,opacity:mode==='flight'?0.35:0.6};
+  if(mode==='flight')opts.dashArray='6,8';
+  if(mode==='ferry')opts.dashArray='4,6';
+  if(mode==='moto')opts.dashArray='2,5';
+  L.polyline([[S[a].lat,S[a].lng],[S[b].lat,S[b].lng]],opts).addTo(m);
+});
+S.forEach((e,i)=>{
+  let sz=22;
+  let icon=L.divIcon({
+    className:'',
+    html:'<div style="width:'+sz+'px;height:'+sz+'px;border-radius:50%;background:'+COL[e.c]+';color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25);font-family:sans-serif;">'+(i+1)+'</div>',
+    iconSize:[sz,sz],iconAnchor:[sz/2,sz/2]
+  });
+  L.marker([e.lat,e.lng],{icon:icon}).bindPopup('<div class="pp-t">'+(i+1)+'. '+e.n+'</div>').addTo(m);
+});
+const ALT=[
+  {n:"Ninh Binh",lat:20.254,lng:105.975,c:"vietnam",desc:"Optional: Ha Long Bay on land — rowboats, karsts, Mua Cave"},
+  {n:"Khao Sok",lat:8.938,lng:98.529,c:"thailand",desc:"Optional: Ancient rainforest, floating lake bungalows"},
+  {n:"Koh Samui",lat:9.512,lng:100.013,c:"thailand",desc:"Optional: Ang Thong Marine Park, biggest Gulf island"}
+];
+ALT.forEach((e)=>{
+  let sz=26;
+  let icon=L.divIcon({
+    className:'',
+    html:'<div style="width:'+sz+'px;height:'+sz+'px;border-radius:50%;background:#fff;color:'+COL[e.c]+';font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;border:3px dashed #22c55e;box-shadow:0 1px 6px rgba(34,197,94,.35);font-family:sans-serif;">✦</div>',
+    iconSize:[sz,sz],iconAnchor:[sz/2,sz/2]
+  });
+  L.marker([e.lat,e.lng],{icon:icon}).bindPopup('<div class="pp-t" style="color:#22c55e;">⬡ '+e.n+'</div><div style="font-size:.8rem;color:#64748b;">'+e.desc+'</div>').addTo(m);
+});
+const modeLabels={train:'Train/Rail',ferry:'Ferry/Boat',bus:'Bus/Road',flight:'Flight',moto:'Motorbike'};
+let html='<div style="max-width:880px;margin:0 auto;padding:16px 20px 4px;">';
+html+='<div style="display:flex;flex-wrap:wrap;gap:6px 16px;margin-bottom:12px;font-size:.75rem;">';
+Object.entries(MC).forEach(([k,c])=>{
+  let dash=k==='flight'?'border-top:2px dashed '+c:'background:'+c+';height:3px';
+  html+='<div style="display:flex;align-items:center;gap:5px;"><span style="display:inline-block;width:18px;'+dash+';border-radius:1px;"></span> '+modeLabels[k]+'</div>';
+});
+html+='</div>';
+html+='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:2px 14px;font-size:.74rem;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid #e2e8f0;">';
+S.forEach((e,i)=>{
+  html+='<div style="display:flex;align-items:center;gap:5px;padding:2px 0;"><span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:'+COL[e.c]+';color:#fff;font-size:9px;font-weight:800;flex-shrink:0;">'+(i+1)+'</span><span style="color:#1a1a2e;">'+e.n+'</span></div>';
+});
+html+='</div>';
+html+='<div style="display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.74rem;padding:8px 0 12px;border-top:1px dashed #86efac;">';
+html+='<span style="color:#22c55e;font-weight:700;font-size:.7rem;letter-spacing:.5px;">OPTIONAL SIDE TRIPS:</span>';
+ALT.forEach((e)=>{
+  html+='<div style="display:flex;align-items:center;gap:5px;padding:2px 0;"><span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;border:2px dashed #22c55e;color:#22c55e;font-size:9px;font-weight:800;flex-shrink:0;">✦</span><span style="color:#1a1a2e;">'+e.n+'</span></div>';
+});
+html+='</div></div>';
+document.getElementById('map-key').innerHTML=html;
+</script>
+</body>
+</html>
