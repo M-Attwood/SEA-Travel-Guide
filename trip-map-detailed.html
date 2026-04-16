@@ -7,392 +7,327 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow: hidden;
-        }
-
-        #map {
-            position: absolute;
-            top: 40px;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: 1;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden; }
+        #map { position: absolute; top: 40px; left: 0; right: 0; bottom: 0; z-index: 1; }
 
         .sidebar {
-            position: absolute;
-            left: 0;
-            top: 40px;
-            bottom: 0;
-            width: 320px;
-            background: white;
-            box-shadow: 2px 0 8px rgba(0,0,0,0.15);
-            z-index: 100;
-            overflow-y: auto;
-            transition: transform 0.3s ease;
+            position: absolute; left: 0; top: 40px; bottom: 0; width: 320px;
+            background: white; box-shadow: 2px 0 8px rgba(0,0,0,0.15);
+            z-index: 100; overflow-y: auto; transition: transform 0.3s ease;
             height: calc(100vh - 40px);
         }
-
-        .sidebar.dark-mode {
-            background: #1f2937;
-            color: #f3f4f6;
-        }
+        .sidebar.collapsed { transform: translateX(-100%); }
+        .sidebar.dark-mode { background: #1f2937; color: #f3f4f6; }
 
         .sidebar-header {
-            padding: 16px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            position: sticky;
-            top: 0;
-            z-index: 101;
+            padding: 16px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; position: sticky; top: 0; z-index: 101;
         }
-
-        .sidebar-header h1 {
-            font-size: 18px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .sidebar-header .trip-stats {
-            font-size: 12px;
-            opacity: 0.9;
-        }
+        .sidebar-header h1 { font-size: 18px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        .sidebar-header .trip-stats { font-size: 12px; opacity: 0.9; }
 
         .controls {
-            padding: 12px;
-            border-bottom: 1px solid #e5e7eb;
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            position: sticky;
-            top: 50px;
-            z-index: 100;
-            background: inherit;
+            padding: 12px; border-bottom: 1px solid #e5e7eb;
+            display: flex; gap: 6px; flex-wrap: wrap;
+            position: sticky; top: 80px; z-index: 100; background: inherit;
         }
-
-        .sidebar.dark-mode .controls {
-            border-bottom-color: #374151;
-        }
+        .sidebar.dark-mode .controls { border-bottom-color: #374151; }
 
         .btn {
-            padding: 6px 12px;
-            border: 1px solid #d1d5db;
-            background: white;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            transition: all 0.2s;
+            padding: 5px 10px; border: 1px solid #d1d5db; background: white;
+            border-radius: 4px; cursor: pointer; font-size: 11px; transition: all 0.2s;
         }
-
-        .sidebar.dark-mode .btn {
-            background: #374151;
-            border-color: #4b5563;
-            color: #f3f4f6;
-        }
-
-        .btn:hover {
-            background: #f3f4f6;
-        }
-
-        .sidebar.dark-mode .btn:hover {
-            background: #4b5563;
-        }
-
-        .btn.active {
-            background: #667eea;
-            color: white;
-            border-color: #667eea;
-        }
-
-        .country-group {
-            margin-bottom: 2px;
-        }
-
-        .country-header {
-            padding: 12px 16px;
-            background: #f3f4f6;
-            font-weight: 600;
-            font-size: 13px;
-            cursor: pointer;
-            user-select: none;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .sidebar.dark-mode .country-header {
-            background: #374151;
-            color: #f3f4f6;
-        }
-
-        .country-header:hover {
-            background: #e5e7eb;
-        }
-
-        .sidebar.dark-mode .country-header:hover {
-            background: #4b5563;
-        }
-
-        .country-header.vietnam { border-left: 4px solid #dc2626; }
-        .country-header.laos { border-left: 4px solid #b45309; }
-        .country-header.thailand { border-left: 4px solid #7c3aed; }
-        .country-header.philippines { border-left: 4px solid #2563eb; }
-        .country-header.indonesia { border-left: 4px solid #e11d48; }
-
-        .stops-list {
-            display: none;
-        }
-
-        .stops-list.active {
-            display: block;
-        }
-
-        .stop-item {
-            padding: 10px 16px;
-            border-bottom: 1px solid #f3f4f6;
-            cursor: pointer;
-            font-size: 13px;
-            transition: all 0.2s;
-        }
-
-        .sidebar.dark-mode .stop-item {
-            border-bottom-color: #374151;
-        }
-
-        .stop-item:hover {
-            background: #eff6ff;
-            padding-left: 20px;
-        }
-
-        .sidebar.dark-mode .stop-item:hover {
-            background: #1e293b;
-        }
-
-        .stop-day {
-            font-weight: 600;
-            color: #667eea;
-            font-size: 12px;
-        }
-
-        .stop-name {
-            font-weight: 500;
-            margin-top: 2px;
-        }
-
-        .stop-activity {
-            font-size: 11px;
-            color: #6b7280;
-            margin-top: 2px;
-        }
-
-        .sidebar.dark-mode .stop-activity {
-            color: #9ca3af;
-        }
-
-        .toggle-sidebar {
-            position: absolute;
-            left: 320px;
-            top: 10px;
-            background: white;
-            border: 1px solid #d1d5db;
-            border-radius: 4px;
-            padding: 8px 10px;
-            cursor: pointer;
-            z-index: 99;
-            transition: left 0.3s ease;
-        }
-
-        .sidebar.collapsed ~ .toggle-sidebar {
-            left: 10px;
-        }
-
-        .sidebar.collapsed {
-            transform: translateX(-100%);
-        }
-
-        .top-controls {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            z-index: 50;
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .legend {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            background: white;
-            padding: 12px 16px;
-            border-radius: 6px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-            font-size: 12px;
-            z-index: 50;
-            max-width: 250px;
-        }
-
-        .sidebar.dark-mode ~ .legend {
-            background: #1f2937;
-            color: #f3f4f6;
-        }
-
-        .legend-title {
-            font-weight: 600;
-            margin-bottom: 8px;
-            font-size: 13px;
-        }
-
-        .legend-section {
-            margin-bottom: 10px;
-        }
-
-        .legend-section-title {
-            font-weight: 500;
-            font-size: 11px;
-            color: #6b7280;
-            margin-bottom: 4px;
-        }
-
-        .sidebar.dark-mode .legend-section-title {
-            color: #9ca3af;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-bottom: 4px;
-        }
-
-        .legend-color {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            border: 2px solid rgba(0,0,0,0.2);
-        }
-
-        .legend-line {
-            height: 2px;
-            width: 16px;
-            flex-shrink: 0;
-        }
-
-        .legend-line.train { background: #b45309; }
-        .legend-line.bus { background: #059669; }
-        .legend-line.ferry { background: #2563eb; border-top: 3px dashed #2563eb; }
-        .legend-line.flight { border-top: 2px dashed #dc2626; }
-        .legend-line.motorbike { border-top: 2px dotted #be123c; }
-        .legend-line.fast-boat { border-top: 2px dashed #0891b2; }
-
-        .leaflet-popup-content {
-            font-size: 13px;
-            max-width: 280px;
-        }
-
-        .popup-title {
-            font-weight: 600;
-            color: #111;
-            margin-bottom: 4px;
-            font-size: 14px;
-        }
-
-        .popup-day {
-            color: #667eea;
-            font-weight: 500;
-            font-size: 12px;
-            margin-bottom: 4px;
-        }
-
-        .popup-tags {
-            display: flex;
-            gap: 4px;
-            flex-wrap: wrap;
-            margin-bottom: 6px;
-        }
-
-        .popup-tag {
-            display: inline-block;
-            background: #eff6ff;
-            color: #0369a1;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-size: 11px;
-            font-weight: 500;
-        }
-
-        .popup-desc {
-            color: #374151;
-            font-size: 12px;
-            line-height: 1.4;
-            margin-top: 6px;
-        }
-
-        .leaflet-marker-pane .leaflet-marker-icon {
-            filter: drop-shadow(0 1px 3px rgba(0,0,0,0.2));
-        }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-            }
-
-            .toggle-sidebar {
-                left: 100%;
-            }
-
-            .sidebar.collapsed ~ .toggle-sidebar {
-                left: 10px;
-            }
-
-            .top-controls {
-                flex-direction: column;
-                align-items: flex-end;
-            }
-
-            .legend {
-                bottom: 10px;
-                right: 10px;
-                font-size: 11px;
-                padding: 10px 12px;
-            }
-        }
+        .sidebar.dark-mode .btn { background: #374151; border-color: #4b5563; color: #f3f4f6; }
+        .btn:hover { background: #f3f4f6; }
+        .sidebar.dark-mode .btn:hover { background: #4b5563; }
+        .btn.active { background: #667eea; color: white; border-color: #667eea; }
 
         .search-box {
-            padding: 8px 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 4px;
-            font-size: 12px;
-            width: 100%;
-            margin-bottom: 8px;
+            width: calc(100% - 24px); margin: 8px 12px; padding: 7px 10px;
+            border: 1px solid #d1d5db; border-radius: 4px; font-size: 12px;
+        }
+        .sidebar.dark-mode .search-box { background: #374151; border-color: #4b5563; color: #f3f4f6; }
+
+        /* Alternate routes section */
+        .alt-routes-section {
+            padding: 8px 12px 10px; border-bottom: 1px solid #e5e7eb; background: #fafafa;
+        }
+        .sidebar.dark-mode .alt-routes-section { background: #111827; border-bottom-color: #374151; }
+        .alt-section-title {
+            font-size: 10px; font-weight: 700; color: #9ca3af;
+            letter-spacing: 0.08em; margin-bottom: 6px; text-transform: uppercase;
+        }
+        .alt-btn {
+            display: block; width: 100%; padding: 6px 10px; margin-bottom: 4px;
+            border: 1px solid #d1d5db; border-radius: 6px; background: white;
+            cursor: pointer; font-size: 12px; text-align: left; transition: all 0.2s;
+        }
+        .sidebar.dark-mode .alt-btn { background: #1f2937; border-color: #374151; color: #f3f4f6; }
+        .alt-btn:hover { background: #eff6ff; border-color: #667eea; }
+        .alt-btn.active { background: #eff6ff; border-color: #667eea; color: #3730a3; font-weight: 600; }
+        .sidebar.dark-mode .alt-btn.active { background: #1e3a5f; border-color: #667eea; color: #a5b4fc; }
+        .alt-btn-desc { font-size: 10px; color: #9ca3af; margin-top: 2px; display: none; }
+        .alt-btn.active .alt-btn-desc { display: block; }
+
+        /* Steps container */
+        .steps-container { padding: 8px; }
+
+        /* Step cards */
+        .step-card {
+            background: white; border-radius: 8px; border: 1px solid #e5e7eb;
+            margin-bottom: 7px; overflow: hidden; transition: opacity 0.2s, box-shadow 0.2s;
+        }
+        .sidebar.dark-mode .step-card { background: #1f2937; border-color: #374151; }
+        .step-card.vietnam  { border-left: 4px solid #dc2626; }
+        .step-card.laos     { border-left: 4px solid #b45309; }
+        .step-card.thailand { border-left: 4px solid #7c3aed; }
+        .step-card.philippines { border-left: 4px solid #2563eb; }
+        .step-card.indonesia { border-left: 4px solid #e11d48; }
+        .step-card.disabled { opacity: 0.38; }
+        .step-card.dragging { opacity: 0.3; box-shadow: 0 4px 16px rgba(102,126,234,0.4); }
+        .step-card.drag-over { box-shadow: 0 -3px 0 0 #667eea; }
+        .step-card.alt-step { border-style: dashed; }
+
+        .step-card-header {
+            display: flex; align-items: center; gap: 5px;
+            padding: 9px 8px 9px 6px; user-select: none;
+        }
+        .drag-handle { cursor: grab; font-size: 16px; color: #9ca3af; padding: 0 2px; line-height: 1; }
+        .drag-handle:active { cursor: grabbing; }
+        .country-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+        .step-name { font-weight: 600; font-size: 13px; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .sidebar.dark-mode .step-name { color: #f3f4f6; }
+        .step-days { font-size: 10px; color: #9ca3af; white-space: nowrap; }
+
+        .step-toggle-btn {
+            width: 20px; height: 20px; border-radius: 50%; border: 2px solid #d1d5db;
+            background: white; cursor: pointer; display: flex; align-items: center;
+            justify-content: center; font-size: 9px; flex-shrink: 0; transition: all 0.2s;
+        }
+        .step-toggle-btn.on { background: #667eea; border-color: #667eea; color: white; }
+        .sidebar.dark-mode .step-toggle-btn { background: #374151; border-color: #4b5563; }
+
+        .step-expand-btn {
+            width: 20px; height: 20px; border: none; background: none;
+            cursor: pointer; font-size: 11px; color: #9ca3af;
+            display: flex; align-items: center; justify-content: center;
+            transition: transform 0.2s; flex-shrink: 0;
+        }
+        .step-expand-btn.open { transform: rotate(180deg); }
+
+        .step-poi-count {
+            font-size: 11px; color: #9ca3af; padding: 0 10px 4px 30px; cursor: pointer;
+        }
+        .step-poi-count:hover { color: #667eea; }
+
+        .poi-list { display: none; border-top: 1px solid #f3f4f6; }
+        .sidebar.dark-mode .poi-list { border-top-color: #374151; }
+        .poi-list.open { display: block; }
+
+        .poi-item {
+            display: flex; align-items: center; gap: 6px;
+            padding: 5px 10px 5px 24px; border-bottom: 1px solid #f9fafb; font-size: 12px;
+        }
+        .sidebar.dark-mode .poi-item { border-bottom-color: #374151; }
+        .poi-item:last-child { border-bottom: none; }
+
+        .poi-eye-btn {
+            width: 18px; height: 18px; border: none; background: none; cursor: pointer;
+            font-size: 12px; color: #9ca3af; flex-shrink: 0; transition: color 0.2s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .poi-eye-btn.hidden-poi { color: #d1d5db; }
+        .poi-name { flex: 1; color: #374151; cursor: pointer; }
+        .sidebar.dark-mode .poi-name { color: #d1d5db; }
+        .poi-name:hover { color: #667eea; }
+        .poi-tag {
+            font-size: 10px; background: #eff6ff; color: #0369a1;
+            padding: 1px 5px; border-radius: 3px; white-space: nowrap;
+        }
+        .sidebar.dark-mode .poi-tag { background: #1e3a5f; color: #93c5fd; }
+
+        .step-transport-info {
+            padding: 3px 10px 7px 30px; font-size: 11px; color: #6b7280; font-style: italic;
+        }
+        .sidebar.dark-mode .step-transport-info { color: #9ca3af; }
+
+        .toggle-sidebar {
+            position: absolute; left: 320px; top: 10px; background: white;
+            border: 1px solid #d1d5db; border-radius: 4px; padding: 8px 10px;
+            cursor: pointer; z-index: 99; transition: left 0.3s ease;
+        }
+        .sidebar.collapsed ~ .toggle-sidebar { left: 10px; }
+
+        .top-controls { position: absolute; top: 10px; right: 10px; z-index: 50; display: flex; gap: 8px; }
+
+        .legend {
+            position: absolute; bottom: 20px; right: 20px; background: white;
+            padding: 12px 16px; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            font-size: 12px; z-index: 50; max-width: 220px;
+        }
+        .legend.dark-mode { background: #1f2937; color: #f3f4f6; }
+        .legend-title { font-weight: 600; margin-bottom: 8px; font-size: 13px; }
+        .legend-section { margin-bottom: 10px; }
+        .legend-section-title { font-weight: 500; font-size: 10px; color: #6b7280; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+        .legend.dark-mode .legend-section-title { color: #9ca3af; }
+        .legend-item { display: flex; align-items: center; gap: 6px; margin-bottom: 3px; font-size: 11px; }
+        .legend-color { width: 14px; height: 14px; border-radius: 50%; border: 2px solid rgba(0,0,0,0.15); flex-shrink: 0; }
+        .legend-line { height: 3px; width: 20px; flex-shrink: 0; border-radius: 2px; }
+        .legend-line-dashed { height: 0; width: 20px; flex-shrink: 0; }
+
+        .leaflet-popup-content { font-size: 13px; max-width: 260px; }
+        .popup-title { font-weight: 600; color: #111; margin-bottom: 4px; font-size: 14px; }
+        .popup-day { color: #667eea; font-weight: 500; font-size: 12px; margin-bottom: 4px; }
+        .popup-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 6px; }
+        .popup-tag { display: inline-block; background: #eff6ff; color: #0369a1; padding: 2px 6px; border-radius: 3px; font-size: 11px; }
+        .popup-desc { color: #374151; font-size: 12px; line-height: 1.4; }
+
+        .trip-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 9999; background: linear-gradient(135deg,#6c5ce7,#0d9488); padding: 8px 0; box-shadow: 0 4px 20px rgba(0,0,0,.2); }
+        .trip-nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 16px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .trip-nav a { color: white; text-decoration: none; font-size: .8rem; font-weight: 500; padding: 4px 10px; border-radius: 6px; transition: background .2s; }
+        .trip-nav a:hover { background: rgba(255,255,255,.2); }
+        .trip-nav a.active { background: rgba(255,255,255,.25); border-bottom: 2px solid white; }
+
+        @media (max-width: 768px) {
+            .sidebar { width: 100%; }
+            .toggle-sidebar { left: 100%; }
+            .sidebar.collapsed ~ .toggle-sidebar { left: 10px; }
+            .legend { bottom: 10px; right: 10px; font-size: 11px; padding: 10px 12px; }
         }
 
-        .sidebar.dark-mode .search-box {
-            background: #374151;
-            border-color: #4b5563;
-            color: #f3f4f6;
-        }
+        /* ── EDIT MODE ─────────────────────────────────────────────────────── */
+        body.edit-mode .sidebar { border-right: 3px solid #f59e0b; }
 
-        .search-box::placeholder {
-            color: #9ca3af;
+        .step-edit-btn {
+            width: 20px; height: 20px; border: none; background: none;
+            cursor: pointer; font-size: 13px; color: #d1d5db;
+            display: none; flex-shrink: 0; align-items: center; justify-content: center;
+            transition: color 0.2s;
         }
+        .step-edit-btn:hover { color: #f59e0b; }
+        body.edit-mode .step-edit-btn { display: flex; }
 
-        .trip-nav{position:fixed;top:0;left:0;right:0;z-index:9999;background:linear-gradient(135deg,#6c5ce7,#0d9488);padding:8px 0;box-shadow:0 4px 20px rgba(0,0,0,.2);}
-        .trip-nav-inner{max-width:1200px;margin:0 auto;padding:0 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
-        .trip-nav a{color:white;text-decoration:none;font-size:.8rem;font-weight:500;padding:4px 10px;border-radius:6px;transition:background .2s;}
-        .trip-nav a:hover{background:rgba(255,255,255,.2);}
-        .trip-nav a.active{background:rgba(255,255,255,.25);border-bottom:2px solid white;}
+        .step-editor {
+            display: none; padding: 10px 12px 12px; background: #fffbeb;
+            border-top: 1px solid #fde68a;
+        }
+        .step-editor.open { display: block; }
+        .sidebar.dark-mode .step-editor { background: #1c1a10; border-top-color: #78350f; }
+
+        .edit-field { margin-bottom: 7px; }
+        .edit-field label {
+            font-size: 10px; color: #92400e; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.05em;
+            display: block; margin-bottom: 2px;
+        }
+        .sidebar.dark-mode .edit-field label { color: #fbbf24; }
+        .edit-field input, .edit-field select, .edit-field textarea {
+            width: 100%; padding: 4px 7px; border: 1px solid #fde68a; border-radius: 3px;
+            font-size: 11px; background: white; box-sizing: border-box; font-family: inherit;
+        }
+        .sidebar.dark-mode .edit-field input,
+        .sidebar.dark-mode .edit-field select,
+        .sidebar.dark-mode .edit-field textarea { background: #374151; color: #f3f4f6; border-color: #78350f; }
+        .edit-field textarea { font-family: monospace; height: 72px; resize: vertical; }
+        .edit-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+        .edit-btns { display: flex; gap: 5px; margin-top: 8px; }
+        .edit-save-btn {
+            flex: 2; padding: 5px; background: #f59e0b; color: white;
+            border: none; border-radius: 3px; cursor: pointer; font-size: 11px; font-weight: 700;
+        }
+        .edit-save-btn:hover { background: #d97706; }
+        .edit-cancel-btn {
+            flex: 1; padding: 5px; background: #e5e7eb; color: #374151;
+            border: none; border-radius: 3px; cursor: pointer; font-size: 11px;
+        }
+        .edit-advanced-toggle {
+            font-size: 10px; color: #92400e; cursor: pointer;
+            text-decoration: underline; margin-top: 5px; display: inline-block;
+        }
+        .sidebar.dark-mode .edit-advanced-toggle { color: #fbbf24; }
+        .edit-advanced { display: none; margin-top: 6px; }
+        .edit-advanced.open { display: block; }
+
+        /* Alt route edit controls */
+        .alt-btn-row { display: flex; align-items: flex-start; gap: 4px; margin-bottom: 4px; }
+        .alt-btn-row .alt-btn { flex: 1; margin-bottom: 0; }
+        .alt-edit-icon, .alt-del-icon {
+            display: none; width: 22px; height: 22px; border: 1px solid #d1d5db;
+            background: white; border-radius: 3px; cursor: pointer; font-size: 11px;
+            flex-shrink: 0; align-items: center; justify-content: center; margin-top: 1px;
+        }
+        .alt-edit-icon:hover { background: #eff6ff; border-color: #667eea; }
+        .alt-del-icon:hover { background: #fef2f2; border-color: #ef4444; color: #ef4444; }
+        body.edit-mode .alt-edit-icon,
+        body.edit-mode .alt-del-icon { display: flex; }
+        .sidebar.dark-mode .alt-edit-icon,
+        .sidebar.dark-mode .alt-del-icon { background: #374151; border-color: #4b5563; color: #f3f4f6; }
+
+        .add-alt-btn {
+            display: none; width: 100%; padding: 6px; margin-top: 4px;
+            border: 1px dashed #667eea; background: transparent; border-radius: 5px;
+            cursor: pointer; font-size: 11px; color: #667eea; text-align: center;
+        }
+        .sidebar.dark-mode .add-alt-btn { color: #a5b4fc; border-color: #a5b4fc; }
+        body.edit-mode .add-alt-btn { display: block; }
+
+        /* Export / edit-mode toggle */
+        .edit-mode-btn { background: #fef3c7; border-color: #f59e0b; color: #92400e; }
+        .edit-mode-btn.active { background: #f59e0b; color: white; border-color: #f59e0b; }
+        .sidebar.dark-mode .edit-mode-btn { background: #78350f; color: #fde68a; border-color: #92400e; }
+        .sidebar.dark-mode .edit-mode-btn.active { background: #f59e0b; color: white; }
+
+        .export-btn {
+            display: none; position: fixed; bottom: 20px; left: 340px;
+            padding: 8px 14px; background: #f59e0b; color: white; border: none;
+            border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 700;
+            z-index: 200; box-shadow: 0 2px 8px rgba(245,158,11,0.45);
+            transition: left 0.3s ease;
+        }
+        .export-btn:hover { background: #d97706; }
+        body.edit-mode .export-btn { display: block; }
+        .sidebar.collapsed ~ .export-btn { left: 20px; }
+
+        /* Modal */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+            z-index: 2000; align-items: center; justify-content: center;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal {
+            background: white; border-radius: 10px; padding: 20px 22px;
+            max-width: 580px; width: 95vw; max-height: 88vh;
+            overflow-y: auto; box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+        }
+        .modal h3 { font-size: 14px; font-weight: 700; margin-bottom: 14px; color: #374151; }
+        .modal .edit-field label { color: #374151; }
+        .modal .edit-field textarea { height: 100px; }
+        .modal-btns { display: flex; gap: 6px; margin-top: 14px; }
+        .modal-save-btn {
+            flex: 2; padding: 7px; background: #667eea; color: white;
+            border: none; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 700;
+        }
+        .modal-save-btn:hover { background: #4f46e5; }
+        .modal-delete-btn {
+            flex: 1; padding: 7px; background: #ef4444; color: white;
+            border: none; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 700;
+        }
+        .modal-delete-btn:hover { background: #dc2626; }
+        .modal-cancel-btn {
+            flex: 1; padding: 7px; background: #e5e7eb; color: #374151;
+            border: none; border-radius: 4px; cursor: pointer; font-size: 12px;
+        }
+        .disable-steps-list {
+            max-height: 140px; overflow-y: auto; border: 1px solid #e5e7eb;
+            border-radius: 3px; padding: 4px 6px; background: #f9fafb;
+        }
+        .disable-step-item {
+            display: flex; align-items: center; gap: 5px;
+            padding: 2px 0; font-size: 11px; color: #374151; cursor: pointer;
+        }
+        .disable-step-item input { width: auto; cursor: pointer; }
+        .modal-note { font-size: 10px; color: #9ca3af; margin-top: 3px; font-style: italic; }
     </style>
 </head>
 <body>
@@ -403,581 +338,1278 @@
         <a href="trip-map-detailed.html" class="active">Map</a>
         <a href="trip-budget-tracker.html">Budget</a>
     </div></div>
+
     <div id="map"></div>
 
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <h1><i class="fas fa-map-location-dot"></i> 85-Day SE Asia</h1>
             <div class="trip-stats">
-                <div>Days: 1-85</div>
-                <div>173 POIs • 5 Countries</div>
+                <div>Days 1–85 &nbsp;•&nbsp; 5 Countries</div>
+                <div id="statsLine">31 steps &nbsp;•&nbsp; 170+ POIs</div>
             </div>
         </div>
-
         <div class="controls">
-            <button class="btn active" onclick="toggleCountry('all')">All</button>
-            <button class="btn" onclick="toggleCountry('vietnam')">Vietnam</button>
-            <button class="btn" onclick="toggleCountry('laos')">Laos</button>
-            <button class="btn" onclick="toggleCountry('thailand')">Thailand</button>
-            <button class="btn" onclick="toggleCountry('philippines')">Philippines</button>
-            <button class="btn" onclick="toggleCountry('indonesia')">Indonesia</button>
+            <button class="btn active" data-country="all" onclick="toggleCountry('all')">All</button>
+            <button class="btn" data-country="vietnam" onclick="toggleCountry('vietnam')">Vietnam</button>
+            <button class="btn" data-country="laos" onclick="toggleCountry('laos')">Laos</button>
+            <button class="btn" data-country="thailand" onclick="toggleCountry('thailand')">Thailand</button>
+            <button class="btn" data-country="philippines" onclick="toggleCountry('philippines')">Philippines</button>
+            <button class="btn" data-country="indonesia" onclick="toggleCountry('indonesia')">Indonesia</button>
             <button class="btn" onclick="toggleDarkMode()" title="Dark Mode">🌙</button>
+            <button class="btn edit-mode-btn" id="editModeBtn" onclick="toggleEditMode()" title="Toggle Edit Mode">✏️ Edit</button>
         </div>
-
-        <input type="text" class="search-box" id="searchBox" placeholder="Search stops..." onkeyup="filterStops()">
-
-        <div id="countries-container"></div>
+        <input type="text" class="search-box" id="searchBox" placeholder="Search steps &amp; POIs…" oninput="filterSteps()">
+        <div class="alt-routes-section" id="altRoutesSection">
+            <div class="alt-section-title">Alternate Routes</div>
+            <div id="altBtnList"></div>
+            <button class="add-alt-btn" onclick="openAltEditor(null)">+ Add New Alternate Route</button>
+        </div>
+        <div class="steps-container" id="stepsContainer"></div>
     </div>
 
     <button class="toggle-sidebar" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
 
     <div class="top-controls">
-        <button class="btn" onclick="fitToRoute()" title="Fit route to view"><i class="fas fa-expand"></i> Fit Route</button>
+        <button class="btn" onclick="fitToRoute()"><i class="fas fa-expand"></i> Fit</button>
     </div>
 
     <div class="legend" id="legend"></div>
 
+    <button class="export-btn" onclick="exportData()" title="Copy current route data to clipboard">📋 Copy Data</button>
+
+    <!-- Alternate Route Editor Modal -->
+    <div class="modal-overlay" id="altModal">
+        <div class="modal">
+            <h3 id="altModalTitle">Edit Alternate Route</h3>
+            <input type="hidden" id="altModalId">
+            <div class="edit-field">
+                <label>Alternate ID (no spaces, use hyphens)</label>
+                <input type="text" id="altModalKey" placeholder="e.g. my-alternate">
+                <div class="modal-note">Used internally. Cannot change ID of existing alternate.</div>
+            </div>
+            <div class="edit-field">
+                <label>Display Name</label>
+                <input type="text" id="altModalName" placeholder="e.g. Mekong Slow Boat">
+            </div>
+            <div class="edit-field">
+                <label>Insert New Steps After (step ID)</label>
+                <select id="altModalInsertAfter">
+                    <option value="">— none —</option>
+                </select>
+            </div>
+            <div class="edit-field">
+                <label>Disable These Steps</label>
+                <div class="disable-steps-list" id="altModalDisableList"></div>
+            </div>
+            <div class="edit-field">
+                <label>Mutually Exclusive With (other alternate IDs, comma-separated)</label>
+                <input type="text" id="altModalMutex" placeholder="e.g. vip-bus">
+            </div>
+            <div class="edit-field">
+                <label>Transport Overrides (JSON: {"stepId": {"type":"bus","label":"..."}, ...})</label>
+                <textarea id="altModalOverrides" placeholder='{"luang-prabang": {"type":"slow-boat","label":"Slow boat Day 1 → Pak Beng"}}'></textarea>
+            </div>
+            <div class="edit-field">
+                <label>New Steps to Insert (JSON array of step objects)</label>
+                <textarea id="altModalNewSteps" style="height:120px" placeholder='[{"id":"pak-beng","name":"Pak Beng","country":"laos","days":"22","lat":19.81,"lng":101.12,"enabled":true,"pois":[],"transportTo":{"type":"slow-boat","label":"Slow boat Day 2 to Huay Xai"}}]'></textarea>
+            </div>
+            <div class="edit-field">
+                <label>Shadow Segments (JSON: [{fromLat,fromLng,toLat,toLng,type}, ...])</label>
+                <textarea id="altModalShadow" placeholder='[{"fromLat":19.8856,"fromLng":102.1350,"toLat":18.9225,"toLng":102.4483,"type":"train"}]'></textarea>
+            </div>
+            <div class="modal-btns">
+                <button class="modal-save-btn" onclick="saveAltEdit()">Save</button>
+                <button class="modal-delete-btn" id="altModalDeleteBtn" onclick="deleteAlt()">Delete</button>
+                <button class="modal-cancel-btn" onclick="closeAltModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
     <script>
-        // Complete trip data with all 173 POIs
-        const tripData = {
-            vietnam: {
-                color: '#dc2626',
-                lightColor: '#fecaca',
-                name: 'Vietnam',
-                stops: [
-                    {id: 1, day: '1-2', name: 'Hanoi Old Quarter', lat: 21.0333, lng: 105.8500, type: 'CITY', tags: ['BASE', 'CULTURAL'], desc: '36 streets, bia hoi, egg coffee'},
-                    {id: 2, day: 2, name: 'Hoan Kiem Lake', lat: 21.0285, lng: 105.8542, type: 'POI', tags: ['WALK'], desc: 'Sunrise walk around iconic lake'},
-                    {id: 3, day: 2, name: 'Temple of Literature', lat: 21.0275, lng: 105.8362, type: 'POI', tags: ['CULTURAL'], desc: "Vietnam's first university (1070)"},
-                    {id: 4, day: 2, name: 'Ho Chi Minh Mausoleum', lat: 21.0369, lng: 105.8352, type: 'POI', tags: ['CULTURAL'], desc: 'Historic monument'},
-                    {id: 5, day: 2, name: 'One Pillar Pagoda', lat: 21.0358, lng: 105.8339, type: 'POI', tags: ['CULTURAL'], desc: 'Iconic 11th-century pagoda'},
-                    {id: 6, day: 2, name: 'Train Street Hanoi', lat: 21.0244, lng: 105.8493, type: 'POI', tags: ['PHOTO'], desc: 'Trains pass 2m away'},
-                    {id: 7, day: 2, name: 'Hang Dao Night Market', lat: 21.0340, lng: 105.8505, type: 'POI', tags: ['FOOD'], desc: 'Night market experience'},
-                    {id: 8, day: 1, name: 'Cafe Giang', lat: 21.0338, lng: 105.8530, type: 'POI', tags: ['FOOD'], desc: 'Famous egg coffee'},
-                    {id: 9, day: 1, name: 'Ta Hien Beer Corner', lat: 21.0332, lng: 105.8522, type: 'POI', tags: ['FOOD'], desc: 'Bia hoi corner'},
-                    {id: 10, day: 3, name: 'My Dinh Bus Station', lat: 21.0320, lng: 105.7622, type: 'TRANSPORT', tags: ['BUS'], desc: 'Bus to Ha Giang departure'},
-                    {id: 11, day: 3, name: 'Ha Giang City', lat: 22.8233, lng: 104.9833, type: 'CITY', tags: ['BASE'], desc: 'Start of Ha Giang Loop'},
-                    {id: 12, day: 4, name: 'Quan Ba / Heaven\'s Gate', lat: 23.0664, lng: 105.0036, type: 'POI', tags: ['VIEWPOINT'], desc: 'Twin mountain viewpoint'},
-                    {id: 13, day: 4, name: 'Yen Minh', lat: 23.1194, lng: 105.1488, type: 'OVERNIGHT', tags: ['BASE'], desc: 'Overnight stop'},
-                    {id: 14, day: 5, name: 'Dong Van', lat: 23.2736, lng: 105.3606, type: 'CITY', tags: ['UNESCO'], desc: 'Dong Van Karst UNESCO Geopark'},
-                    {id: 15, day: 5, name: 'Dong Van Old Quarter', lat: 23.2736, lng: 105.3570, type: 'POI', tags: ['CULTURAL'], desc: 'Ancient stone town'},
-                    {id: 16, day: 5, name: 'Ma Pi Leng Pass', lat: 23.2461, lng: 105.4033, type: 'POI', tags: ['VIEWPOINT', 'DRIVE'], desc: 'THE viewpoint, 2000m above Nho Que River'},
-                    {id: 17, day: '5-6', name: 'Nho Que River', lat: 23.2530, lng: 105.4070, type: 'POI', tags: ['BOAT'], desc: 'Turquoise river gorge, boat A$12-19'},
-                    {id: 18, day: 5, name: 'Meo Vac', lat: 23.1572, lng: 105.4103, type: 'OVERNIGHT', tags: ['BASE'], desc: 'Overnight stop'},
-                    {id: 19, day: 6, name: 'Du Gia Valley', lat: 23.0467, lng: 105.2417, type: 'POI', tags: ['DRIVE', 'SCENIC'], desc: 'Quieter southern route'},
-                    {id: 20, day: '7-8', name: 'Sapa Town', lat: 22.3364, lng: 103.8439, type: 'CITY', tags: ['BASE', 'MOUNTAIN'], desc: 'Mountain town'},
-                    {id: 21, day: 7, name: 'Love Waterfall', lat: 22.3847, lng: 103.7861, type: 'POI', tags: ['TREK', 'WATERFALL'], desc: 'Scenic waterfall'},
-                    {id: 22, day: 8, name: 'Muong Hoa Valley', lat: 22.2947, lng: 103.8500, type: 'POI', tags: ['TREK'], desc: 'Terraced rice paddies trek'},
-                    {id: 23, day: 8, name: 'Cat Cat Village', lat: 22.3264, lng: 103.8386, type: 'POI', tags: ['TREK', 'CULTURAL'], desc: "H'mong village + waterfall"},
-                    {id: 24, day: 8, name: 'Lao Cai Train Station', lat: 22.5036, lng: 103.9750, type: 'TRANSPORT', tags: ['TRAIN'], desc: 'Overnight train departure'},
-                    {id: 25, day: '9-12', name: 'Cat Ba Town', lat: 20.7256, lng: 107.0483, type: 'CITY', tags: ['BASE', 'ADVENTURE'], desc: 'Island base'},
-                    {id: 26, day: 9, name: 'Hospital Cave Cat Ba', lat: 20.7669, lng: 107.0022, type: 'POI', tags: ['CAVE'], desc: 'Wartime bunker'},
-                    {id: 27, day: 9, name: 'Cannon Fort Cat Ba', lat: 20.7289, lng: 107.0467, type: 'POI', tags: ['VIEWPOINT'], desc: 'Panoramic Ha Long Bay views'},
-                    {id: 28, day: 10, name: 'Climbing Barn Crag', lat: 20.7550, lng: 107.0100, type: 'POI', tags: ['CLIMB'], desc: 'Sport climbing'},
-                    {id: 29, day: 10, name: 'Ha Long Bay DWS spots', lat: 20.8833, lng: 107.0833, type: 'POI', tags: ['DIVE', 'CLIMB'], desc: 'Deep-water soloing on karst towers'},
-                    {id: 30, day: 11, name: 'Lan Ha Bay', lat: 20.7500, lng: 107.0667, type: 'POI', tags: ['KAYAK'], desc: 'Quieter kayaking side, hidden lagoons'},
-                    {id: 31, day: '13-15', name: 'Phong Nha / Son Trach', lat: 17.5917, lng: 106.2833, type: 'CITY', tags: ['BASE', 'ADVENTURE'], desc: 'Caving region base'},
-                    {id: 32, day: 13, name: 'Pub with Cold Beer', lat: 17.5889, lng: 106.2861, type: 'POI', tags: ['FOOD'], desc: 'Sunset drinks'},
-                    {id: 33, day: 14, name: 'Paradise Cave', lat: 17.5361, lng: 106.2178, type: 'POI', tags: ['CAVE'], desc: '31km of passages, cathedral chambers'},
-                    {id: 34, day: 15, name: 'Dark Cave', lat: 17.5761, lng: 106.2517, type: 'POI', tags: ['CAVE', 'ZIPLINE'], desc: 'Zipline, underground river, mud bath'},
-                    {id: 35, day: '12/16', name: 'Dong Hoi Station', lat: 17.4714, lng: 106.5983, type: 'TRANSPORT', tags: ['TRAIN'], desc: 'Train station'},
-                    {id: 36, day: '16-18', name: 'Hoi An Ancient Town', lat: 15.8801, lng: 108.3380, type: 'CITY', tags: ['BASE', 'CULTURAL'], desc: 'Lantern-lit streets'},
-                    {id: 37, day: 16, name: 'Japanese Covered Bridge', lat: 15.8775, lng: 108.3262, type: 'POI', tags: ['CULTURAL'], desc: 'Iconic bridge'},
-                    {id: 38, day: 16, name: 'Phuong Banh Mi', lat: 15.8785, lng: 108.3290, type: 'POI', tags: ['FOOD'], desc: "Bourdain's favourite"},
-                    {id: 39, day: 17, name: 'Cam Thanh Coconut Village', lat: 15.8606, lng: 108.3339, type: 'POI', tags: ['BOAT'], desc: 'Basket boats'},
-                    {id: 40, day: 18, name: 'My Son Sanctuary', lat: 15.7644, lng: 108.1233, type: 'POI', tags: ['CULTURAL', 'TEMPLE'], desc: 'Cham Hindu temples, 4th-13th century'},
-                    {id: 41, day: 18, name: 'An Bang Beach', lat: 15.8989, lng: 108.3617, type: 'POI', tags: ['BEACH'], desc: 'Coastal beach'},
-                    {id: 42, day: 19, name: 'Da Nang Airport', lat: 16.0556, lng: 108.1994, type: 'TRANSPORT', tags: ['FLIGHT'], desc: 'Fly to Luang Prabang'},
-                ]
-            },
-            laos: {
-                color: '#b45309',
-                lightColor: '#fed7aa',
-                name: 'Laos',
-                stops: [
-                    {id: 43, day: '19-21', name: 'Luang Prabang', lat: 19.8856, lng: 102.1350, type: 'CITY', tags: ['BASE', 'CULTURAL'], desc: 'UNESCO World Heritage town'},
-                    {id: 44, day: 19, name: 'Phousi Hill', lat: 19.8878, lng: 102.1339, type: 'POI', tags: ['TREK'], desc: '328 steps, 360° sunset views'},
-                    {id: 45, day: 19, name: 'Sisavangvong Road Night Market', lat: 19.8878, lng: 102.1344, type: 'POI', tags: ['FOOD'], desc: 'Night market experience'},
-                    {id: 46, day: 20, name: 'Kuang Si Falls', lat: 19.7481, lng: 101.9928, type: 'POI', tags: ['WATERFALL'], desc: 'Turquoise cascading pools'},
-                    {id: 47, day: 20, name: 'Free the Bears Rescue Centre', lat: 19.7481, lng: 101.9920, type: 'POI', tags: ['WILDLIFE'], desc: 'At Kuang Si entrance'},
-                    {id: 48, day: 21, name: 'Wat Xieng Thong', lat: 19.8933, lng: 102.1411, type: 'POI', tags: ['TEMPLE'], desc: "LP's most beautiful temple"},
-                    {id: 49, day: 21, name: 'Royal Palace Museum', lat: 19.8903, lng: 102.1356, type: 'POI', tags: ['CULTURAL'], desc: 'Royal residence'},
-                    {id: 50, day: 21, name: 'Alms Giving Ceremony route', lat: 19.8878, lng: 102.1344, type: 'POI', tags: ['CULTURAL'], desc: '5:30am, monks collecting rice'},
-                    {id: 51, day: '22-25', name: 'Vang Vieng', lat: 18.9225, lng: 102.4483, type: 'CITY', tags: ['BASE', 'ADVENTURE'], desc: 'Climbing & adventure hub'},
-                    {id: 52, day: 23, name: 'Green Climbers Home', lat: 18.9450, lng: 102.4250, type: 'POI', tags: ['CLIMB'], desc: 'Thaiwand Wall, Sleeping Wall'},
-                    {id: 53, day: 24, name: 'Pha Ngern faces', lat: 18.9350, lng: 102.4350, type: 'POI', tags: ['CLIMB'], desc: 'Multi-pitch karst climbing'},
-                    {id: 54, day: 24, name: 'Tham Phu Kham Cave', lat: 18.9128, lng: 102.4344, type: 'POI', tags: ['CAVE'], desc: 'Cave + Blue Lagoon'},
-                    {id: 55, day: 24, name: 'Blue Lagoon Vang Vieng', lat: 18.9128, lng: 102.4344, type: 'POI', tags: ['SWIM'], desc: 'Turquoise swimming'},
-                    {id: 56, day: 25, name: 'Nam Song River tubing', lat: 18.9225, lng: 102.4450, type: 'POI', tags: ['WATER'], desc: 'River float through karst valley'},
-                    {id: 57, day: 26, name: 'Vientiane', lat: 17.9667, lng: 102.6000, type: 'CITY', tags: ['BASE'], desc: 'Capital city'},
-                    {id: 58, day: 26, name: 'Patuxai Victory Gate', lat: 17.9750, lng: 102.6308, type: 'POI', tags: ['CULTURAL'], desc: "Laos' Arc de Triomphe"},
-                    {id: 59, day: 26, name: 'Pha That Luang', lat: 17.9756, lng: 102.6367, type: 'POI', tags: ['TEMPLE'], desc: 'Golden stupa, national symbol'},
-                    {id: 60, day: 26, name: 'COPE Visitor Centre', lat: 17.9619, lng: 102.6203, type: 'POI', tags: ['CULTURAL'], desc: 'UXO awareness'},
-                    {id: 61, day: 26, name: 'Thai-Lao Friendship Bridge', lat: 17.8833, lng: 102.7000, type: 'POI', tags: ['WALK'], desc: 'Walk across the Mekong'},
-                ]
-            },
-            thailand: {
-                color: '#7c3aed',
-                lightColor: '#ddd6fe',
-                name: 'Thailand',
-                stops: [
-                    {id: 62, day: '27/36', name: 'Bangkok Hua Lamphong Station', lat: 13.7381, lng: 100.5175, type: 'TRANSPORT', tags: ['TRAIN'], desc: 'Train station'},
-                    {id: 63, day: 27, name: 'Yaowarat / Chinatown', lat: 13.7403, lng: 100.5086, type: 'POI', tags: ['FOOD'], desc: 'Street food and markets'},
-                    {id: 64, day: 27, name: 'Wat Arun', lat: 13.7437, lng: 100.4893, type: 'POI', tags: ['TEMPLE'], desc: 'Temple of Dawn at golden hour'},
-                    {id: 65, day: 27, name: 'Grand Palace', lat: 13.7500, lng: 100.4914, type: 'POI', tags: ['TEMPLE'], desc: 'Royal palace complex'},
-                    {id: 66, day: 27, name: 'Khao San Road', lat: 13.7589, lng: 100.4972, type: 'POI', tags: ['FOOD'], desc: 'Backpacker hub'},
-                    {id: 67, day: 36, name: 'Wat Pho', lat: 13.7463, lng: 100.4933, type: 'POI', tags: ['TEMPLE'], desc: 'Reclining Buddha'},
-                    {id: 68, day: 36, name: 'Jim Thompson House', lat: 13.7494, lng: 100.5289, type: 'POI', tags: ['CULTURAL'], desc: 'Historic house museum'},
-                    {id: 69, day: 36, name: 'Chatuchak Weekend Market', lat: 13.7999, lng: 100.5504, type: 'POI', tags: ['MARKET'], desc: '15,000 stalls'},
-                    {id: 70, day: '28-30', name: 'Koh Phangan / Thong Sala Pier', lat: 9.7197, lng: 100.0603, type: 'CITY', tags: ['BASE', 'BEACH'], desc: 'Island base'},
-                    {id: 71, day: 28, name: 'Zen Beach', lat: 9.7822, lng: 100.0567, type: 'POI', tags: ['BEACH'], desc: 'Sunset beach'},
-                    {id: 72, day: '28/30', name: 'Haad Rin', lat: 9.6694, lng: 100.0689, type: 'POI', tags: ['BEACH', 'PARTY'], desc: 'Full Moon Party beach'},
-                    {id: 73, day: 29, name: 'Bottle Beach', lat: 9.7822, lng: 100.0450, type: 'POI', tags: ['TREK', 'BEACH'], desc: 'Hike-in paradise'},
-                    {id: 74, day: 29, name: 'Than Sadet Waterfall', lat: 9.7417, lng: 100.0758, type: 'POI', tags: ['WATERFALL'], desc: 'Royal waterfall'},
-                    {id: 75, day: 29, name: 'Thong Nai Pan Bay', lat: 9.7750, lng: 100.0833, type: 'POI', tags: ['BEACH'], desc: 'Double beach'},
-                    {id: 76, day: 30, name: 'Haad Khom', lat: 9.7889, lng: 100.0611, type: 'POI', tags: ['SNORKEL'], desc: 'Snorkelling'},
-                    {id: 77, day: 30, name: 'Khao Ra', lat: 9.7500, lng: 100.0500, type: 'POI', tags: ['VIEWPOINT'], desc: 'Highest point, jungle viewpoint'},
-                    {id: 78, day: '31-34', name: 'Koh Tao / Sairee Beach', lat: 10.0994, lng: 99.8231, type: 'CITY', tags: ['BASE', 'DIVE'], desc: 'Diving paradise'},
-                    {id: 79, day: 31, name: 'Japanese Gardens', lat: 10.1150, lng: 99.8200, type: 'POI', tags: ['SNORKEL'], desc: 'Shore snorkelling'},
-                    {id: 80, day: 32, name: 'Sail Rock', lat: 9.9700, lng: 99.9400, type: 'POI', tags: ['DIVE'], desc: '#1 dive site, underwater chimney'},
-                    {id: 81, day: 33, name: 'Chumphon Pinnacle', lat: 10.0500, lng: 99.7700, type: 'POI', tags: ['DIVE'], desc: '30m granite pinnacles, whale sharks'},
-                    {id: 82, day: 34, name: 'SW Pinnacle', lat: 10.0200, lng: 99.7600, type: 'POI', tags: ['DIVE'], desc: '35m, whale shark hotspot'},
-                    {id: 83, day: 34, name: 'Tanote Bay', lat: 10.0850, lng: 99.8500, type: 'POI', tags: ['SWIM'], desc: 'Cliff jumping'},
-                    {id: 84, day: '37-40', name: 'Chiang Mai Old City', lat: 18.7883, lng: 98.9853, type: 'CITY', tags: ['BASE', 'CULTURAL'], desc: 'Northern mountain city'},
-                    {id: 85, day: 37, name: 'Tha Phae Gate', lat: 18.7872, lng: 98.9933, type: 'POI', tags: ['CULTURAL'], desc: 'Old city gate'},
-                    {id: 86, day: 37, name: 'Wat Phra Singh', lat: 18.7889, lng: 98.9817, type: 'POI', tags: ['TEMPLE'], desc: 'Beautiful temple'},
-                    {id: 87, day: 37, name: 'Wat Chedi Luang', lat: 18.7861, lng: 98.9867, type: 'POI', tags: ['TEMPLE'], desc: '700-year-old ruined chedi'},
-                    {id: 88, day: 38, name: 'Doi Inthanon', lat: 18.5875, lng: 98.4869, type: 'POI', tags: ['TREK', 'PEAK'], desc: "Thailand's highest peak (2,565m)"},
-                    {id: 89, day: 38, name: 'Wachirathan Waterfall', lat: 18.5667, lng: 98.5000, type: 'POI', tags: ['WATERFALL'], desc: 'Scenic waterfall'},
-                    {id: 90, day: 39, name: 'Crazy Horse Buttress', lat: 18.8600, lng: 99.0300, type: 'POI', tags: ['CLIMB'], desc: '200+ bolted limestone routes'},
-                    {id: 91, day: 40, name: 'Elephant Nature Park', lat: 18.8833, lng: 98.8833, type: 'POI', tags: ['WILDLIFE'], desc: 'Ethical elephant sanctuary'},
-                    {id: 92, day: '40-42', name: 'Pai', lat: 19.3600, lng: 98.4400, type: 'CITY', tags: ['BASE', 'ADVENTURE'], desc: 'Bohemian mountain town'},
-                    {id: 93, day: 40, name: 'Pai Walking Street', lat: 19.3580, lng: 98.4400, type: 'POI', tags: ['MARKET'], desc: 'Night market'},
-                    {id: 94, day: 41, name: 'Pai Canyon', lat: 19.3342, lng: 98.4572, type: 'POI', tags: ['TREK'], desc: 'Sunrise ridge walk'},
-                    {id: 95, day: 41, name: 'Pam Bok Waterfall', lat: 19.3417, lng: 98.4383, type: 'POI', tags: ['WATERFALL'], desc: 'Cascade waterfall'},
-                    {id: 96, day: 41, name: 'Sai Ngam Hot Springs', lat: 19.3167, lng: 98.4383, type: 'POI', tags: ['NATURAL'], desc: 'Natural hot pools, A$5'},
-                    {id: 97, day: 41, name: 'Pai Land Split', lat: 19.3750, lng: 98.4750, type: 'POI', tags: ['GEOLOGIC'], desc: 'Earthquake crack'},
-                    {id: 98, day: 42, name: 'Mo Paeng Waterfall', lat: 19.3833, lng: 98.4167, type: 'POI', tags: ['WATERFALL'], desc: 'Natural rock slides'},
-                    {id: 99, day: 42, name: 'White Buddha / Wat Phra That Mae Yen', lat: 19.3581, lng: 98.4342, type: 'POI', tags: ['TEMPLE'], desc: 'Hilltop temple'},
-                    {id: 100, day: 42, name: 'Pai Bamboo Bridge', lat: 19.3550, lng: 98.4300, type: 'POI', tags: ['TREK'], desc: 'Through rice paddies'},
-                    {id: 101, day: 42, name: 'Yun Lai Viewpoint', lat: 19.3733, lng: 98.4550, type: 'POI', tags: ['VIEWPOINT'], desc: 'Panoramic vistas'},
-                ]
-            },
-            philippines: {
-                color: '#2563eb',
-                lightColor: '#bfdbfe',
-                name: 'Philippines',
-                stops: [
-                    {id: 102, day: 43, name: 'Cebu City', lat: 10.3157, lng: 123.8854, type: 'CITY', tags: ['TRANSIT'], desc: 'Transit hub'},
-                    {id: 103, day: '43-45', name: 'Moalboal / Panagsama Beach', lat: 9.9500, lng: 123.6833, type: 'CITY', tags: ['BASE', 'DIVE'], desc: 'Diving destination'},
-                    {id: 104, day: 44, name: 'Sardine Run Moalboal', lat: 9.9472, lng: 123.6800, type: 'POI', tags: ['SNORKEL', 'DIVE'], desc: 'Millions of sardines from shore'},
-                    {id: 105, day: 44, name: 'Pescador Island', lat: 9.9278, lng: 123.6625, type: 'POI', tags: ['DIVE'], desc: 'Wall dive'},
-                    {id: 106, day: 45, name: 'Kawasan Falls / Canyoneering start', lat: 9.8139, lng: 123.6653, type: 'POI', tags: ['ADVENTURE'], desc: 'Cliff jumps, canyon swimming'},
-                    {id: 107, day: '47-49', name: 'Tagbilaran / Panglao Island', lat: 9.5833, lng: 123.8333, type: 'CITY', tags: ['BASE', 'DIVE'], desc: 'Island base'},
-                    {id: 108, day: 47, name: 'Chocolate Hills', lat: 9.8031, lng: 124.1633, type: 'POI', tags: ['VIEWPOINT'], desc: '1,268 geological mounds'},
-                    {id: 109, day: 47, name: 'Philippine Tarsier Sanctuary', lat: 9.7600, lng: 124.0500, type: 'POI', tags: ['WILDLIFE'], desc: "World's smallest primates"},
-                    {id: 110, day: 47, name: 'Hinagdanan Cave', lat: 9.5906, lng: 123.8300, type: 'POI', tags: ['CAVE'], desc: 'Underground pool + skylight'},
-                    {id: 111, day: 48, name: 'Balicasag Island', lat: 9.5167, lng: 123.6833, type: 'POI', tags: ['DIVE', 'SNORKEL'], desc: 'Barracuda tornado, sea turtles, UNESCO'},
-                    {id: 112, day: 49, name: 'Alona Beach Panglao', lat: 9.5556, lng: 123.7681, type: 'POI', tags: ['BEACH'], desc: 'Popular beach'},
-                    {id: 113, day: 51, name: 'Puerto Princesa', lat: 9.7392, lng: 118.7353, type: 'CITY', tags: ['BASE'], desc: 'Gateway city'},
-                    {id: 114, day: 51, name: 'Underground River', lat: 10.1667, lng: 118.9167, type: 'POI', tags: ['CAVE', 'BOAT'], desc: '8.2km cave, UNESCO, New 7 Wonders'},
-                    {id: 115, day: '52-53', name: 'Port Barton', lat: 10.2750, lng: 119.1333, type: 'CITY', tags: ['BASE', 'BEACH'], desc: 'Off-grid paradise'},
-                    {id: 116, day: '55-56', name: 'El Nido Town', lat: 11.1753, lng: 119.3906, type: 'CITY', tags: ['BASE', 'ADVENTURE'], desc: 'Paradise town'},
-                    {id: 117, day: 55, name: 'Big Lagoon El Nido', lat: 11.2100, lng: 119.3400, type: 'POI', tags: ['KAYAK'], desc: 'Tour A highlight, kayak through narrow channel'},
-                    {id: 118, day: 55, name: 'Small Lagoon El Nido', lat: 11.2050, lng: 119.3420, type: 'POI', tags: ['KAYAK'], desc: 'Tour A'},
-                    {id: 119, day: 55, name: 'Secret Lagoon El Nido', lat: 11.2030, lng: 119.3450, type: 'POI', tags: ['KAYAK'], desc: 'Tour A, swim through hole in cliff'},
-                    {id: 120, day: 55, name: 'Shimizu Island', lat: 11.2200, lng: 119.3350, type: 'POI', tags: ['SNORKEL'], desc: 'Tour A snorkel'},
-                    {id: 121, day: 56, name: 'Taraw Cliff El Nido', lat: 11.1780, lng: 119.3900, type: 'POI', tags: ['CLIMB'], desc: 'Limestone scramble, panoramic views'},
-                    {id: 122, day: 56, name: 'Hidden Beach', lat: 11.2400, lng: 119.3700, type: 'POI', tags: ['BEACH'], desc: 'Tour C'},
-                    {id: 123, day: 56, name: 'Helicopter Island', lat: 11.2500, lng: 119.3600, type: 'POI', tags: ['SNORKEL'], desc: 'Tour C'},
-                    {id: 124, day: 56, name: 'Matinloc Shrine', lat: 11.2800, lng: 119.3500, type: 'POI', tags: ['CULTURAL'], desc: 'Tour C'},
-                    {id: 125, day: 56, name: 'Nacpan Beach', lat: 11.2417, lng: 119.4333, type: 'POI', tags: ['BEACH'], desc: 'Twin beach, 4km of sand, sunset'},
-                    {id: 126, day: '58-60', name: 'Coron Town', lat: 12.0056, lng: 120.2039, type: 'CITY', tags: ['BASE', 'DIVE'], desc: 'Dive resort hub'},
-                    {id: 127, day: 58, name: 'Olympia Maru Wreck', lat: 11.9900, lng: 120.1800, type: 'POI', tags: ['DIVE'], desc: 'WWII cargo ship, 25m'},
-                    {id: 128, day: 58, name: 'Irako Wreck', lat: 11.9850, lng: 120.1750, type: 'POI', tags: ['DIVE'], desc: 'Refrigerator ship, penetration diving'},
-                    {id: 129, day: 59, name: 'Barracuda Lake', lat: 11.9950, lng: 120.2100, type: 'POI', tags: ['DIVE'], desc: 'Thermocline dive, crystal-clear freshwater'},
-                    {id: 130, day: 59, name: 'Kayangan Lake', lat: 12.0000, lng: 120.2200, type: 'POI', tags: ['SNORKEL'], desc: 'Cleanest lake in Asia, jade-green'},
-                    {id: 131, day: 60, name: 'Malcapuya Island', lat: 12.0400, lng: 120.1200, type: 'POI', tags: ['ISLAND'], desc: 'Island hop option'},
-                    {id: 132, day: '61-62', name: 'Manila / NAIA', lat: 14.5086, lng: 121.0194, type: 'TRANSPORT', tags: ['FLIGHT'], desc: 'Transit hub'},
-                ]
-            },
-            indonesia: {
-                color: '#e11d48',
-                lightColor: '#fbcfe8',
-                name: 'Indonesia',
-                stops: [
-                    {id: 133, day: '62-64', name: 'Ubud', lat: -8.5069, lng: 115.2625, type: 'CITY', tags: ['BASE', 'CULTURAL'], desc: 'Arts & culture hub'},
-                    {id: 134, day: 62, name: 'Tegallalang Rice Terraces', lat: -8.4314, lng: 115.2794, type: 'POI', tags: ['TREK'], desc: 'Famous cascading paddies'},
-                    {id: 135, day: 62, name: 'Sacred Monkey Forest', lat: -8.5186, lng: 115.2589, type: 'POI', tags: ['WILDLIFE'], desc: 'Monkey sanctuary'},
-                    {id: 136, day: 63, name: 'Mount Batur', lat: -8.2414, lng: 115.3756, type: 'POI', tags: ['TREK', 'PEAK'], desc: 'Active volcano sunrise trek (1,717m)'},
-                    {id: 137, day: 64, name: 'Tirta Empul Water Temple', lat: -8.4153, lng: 115.3156, type: 'POI', tags: ['TEMPLE'], desc: 'Holy spring purification'},
-                    {id: 138, day: 64, name: 'Gunung Kawi', lat: -8.4231, lng: 115.3128, type: 'POI', tags: ['TREK', 'TEMPLE'], desc: 'Rock-carved temples in river valley'},
-                    {id: 139, day: '65-66', name: 'Amed', lat: -8.3500, lng: 115.6500, type: 'CITY', tags: ['BASE', 'DIVE'], desc: 'Quiet diving spot'},
-                    {id: 140, day: 65, name: 'USS Liberty Wreck Tulamben', lat: -8.2750, lng: 115.5931, type: 'POI', tags: ['DIVE'], desc: 'WWII wreck 25m from shore'},
-                    {id: 141, day: 65, name: 'Japanese Shipwreck Tulamben', lat: -8.2800, lng: 115.5950, type: 'POI', tags: ['DIVE'], desc: 'Second dive'},
-                    {id: 142, day: 66, name: 'Jemeluk Bay', lat: -8.3472, lng: 115.6472, type: 'POI', tags: ['DIVE'], desc: 'Wall dive, coral gardens'},
-                    {id: 143, day: '67-68', name: 'Nusa Penida', lat: -8.7275, lng: 115.5447, type: 'CITY', tags: ['BASE', 'DIVE'], desc: 'Remote island'},
-                    {id: 144, day: 67, name: 'Manta Point Nusa Penida', lat: -8.7500, lng: 115.4500, type: 'POI', tags: ['DIVE'], desc: '3-5m wingspan mantas'},
-                    {id: 145, day: 67, name: 'Crystal Bay', lat: -8.7200, lng: 115.4700, type: 'POI', tags: ['DIVE'], desc: 'Wall dive'},
-                    {id: 146, day: 67, name: 'Kelingking Beach', lat: -8.7372, lng: 115.4703, type: 'POI', tags: ['BEACH', 'PHOTO'], desc: 'Famous T-Rex cliff viewpoint'},
-                    {id: 147, day: 68, name: "Angel's Billabong", lat: -8.7300, lng: 115.5800, type: 'POI', tags: ['SWIM'], desc: 'Natural infinity pool'},
-                    {id: 148, day: 68, name: 'Broken Beach', lat: -8.7280, lng: 115.5780, type: 'POI', tags: ['PHOTO'], desc: 'Circular sea arch'},
-                    {id: 149, day: 68, name: 'Diamond Beach', lat: -8.7600, lng: 115.6100, type: 'POI', tags: ['BEACH'], desc: 'Remote beach'},
-                    {id: 150, day: 69, name: 'Uluwatu Temple', lat: -8.8292, lng: 115.0850, type: 'POI', tags: ['TEMPLE'], desc: '70m cliff, Kecak fire dance'},
-                    {id: 151, day: 69, name: 'Padang Padang Beach', lat: -8.8136, lng: 115.1008, type: 'POI', tags: ['BEACH', 'SURF'], desc: 'Surf break'},
-                    {id: 152, day: 69, name: 'Balangan Beach', lat: -8.7925, lng: 115.1092, type: 'POI', tags: ['BEACH'], desc: 'Clifftop beach'},
-                    {id: 153, day: 69, name: 'Jimbaran Bay', lat: -8.7803, lng: 115.1644, type: 'POI', tags: ['FOOD', 'SUNSET'], desc: 'Seafood dinner on beach'},
-                    {id: 154, day: '70-72', name: 'Labuan Bajo', lat: -8.4964, lng: 119.8889, type: 'CITY', tags: ['BASE', 'DIVE'], desc: 'Gateway to Komodo'},
-                    {id: 155, day: 70, name: 'Manta Alley Komodo', lat: -8.7100, lng: 119.5700, type: 'POI', tags: ['DIVE'], desc: 'Manta rays guaranteed in dry season'},
-                    {id: 156, day: 70, name: 'Padar Island', lat: -8.6500, lng: 119.6000, type: 'POI', tags: ['TREK'], desc: 'Iconic three-bay viewpoint sunset trek'},
-                    {id: 157, day: 71, name: 'Komodo Island', lat: -8.5500, lng: 119.4500, type: 'POI', tags: ['TREK', 'WILDLIFE'], desc: 'Walk among Komodo dragons'},
-                    {id: 158, day: 71, name: 'Pink Beach Komodo', lat: -8.6000, lng: 119.5000, type: 'POI', tags: ['BEACH'], desc: 'Pink-tinted sand from red coral'},
-                    {id: 159, day: 71, name: 'Castle Rock', lat: -8.4800, lng: 119.5300, type: 'POI', tags: ['DIVE'], desc: 'Drift dive, sharks, mantas, trevally'},
-                    {id: 160, day: 72, name: 'Rinca Island', lat: -8.6300, lng: 119.7000, type: 'POI', tags: ['TREK', 'WILDLIFE'], desc: 'More dragon sightings'},
-                    {id: 161, day: 72, name: 'Kanawa Island', lat: -8.5200, lng: 119.7500, type: 'POI', tags: ['SNORKEL'], desc: 'Island snorkel'},
-                    {id: 162, day: 72, name: 'Bukit Cinta viewpoint', lat: -8.4900, lng: 119.8800, type: 'POI', tags: ['VIEWPOINT'], desc: 'Sunset over the islands'},
-                    {id: 163, day: 73, name: 'Ruteng', lat: -8.6108, lng: 120.4639, type: 'CITY', tags: ['BASE'], desc: 'Mountain town'},
-                    {id: 164, day: 73, name: 'Cancar Spider-web Rice Paddies', lat: -8.5667, lng: 120.4500, type: 'POI', tags: ['TREK'], desc: 'Unique lingko terraces'},
-                    {id: 165, day: 74, name: 'Bajawa', lat: -8.7906, lng: 121.0789, type: 'CITY', tags: ['BASE'], desc: 'Highland town'},
-                    {id: 166, day: 74, name: 'Ngada Traditional Villages', lat: -8.8000, lng: 121.0800, type: 'POI', tags: ['CULTURAL'], desc: 'Megalithic structures'},
-                    {id: 167, day: 74, name: 'Soa Hot Springs', lat: -8.7500, lng: 121.1000, type: 'POI', tags: ['NATURAL'], desc: 'Geothermal hot springs'},
-                    {id: 168, day: 75, name: 'Kelimutu', lat: -8.7700, lng: 121.8200, type: 'POI', tags: ['TREK', 'PEAK'], desc: 'Three tri-coloured volcanic crater lakes'},
-                    {id: 169, day: 76, name: 'Ende', lat: -8.8500, lng: 121.6500, type: 'CITY', tags: ['BASE'], desc: 'Blue stone beach, fly to Bali'},
-                    {id: 170, day: '77-79', name: 'Gili Trawangan', lat: -8.3500, lng: 116.0333, type: 'CITY', tags: ['BASE', 'DIVE'], desc: 'Gili Islands hub'},
-                    {id: 171, day: 77, name: 'Shark Point Gili T', lat: -8.3400, lng: 116.0200, type: 'POI', tags: ['SNORKEL'], desc: 'Reef sharks + turtles'},
-                    {id: 172, day: 78, name: 'Gili Meno', lat: -8.3500, lng: 116.0500, type: 'POI', tags: ['ISLAND'], desc: 'Quietest Gili'},
-                    {id: 173, day: 78, name: 'BASK Underwater Sculptures Gili Meno', lat: -8.3480, lng: 116.0520, type: 'POI', tags: ['SNORKEL', 'ART'], desc: 'Submerged human figures'},
-                ]
+    // ── CONSTANTS ───────────────────────────────────────────────────────────
+    const COUNTRY_COLORS = {
+        vietnam: '#dc2626', laos: '#b45309', thailand: '#7c3aed',
+        philippines: '#2563eb', indonesia: '#e11d48'
+    };
+    const TRANSPORT_COLORS = {
+        train: '#92400e', bus: '#059669', ferry: '#2563eb', flight: '#dc2626',
+        motorbike: '#be123c', boat: '#0891b2', 'slow-boat': '#0891b2', 'fast-boat': '#0891b2'
+    };
+    const TRANSPORT_DASH = {
+        flight: '10,7', ferry: '6,4', 'fast-boat': '6,4', 'slow-boat': '9,5', motorbike: '2,5'
+    };
+
+    // ── ITINERARY STEPS DATA ────────────────────────────────────────────────
+    const itinerarySteps = [
+      { id:'hanoi', name:'Hanoi', country:'vietnam', days:'1–2', lat:21.0333, lng:105.8500, enabled:true,
+        pois:[
+          {id:'hoan-kiem', name:'Hoan Kiem Lake', lat:21.0285, lng:105.8542, tags:['WALK'], desc:'Sunrise walk around iconic lake', day:2},
+          {id:'temple-lit', name:'Temple of Literature', lat:21.0275, lng:105.8362, tags:['CULTURAL'], desc:"Vietnam's first university (1070)", day:2},
+          {id:'hcm-maus', name:'Ho Chi Minh Mausoleum', lat:21.0369, lng:105.8352, tags:['CULTURAL'], desc:'Historic monument', day:2},
+          {id:'one-pillar', name:'One Pillar Pagoda', lat:21.0358, lng:105.8339, tags:['CULTURAL'], desc:'Iconic 11th-century pagoda', day:2},
+          {id:'train-street', name:'Train Street', lat:21.0244, lng:105.8493, tags:['PHOTO'], desc:'Trains pass 2m away', day:2},
+          {id:'hang-dao', name:'Hang Dao Night Market', lat:21.0340, lng:105.8505, tags:['FOOD'], desc:'Night market', day:2},
+          {id:'cafe-giang', name:'Cafe Giang', lat:21.0338, lng:105.8530, tags:['FOOD'], desc:'Famous egg coffee', day:1},
+          {id:'ta-hien', name:'Ta Hien Beer Corner', lat:21.0332, lng:105.8522, tags:['FOOD'], desc:'Bia hoi corner', day:1},
+        ],
+        transportTo:{type:'bus', label:'Bus 6–7h ~A$5 to Ha Giang'}
+      },
+      { id:'ha-giang', name:'Ha Giang Loop', country:'vietnam', days:'3–7', lat:22.8233, lng:104.9833, enabled:true,
+        pois:[
+          {id:'quan-ba', name:"Quan Ba / Heaven's Gate", lat:23.0664, lng:105.0036, tags:['VIEWPOINT'], desc:'Twin mountain viewpoint', day:4},
+          {id:'yen-minh', name:'Yen Minh', lat:23.1194, lng:105.1488, tags:['OVERNIGHT'], desc:'Overnight stop', day:4},
+          {id:'dong-van', name:'Dong Van', lat:23.2736, lng:105.3606, tags:['UNESCO'], desc:'Dong Van Karst Geopark', day:5},
+          {id:'dong-van-old', name:'Dong Van Old Quarter', lat:23.2736, lng:105.3570, tags:['CULTURAL'], desc:'Ancient stone town', day:5},
+          {id:'ma-pi-leng', name:'Ma Pi Leng Pass', lat:23.2461, lng:105.4033, tags:['VIEWPOINT'], desc:'2000m above Nho Que River', day:5},
+          {id:'nho-que', name:'Nho Que River', lat:23.2530, lng:105.4070, tags:['BOAT'], desc:'Turquoise river gorge boat A$12–19', day:'5–6'},
+          {id:'meo-vac', name:'Meo Vac', lat:23.1572, lng:105.4103, tags:['OVERNIGHT'], desc:'Overnight stop', day:5},
+          {id:'du-gia', name:'Du Gia Valley', lat:23.0467, lng:105.2417, tags:['SCENIC'], desc:'Quieter southern route', day:6},
+        ],
+        transportTo:{type:'motorbike', label:'3-day motorbike loop → bus to Sapa', legs:[
+          {type:'motorbike', label:'Loop: Ha Giang → Quan Ba → Dong Van via Ma Pi Leng Pass', toLat:23.2736, toLng:105.3606},
+          {type:'bus', label:'Return south via Meo Vac → Du Gia → minivan to Sapa ~7h', toLat:null, toLng:null}
+        ]}
+      },
+      { id:'sapa', name:'Sapa', country:'vietnam', days:'7–8', lat:22.3364, lng:103.8439, enabled:true,
+        pois:[
+          {id:'love-wfall', name:'Love Waterfall', lat:22.3847, lng:103.7861, tags:['WATERFALL'], desc:'Scenic waterfall', day:7},
+          {id:'muong-hoa', name:'Muong Hoa Valley', lat:22.2947, lng:103.8500, tags:['TREK'], desc:'Terraced rice paddies trek', day:8},
+          {id:'cat-cat', name:'Cat Cat Village', lat:22.3264, lng:103.8386, tags:['CULTURAL'], desc:"H'mong village + waterfall", day:8},
+        ],
+        transportTo:{type:'train', label:'Overnight train → Hanoi → Bus+Ferry to Cat Ba', legs:[
+          {type:'train', label:'Overnight train Lao Cai → Hanoi', toLat:21.0333, toLng:105.8500},
+          {type:'ferry', label:'Bus+Ferry Hanoi → Cat Ba', toLat:null, toLng:null}
+        ]}
+      },
+      { id:'cat-ba', name:'Cat Ba Island', country:'vietnam', days:'9–12', lat:20.7256, lng:107.0483, enabled:true,
+        pois:[
+          {id:'hospital-cave', name:'Hospital Cave', lat:20.7669, lng:107.0022, tags:['CAVE'], desc:'Wartime bunker', day:9},
+          {id:'cannon-fort', name:'Cannon Fort', lat:20.7289, lng:107.0467, tags:['VIEWPOINT'], desc:'Panoramic Ha Long Bay views', day:9},
+          {id:'climbing-barn', name:'Climbing Barn Crag', lat:20.7550, lng:107.0100, tags:['CLIMB'], desc:'Sport climbing', day:10},
+          {id:'dws-halong', name:'Ha Long Bay DWS', lat:20.8833, lng:107.0833, tags:['CLIMB'], desc:'Deep-water soloing on karst towers', day:10},
+          {id:'lan-ha', name:'Lan Ha Bay', lat:20.7500, lng:107.0667, tags:['KAYAK'], desc:'Quieter side, hidden lagoons', day:11},
+        ],
+        transportTo:{type:'ferry', label:'Ferry + Train + Bus to Phong Nha', legs:[
+          {type:'ferry', label:'Ferry to Hanoi area', toLat:20.9500, toLng:106.9500},
+          {type:'train', label:'Overnight train to Dong Hoi', toLat:17.4714, toLng:106.5983},
+          {type:'bus',   label:'Bus to Phong Nha', toLat:null, toLng:null}
+        ]}
+      },
+      { id:'phong-nha', name:'Phong Nha', country:'vietnam', days:'13–15', lat:17.5917, lng:106.2833, enabled:true,
+        pois:[
+          {id:'pub-cold-beer', name:'Pub with Cold Beer', lat:17.5889, lng:106.2861, tags:['FOOD'], desc:'Sunset drinks', day:13},
+          {id:'paradise-cave', name:'Paradise Cave', lat:17.5361, lng:106.2178, tags:['CAVE'], desc:'31km passages, cathedral chambers', day:14},
+          {id:'dark-cave', name:'Dark Cave', lat:17.5761, lng:106.2517, tags:['CAVE'], desc:'Zipline, underground river, mud bath', day:15},
+        ],
+        transportTo:{type:'train', label:'Day train Dong Hoi → Da Nang, taxi to Hoi An (Hai Van Pass)'}
+      },
+      { id:'hoi-an', name:'Hoi An', country:'vietnam', days:'16–18', lat:15.8801, lng:108.3380, enabled:true,
+        pois:[
+          {id:'covered-bridge', name:'Japanese Covered Bridge', lat:15.8775, lng:108.3262, tags:['CULTURAL'], desc:'Iconic bridge', day:16},
+          {id:'banh-mi', name:'Phuong Banh Mi', lat:15.8785, lng:108.3290, tags:['FOOD'], desc:"Bourdain's favourite", day:16},
+          {id:'coconut-village', name:'Cam Thanh Coconut Village', lat:15.8606, lng:108.3339, tags:['BOAT'], desc:'Basket boats', day:17},
+          {id:'my-son', name:'My Son Sanctuary', lat:15.7644, lng:108.1233, tags:['TEMPLE'], desc:'Cham Hindu temples 4th–13th c.', day:18},
+          {id:'an-bang', name:'An Bang Beach', lat:15.8989, lng:108.3617, tags:['BEACH'], desc:'Coastal beach', day:18},
+        ],
+        transportTo:{type:'flight', label:'Flight Da Nang → Luang Prabang'}
+      },
+      { id:'luang-prabang', name:'Luang Prabang', country:'laos', days:'19–21', lat:19.8856, lng:102.1350, enabled:true,
+        pois:[
+          {id:'phousi', name:'Phousi Hill', lat:19.8878, lng:102.1339, tags:['TREK'], desc:'328 steps, 360° sunset views', day:19},
+          {id:'lp-night-mkt', name:'Sisavangvong Night Market', lat:19.8878, lng:102.1344, tags:['FOOD'], desc:'Night market', day:19},
+          {id:'kuang-si', name:'Kuang Si Falls', lat:19.7481, lng:101.9928, tags:['WATERFALL'], desc:'Turquoise cascading pools', day:20},
+          {id:'free-bears', name:'Free the Bears Rescue', lat:19.7481, lng:101.9920, tags:['WILDLIFE'], desc:'At Kuang Si entrance', day:20},
+          {id:'wat-xieng', name:'Wat Xieng Thong', lat:19.8933, lng:102.1411, tags:['TEMPLE'], desc:"LP's most beautiful temple", day:21},
+          {id:'royal-palace', name:'Royal Palace Museum', lat:19.8903, lng:102.1356, tags:['CULTURAL'], desc:'Royal residence', day:21},
+          {id:'alms', name:'Alms Giving Ceremony', lat:19.8878, lng:102.1344, tags:['CULTURAL'], desc:'5:30am monks collecting rice', day:21},
+        ],
+        transportTo:{type:'train', label:'Lao-China Railway ~2h to Vang Vieng'}
+      },
+      { id:'vang-vieng', name:'Vang Vieng', country:'laos', days:'22–25', lat:18.9225, lng:102.4483, enabled:true,
+        pois:[
+          {id:'green-climbers', name:'Green Climbers Home', lat:18.9450, lng:102.4250, tags:['CLIMB'], desc:'Thaiwand Wall, Sleeping Wall', day:23},
+          {id:'pha-ngern', name:'Pha Ngern Faces', lat:18.9350, lng:102.4350, tags:['CLIMB'], desc:'Multi-pitch karst', day:24},
+          {id:'tham-phu', name:'Tham Phu Kham Cave', lat:18.9128, lng:102.4344, tags:['CAVE'], desc:'Cave + Blue Lagoon', day:24},
+          {id:'blue-lagoon-vv', name:'Blue Lagoon VV', lat:18.9128, lng:102.4340, tags:['SWIM'], desc:'Turquoise swimming', day:24},
+          {id:'nam-song', name:'Nam Song River Tubing', lat:18.9225, lng:102.4450, tags:['WATER'], desc:'River float through karst valley', day:25},
+        ],
+        transportTo:{type:'train', label:'Lao-China Railway ~2h to Vientiane'}
+      },
+      { id:'vientiane', name:'Vientiane', country:'laos', days:'26', lat:17.9667, lng:102.6000, enabled:true,
+        pois:[
+          {id:'patuxai', name:'Patuxai Victory Gate', lat:17.9750, lng:102.6308, tags:['CULTURAL'], desc:"Laos' Arc de Triomphe", day:26},
+          {id:'pha-that-luang', name:'Pha That Luang', lat:17.9756, lng:102.6367, tags:['TEMPLE'], desc:'Golden stupa', day:26},
+          {id:'cope', name:'COPE Visitor Centre', lat:17.9619, lng:102.6203, tags:['CULTURAL'], desc:'UXO awareness', day:26},
+          {id:'friendship-bridge', name:'Thai-Lao Friendship Bridge', lat:17.8833, lng:102.7000, tags:['WALK'], desc:'Walk across the Mekong', day:26},
+        ],
+        transportTo:{type:'train', label:'Night train to Bangkok ~11h'}
+      },
+      { id:'bangkok', name:'Bangkok', country:'thailand', days:'27, 35', lat:13.7381, lng:100.5175, enabled:true,
+        pois:[
+          {id:'yaowarat', name:'Yaowarat / Chinatown', lat:13.7403, lng:100.5086, tags:['FOOD'], desc:'Street food and markets', day:27},
+          {id:'wat-arun', name:'Wat Arun', lat:13.7437, lng:100.4893, tags:['TEMPLE'], desc:'Temple of Dawn at golden hour', day:27},
+          {id:'grand-palace', name:'Grand Palace', lat:13.7500, lng:100.4914, tags:['TEMPLE'], desc:'Royal palace complex', day:27},
+          {id:'khao-san', name:'Khao San Road', lat:13.7589, lng:100.4972, tags:['FOOD'], desc:'Backpacker hub', day:27},
+          {id:'wat-pho', name:'Wat Pho', lat:13.7463, lng:100.4933, tags:['TEMPLE'], desc:'Reclining Buddha', day:36},
+          {id:'jim-thompson', name:'Jim Thompson House', lat:13.7494, lng:100.5289, tags:['CULTURAL'], desc:'Historic house museum', day:36},
+          {id:'chatuchak', name:'Chatuchak Weekend Market', lat:13.7999, lng:100.5504, tags:['MARKET'], desc:'15,000 stalls', day:36},
+        ],
+        transportTo:{type:'train', label:'Overnight Train + Bus + Ferry to Koh Phangan', legs:[
+          {type:'train', label:'Overnight train Bangkok → Surat Thani', toLat:9.1382, toLng:99.3227},
+          {type:'ferry', label:'Bus + Ferry to Koh Phangan', toLat:null, toLng:null}
+        ]}
+      },
+      { id:'koh-phangan', name:'Koh Phangan', country:'thailand', days:'28–30', lat:9.7197, lng:100.0603, enabled:true,
+        pois:[
+          {id:'zen-beach', name:'Zen Beach', lat:9.7822, lng:100.0567, tags:['BEACH'], desc:'Sunset beach', day:28},
+          {id:'haad-rin', name:'Haad Rin', lat:9.6694, lng:100.0689, tags:['BEACH'], desc:'Full Moon Party beach', day:'28/30'},
+          {id:'bottle-beach', name:'Bottle Beach', lat:9.7822, lng:100.0450, tags:['BEACH'], desc:'Hike-in paradise', day:29},
+          {id:'than-sadet', name:'Than Sadet Waterfall', lat:9.7417, lng:100.0758, tags:['WATERFALL'], desc:'Royal waterfall', day:29},
+          {id:'thong-nai-pan', name:'Thong Nai Pan Bay', lat:9.7750, lng:100.0833, tags:['BEACH'], desc:'Double beach', day:29},
+          {id:'haad-khom', name:'Haad Khom', lat:9.7889, lng:100.0611, tags:['SNORKEL'], desc:'Snorkelling', day:30},
+          {id:'khao-ra', name:'Khao Ra', lat:9.7500, lng:100.0500, tags:['VIEWPOINT'], desc:'Highest point, jungle views', day:30},
+        ],
+        transportTo:{type:'ferry', label:'Ferry to Koh Tao ~2h'}
+      },
+      { id:'koh-tao', name:'Koh Tao', country:'thailand', days:'31–34', lat:10.0994, lng:99.8231, enabled:true,
+        pois:[
+          {id:'japanese-gardens', name:'Japanese Gardens', lat:10.1150, lng:99.8200, tags:['SNORKEL'], desc:'Shore snorkelling', day:31},
+          {id:'sail-rock', name:'Sail Rock', lat:9.9700, lng:99.9400, tags:['DIVE'], desc:'#1 dive site, underwater chimney', day:32},
+          {id:'chumphon-pin', name:'Chumphon Pinnacle', lat:10.0500, lng:99.7700, tags:['DIVE'], desc:'30m granite pinnacles, whale sharks', day:33},
+          {id:'sw-pinnacle', name:'SW Pinnacle', lat:10.0200, lng:99.7600, tags:['DIVE'], desc:'35m, whale shark hotspot', day:34},
+          {id:'tanote-bay', name:'Tanote Bay', lat:10.0850, lng:99.8500, tags:['SWIM'], desc:'Cliff jumping', day:34},
+        ],
+        transportTo:{type:'ferry', label:'Ferry + Train → Bangkok → fly to Cebu', legs:[
+          {type:'ferry', label:'Ferry to Chumphon 1.5h', toLat:10.5000, toLng:99.1700},
+          {type:'train', label:'Overnight train Chumphon → Bangkok', toLat:13.7381, toLng:100.5175},
+          {type:'flight', label:'Flight Bangkok → Cebu', toLat:null, toLng:null}
+        ]}
+      },
+      { id:'cebu', name:'Cebu City', country:'philippines', days:'43', lat:10.3157, lng:123.8854, enabled:true,
+        pois:[],
+        transportTo:{type:'ferry', label:'Ferry to Moalboal 2h'}
+      },
+      { id:'moalboal', name:'Moalboal', country:'philippines', days:'43–45', lat:9.9500, lng:123.6833, enabled:true,
+        pois:[
+          {id:'sardine-run', name:'Sardine Run', lat:9.9472, lng:123.6800, tags:['SNORKEL'], desc:'Millions of sardines from shore', day:44},
+          {id:'pescador', name:'Pescador Island', lat:9.9278, lng:123.6625, tags:['DIVE'], desc:'Wall dive', day:44},
+          {id:'kawasan', name:'Kawasan Falls / Canyoneering', lat:9.8139, lng:123.6653, tags:['ADVENTURE'], desc:'Cliff jumps, canyon swimming', day:45},
+        ],
+        transportTo:{type:'ferry', label:'Ferry to Bohol (Tagbilaran) 2h'}
+      },
+      { id:'bohol', name:'Bohol / Panglao', country:'philippines', days:'47–49', lat:9.5833, lng:123.8333, enabled:true,
+        pois:[
+          {id:'chocolate-hills', name:'Chocolate Hills', lat:9.8031, lng:124.1633, tags:['VIEWPOINT'], desc:'1,268 geological mounds', day:47},
+          {id:'tarsier', name:'Philippine Tarsier Sanctuary', lat:9.7600, lng:124.0500, tags:['WILDLIFE'], desc:"World's smallest primates", day:47},
+          {id:'hinagdanan', name:'Hinagdanan Cave', lat:9.5906, lng:123.8300, tags:['CAVE'], desc:'Underground pool + skylight', day:47},
+          {id:'balicasag', name:'Balicasag Island', lat:9.5167, lng:123.6833, tags:['DIVE'], desc:'Barracuda tornado, sea turtles', day:48},
+          {id:'alona-beach', name:'Alona Beach', lat:9.5556, lng:123.7681, tags:['BEACH'], desc:'Popular beach', day:49},
+        ],
+        transportTo:{type:'flight', label:'Flight to Puerto Princesa'}
+      },
+      { id:'puerto-princesa', name:'Puerto Princesa', country:'philippines', days:'51', lat:9.7392, lng:118.7353, enabled:true,
+        pois:[
+          {id:'underground-river', name:'Underground River', lat:10.1667, lng:118.9167, tags:['CAVE'], desc:'8.2km cave UNESCO New 7 Wonders', day:51},
+        ],
+        transportTo:{type:'bus', label:'Bus/van to Port Barton 3h'}
+      },
+      { id:'port-barton', name:'Port Barton', country:'philippines', days:'52–53', lat:10.2750, lng:119.1333, enabled:true,
+        pois:[],
+        transportTo:{type:'bus', label:'Van to El Nido 3h'}
+      },
+      { id:'el-nido', name:'El Nido', country:'philippines', days:'55–56', lat:11.1753, lng:119.3906, enabled:true,
+        pois:[
+          {id:'big-lagoon', name:'Big Lagoon', lat:11.2100, lng:119.3400, tags:['KAYAK'], desc:'Tour A — kayak through narrow channel', day:55},
+          {id:'small-lagoon', name:'Small Lagoon', lat:11.2050, lng:119.3420, tags:['KAYAK'], desc:'Tour A', day:55},
+          {id:'secret-lagoon', name:'Secret Lagoon', lat:11.2030, lng:119.3450, tags:['KAYAK'], desc:'Tour A — swim through hole in cliff', day:55},
+          {id:'shimizu', name:'Shimizu Island', lat:11.2200, lng:119.3350, tags:['SNORKEL'], desc:'Tour A snorkel', day:55},
+          {id:'taraw-cliff', name:'Taraw Cliff', lat:11.1780, lng:119.3900, tags:['CLIMB'], desc:'Limestone scramble, panoramic views', day:56},
+          {id:'hidden-beach', name:'Hidden Beach', lat:11.2400, lng:119.3700, tags:['BEACH'], desc:'Tour C', day:56},
+          {id:'nacpan', name:'Nacpan Beach', lat:11.2417, lng:119.4333, tags:['BEACH'], desc:'Twin beach, 4km of sand, sunset', day:56},
+        ],
+        transportTo:{type:'ferry', label:'Ferry to Coron ~4h'}
+      },
+      { id:'coron', name:'Coron', country:'philippines', days:'58–60', lat:12.0056, lng:120.2039, enabled:true,
+        pois:[
+          {id:'olympia-maru', name:'Olympia Maru Wreck', lat:11.9900, lng:120.1800, tags:['DIVE'], desc:'WWII cargo ship 25m', day:58},
+          {id:'irako', name:'Irako Wreck', lat:11.9850, lng:120.1750, tags:['DIVE'], desc:'Refrigerator ship penetration dive', day:58},
+          {id:'barracuda-lake', name:'Barracuda Lake', lat:11.9950, lng:120.2100, tags:['DIVE'], desc:'Thermocline dive, crystal-clear', day:59},
+          {id:'kayangan-lake', name:'Kayangan Lake', lat:12.0000, lng:120.2200, tags:['SNORKEL'], desc:'Cleanest lake in Asia', day:59},
+          {id:'malcapuya', name:'Malcapuya Island', lat:12.0400, lng:120.1200, tags:['ISLAND'], desc:'Island hop option', day:60},
+        ],
+        transportTo:{type:'flight', label:'Flight Manila → Bali', legs:[
+          {type:'flight', label:'Flight Coron → Manila', toLat:14.5086, toLng:121.0194},
+          {type:'flight', label:'Flight Manila → Bali', toLat:null, toLng:null}
+        ]}
+      },
+      { id:'ubud', name:'Ubud', country:'indonesia', days:'62–64', lat:-8.5069, lng:115.2625, enabled:true,
+        pois:[
+          {id:'tegallalang', name:'Tegallalang Rice Terraces', lat:-8.4314, lng:115.2794, tags:['TREK'], desc:'Famous cascading paddies', day:62},
+          {id:'monkey-forest', name:'Sacred Monkey Forest', lat:-8.5186, lng:115.2589, tags:['WILDLIFE'], desc:'Monkey sanctuary', day:62},
+          {id:'mount-batur', name:'Mount Batur', lat:-8.2414, lng:115.3756, tags:['TREK'], desc:'Active volcano sunrise trek 1,717m', day:63},
+          {id:'tirta-empul', name:'Tirta Empul Water Temple', lat:-8.4153, lng:115.3156, tags:['TEMPLE'], desc:'Holy spring purification', day:64},
+          {id:'gunung-kawi', name:'Gunung Kawi', lat:-8.4231, lng:115.3128, tags:['TEMPLE'], desc:'Rock-carved temples in river valley', day:64},
+        ],
+        transportTo:{type:'bus', label:'Scooter/bus to Amed 2h'}
+      },
+      { id:'amed', name:'Amed', country:'indonesia', days:'65–66', lat:-8.3500, lng:115.6500, enabled:true,
+        pois:[
+          {id:'uss-liberty', name:'USS Liberty Wreck Tulamben', lat:-8.2750, lng:115.5931, tags:['DIVE'], desc:'WWII wreck 25m from shore', day:65},
+          {id:'japanese-wreck', name:'Japanese Shipwreck Tulamben', lat:-8.2800, lng:115.5950, tags:['DIVE'], desc:'Second dive', day:65},
+          {id:'jemeluk', name:'Jemeluk Bay', lat:-8.3472, lng:115.6472, tags:['DIVE'], desc:'Wall dive, coral gardens', day:66},
+        ],
+        transportTo:{type:'fast-boat', label:'Fast boat to Nusa Penida 1.5h'}
+      },
+      { id:'nusa-penida', name:'Nusa Penida', country:'indonesia', days:'67–68', lat:-8.7275, lng:115.5447, enabled:true,
+        pois:[
+          {id:'manta-point', name:'Manta Point', lat:-8.7500, lng:115.4500, tags:['DIVE'], desc:'3–5m wingspan mantas', day:67},
+          {id:'crystal-bay', name:'Crystal Bay', lat:-8.7200, lng:115.4700, tags:['DIVE'], desc:'Wall dive', day:67},
+          {id:'kelingking', name:'Kelingking Beach', lat:-8.7372, lng:115.4703, tags:['PHOTO'], desc:'Famous T-Rex cliff viewpoint', day:67},
+          {id:'angels-bill', name:"Angel's Billabong", lat:-8.7300, lng:115.5800, tags:['SWIM'], desc:'Natural infinity pool', day:68},
+          {id:'broken-beach', name:'Broken Beach', lat:-8.7280, lng:115.5780, tags:['PHOTO'], desc:'Circular sea arch', day:68},
+          {id:'diamond-beach', name:'Diamond Beach', lat:-8.7600, lng:115.6100, tags:['BEACH'], desc:'Remote beach', day:68},
+        ],
+        transportTo:{type:'ferry', label:'Ferry back to Bali → drive to Uluwatu'}
+      },
+      { id:'uluwatu', name:'Uluwatu', country:'indonesia', days:'69', lat:-8.8292, lng:115.0850, enabled:true,
+        pois:[
+          {id:'uluwatu-temple', name:'Uluwatu Temple', lat:-8.8292, lng:115.0850, tags:['TEMPLE'], desc:'70m cliff, Kecak fire dance', day:69},
+          {id:'padang-padang', name:'Padang Padang Beach', lat:-8.8136, lng:115.1008, tags:['SURF'], desc:'Surf break', day:69},
+          {id:'balangan', name:'Balangan Beach', lat:-8.7925, lng:115.1092, tags:['BEACH'], desc:'Clifftop beach', day:69},
+          {id:'jimbaran', name:'Jimbaran Bay', lat:-8.7803, lng:115.1644, tags:['FOOD'], desc:'Seafood dinner on beach', day:69},
+        ],
+        transportTo:{type:'flight', label:'Flight to Labuan Bajo'}
+      },
+      { id:'labuan-bajo', name:'Labuan Bajo', country:'indonesia', days:'70–72', lat:-8.4964, lng:119.8889, enabled:true,
+        pois:[
+          {id:'manta-alley', name:'Manta Alley Komodo', lat:-8.7100, lng:119.5700, tags:['DIVE'], desc:'Manta rays guaranteed in dry season', day:70},
+          {id:'padar-island', name:'Padar Island', lat:-8.6500, lng:119.6000, tags:['TREK'], desc:'Iconic three-bay viewpoint sunset trek', day:70},
+          {id:'komodo-island', name:'Komodo Island', lat:-8.5500, lng:119.4500, tags:['WILDLIFE'], desc:'Walk among Komodo dragons', day:71},
+          {id:'pink-beach', name:'Pink Beach Komodo', lat:-8.6000, lng:119.5000, tags:['BEACH'], desc:'Pink-tinted sand from red coral', day:71},
+          {id:'castle-rock', name:'Castle Rock', lat:-8.4800, lng:119.5300, tags:['DIVE'], desc:'Drift dive, sharks, mantas', day:71},
+          {id:'rinca', name:'Rinca Island', lat:-8.6300, lng:119.7000, tags:['WILDLIFE'], desc:'More dragon sightings', day:72},
+          {id:'kanawa', name:'Kanawa Island', lat:-8.5200, lng:119.7500, tags:['SNORKEL'], desc:'Island snorkel', day:72},
+          {id:'bukit-cinta', name:'Bukit Cinta Viewpoint', lat:-8.4900, lng:119.8800, tags:['VIEWPOINT'], desc:'Sunset over the islands', day:72},
+        ],
+        transportTo:{type:'bus', label:'Bus overland to Ruteng 3h'}
+      },
+      { id:'ruteng', name:'Ruteng', country:'indonesia', days:'73', lat:-8.6108, lng:120.4639, enabled:true,
+        pois:[
+          {id:'cancar', name:'Cancar Spider-web Rice Paddies', lat:-8.5667, lng:120.4500, tags:['TREK'], desc:'Unique lingko terraces', day:73},
+        ],
+        transportTo:{type:'bus', label:'Bus to Bajawa 5h'}
+      },
+      { id:'bajawa', name:'Bajawa', country:'indonesia', days:'74', lat:-8.7906, lng:121.0789, enabled:true,
+        pois:[
+          {id:'ngada-villages', name:'Ngada Traditional Villages', lat:-8.8000, lng:121.0800, tags:['CULTURAL'], desc:'Megalithic structures', day:74},
+          {id:'soa-springs', name:'Soa Hot Springs', lat:-8.7500, lng:121.1000, tags:['NATURAL'], desc:'Geothermal hot springs', day:74},
+        ],
+        transportTo:{type:'bus', label:'Bus to Kelimutu area 4h'}
+      },
+      { id:'kelimutu', name:'Kelimutu', country:'indonesia', days:'75', lat:-8.7700, lng:121.8200, enabled:true,
+        pois:[],
+        transportTo:{type:'bus', label:'Bus to Ende 1h'}
+      },
+      { id:'ende', name:'Ende', country:'indonesia', days:'76', lat:-8.8500, lng:121.6500, enabled:true,
+        pois:[],
+        transportTo:{type:'flight', label:'Flight Ende → Bali → fast boat to Gili T', legs:[
+          {type:'flight', label:'Flight Ende → Bali', toLat:-8.6500, toLng:115.2100},
+          {type:'fast-boat', label:'Fast boat Bali → Gili Trawangan', toLat:null, toLng:null}
+        ]}
+      },
+      { id:'gili-t', name:'Gili Trawangan', country:'indonesia', days:'77–79', lat:-8.3500, lng:116.0333, enabled:true,
+        pois:[
+          {id:'shark-point', name:'Shark Point Gili T', lat:-8.3400, lng:116.0200, tags:['SNORKEL'], desc:'Reef sharks + turtles', day:77},
+          {id:'gili-meno', name:'Gili Meno', lat:-8.3500, lng:116.0500, tags:['ISLAND'], desc:'Quietest Gili', day:78},
+          {id:'bask-sculptures', name:'BASK Underwater Sculptures', lat:-8.3480, lng:116.0520, tags:['SNORKEL'], desc:'Submerged human figures', day:78},
+        ],
+        transportTo: null
+      },
+    ];
+
+    // Save original for alternate restore
+    const originalSteps = JSON.parse(JSON.stringify(itinerarySteps));
+
+    // ── ALTERNATES ───────────────────────────────────────────────────────────
+    const alternates = {
+      'mekong': {
+        name: '🚢 Mekong Slow Boat Detour',
+        desc: 'Da Nang → fly Vientiane → VV → LP → 2-day Mekong slow boat → Chiang Rai → CM → Pai → Bangkok',
+        mutuallyExclusiveWith: ['vip-bus', 'lp-cm-flight'],
+        insertAfter: 'hoi-an',
+        newSteps: [
+          { id:'vientiane-m', name:'Vientiane', country:'laos', days:'~22', lat:17.9667, lng:102.6000, enabled:true,
+            pois:[
+              {id:'patuxai-m', name:'Patuxai Victory Gate', lat:17.9750, lng:102.6308, tags:['CULTURAL'], desc:"Laos' Arc de Triomphe", day:22},
+              {id:'pha-that-m', name:'Pha That Luang', lat:17.9756, lng:102.6367, tags:['TEMPLE'], desc:'Golden stupa', day:22},
+              {id:'cope-m', name:'COPE Visitor Centre', lat:17.9619, lng:102.6203, tags:['CULTURAL'], desc:'UXO awareness', day:22},
+            ],
+            transportTo:{type:'train', label:'Lao-China Railway north → Vang Vieng ~1h'}},
+          { id:'vang-vieng-m', name:'Vang Vieng', country:'laos', days:'~23–25', lat:18.9225, lng:102.4483, enabled:true,
+            pois:[
+              {id:'gcm-h', name:'Green Climbers Home', lat:18.9450, lng:102.4250, tags:['CLIMB'], desc:'Thaiwand Wall, Sleeping Wall', day:23},
+              {id:'tham-phu-m', name:'Tham Phu Kham Cave + Blue Lagoon', lat:18.9128, lng:102.4344, tags:['CAVE'], desc:'Cave + Blue Lagoon', day:24},
+              {id:'tubing-m', name:'Nam Song River Tubing', lat:18.9225, lng:102.4450, tags:['WATER'], desc:'River float through karst valley', day:25},
+            ],
+            transportTo:{type:'train', label:'Lao-China Railway north → Luang Prabang ~2h'}},
+          { id:'luang-prabang-m', name:'Luang Prabang', country:'laos', days:'~26–28', lat:19.8856, lng:102.1350, enabled:true,
+            pois:[
+              {id:'phousi-m', name:'Phousi Hill', lat:19.8878, lng:102.1339, tags:['TREK'], desc:'328 steps, 360° sunset views', day:26},
+              {id:'kuang-si-m', name:'Kuang Si Falls', lat:19.7481, lng:101.9928, tags:['WATERFALL'], desc:'Turquoise cascading pools', day:27},
+              {id:'wat-xieng-m', name:'Wat Xieng Thong', lat:19.8933, lng:102.1411, tags:['TEMPLE'], desc:"LP's most beautiful temple", day:28},
+              {id:'alms-m', name:'Alms Giving Ceremony', lat:19.8878, lng:102.1344, tags:['CULTURAL'], desc:'5:30am monks collecting rice', day:28},
+            ],
+            transportTo:{type:'slow-boat', label:'Slow boat Day 1 → Pak Beng (overnight)'}},
+          { id:'pak-beng', name:'Pak Beng', country:'laos', days:'~29', lat:19.81, lng:101.12, enabled:true, pois:[],
+            transportTo:{type:'slow-boat', label:'Slow boat Day 2 → Huay Xai'}},
+          { id:'huay-xai', name:'Huay Xai', country:'laos', days:'~30', lat:20.19, lng:100.40, enabled:true, pois:[],
+            transportTo:{type:'ferry', label:'Ferry across Mekong to Chiang Khong'}},
+          { id:'chiang-khong', name:'Chiang Khong', country:'thailand', days:'~30', lat:20.27, lng:100.43, enabled:true, pois:[],
+            transportTo:{type:'bus', label:'Bus to Chiang Rai 1.5h'}},
+          { id:'chiang-rai', name:'Chiang Rai', country:'thailand', days:'~30–31', lat:19.91, lng:99.83, enabled:true,
+            pois:[
+              {id:'white-temple', name:'White Temple (Wat Rong Khun)', lat:19.8248, lng:99.7636, tags:['TEMPLE'], desc:'Stunning all-white contemporary temple', day:31},
+              {id:'blue-temple', name:'Blue Temple (Wat Rong Suea Ten)', lat:19.9067, lng:99.8225, tags:['TEMPLE'], desc:'Brilliant blue Lanna-style temple', day:31},
+            ],
+            transportTo:{type:'bus', label:'Bus to Chiang Mai 3h'}},
+          { id:'chiang-mai-m', name:'Chiang Mai', country:'thailand', days:'~31–34', lat:18.7883, lng:98.9853, enabled:true,
+            pois:[
+              {id:'tha-phae-m', name:'Tha Phae Gate', lat:18.7872, lng:98.9933, tags:['CULTURAL'], desc:'Old city gate', day:31},
+              {id:'doi-inthanon-m', name:'Doi Inthanon', lat:18.5875, lng:98.4869, tags:['TREK'], desc:"Thailand's highest peak 2,565m", day:32},
+              {id:'crazy-horse-m', name:'Crazy Horse Buttress', lat:18.8600, lng:99.0300, tags:['CLIMB'], desc:'200+ bolted limestone routes', day:33},
+              {id:'elephant-park-m', name:'Elephant Nature Park', lat:18.8833, lng:98.8833, tags:['WILDLIFE'], desc:'Ethical elephant sanctuary', day:34},
+            ],
+            transportTo:{type:'bus', label:'Van to Pai 3h ~A$8'}},
+          { id:'pai-m', name:'Pai', country:'thailand', days:'~34–36', lat:19.3600, lng:98.4400, enabled:true,
+            pois:[
+              {id:'pai-canyon-m', name:'Pai Canyon', lat:19.3342, lng:98.4572, tags:['TREK'], desc:'Sunrise ridge walk', day:35},
+              {id:'pai-hot-m', name:'Sai Ngam Hot Springs', lat:19.3167, lng:98.4383, tags:['NATURAL'], desc:'Natural hot pools', day:35},
+              {id:'pai-wfall-m', name:'Mo Paeng Waterfall', lat:19.3833, lng:98.4167, tags:['WATERFALL'], desc:'Natural rock slides', day:36},
+            ],
+            transportTo:{type:'bus', label:'Van to Chiang Mai 3h → train/bus to Bangkok ~9h', legs:[
+              {type:'bus',   label:'Van back to Chiang Mai 3h', toLat:18.7883, toLng:98.9853},
+              {type:'train', label:'Train/bus to Bangkok ~9h',  toLat:null, toLng:null}
+            ]}},
+        ],
+        overrides: {
+          'hoi-an': {type:'flight', label:'Flight Da Nang → Vientiane'},
+        },
+        disableSteps: ['luang-prabang', 'vang-vieng', 'vientiane'],
+        shadowSegments: [
+          // Original Hoi An → LP direct flight (now replaced by Hoi An → Vientiane)
+          {fromLat:15.8801, fromLng:108.3380, toLat:19.8856, toLng:102.1350, type:'flight'},
+          // Original LP → VV → Vientiane → Bangkok train sequence (now reversed + slow boat)
+          {fromLat:19.8856, fromLng:102.1350, toLat:18.9225, toLng:102.4483, type:'train'},
+          {fromLat:18.9225, fromLng:102.4483, toLat:17.9667, toLng:102.6000, type:'train'},
+          {fromLat:17.9667, fromLng:102.6000, toLat:13.7381, toLng:100.5175, type:'train'},
+        ],
+      },
+      'ninh-binh': {
+        name: '🏞️ Ninh Binh Detour',
+        desc: 'Cat Ba → Ninh Binh → Phong Nha (boat caves + cave temples)',
+        mutuallyExclusiveWith: [],
+        insertAfter: 'cat-ba',
+        newSteps: [
+          { id:'ninh-binh', name:'Ninh Binh', country:'vietnam', days:'12–13', lat:20.25, lng:105.97, enabled:true,
+            pois:[
+              {id:'trang-an', name:'Trang An', lat:20.2500, lng:105.9700, tags:['BOAT'], desc:'UNESCO cave-rowing through gorges', day:12},
+              {id:'hang-mua', name:'Hang Mua Peak', lat:20.2000, lng:105.9600, tags:['TREK'], desc:'500 steps, panoramic rice paddies', day:13},
+            ],
+            transportTo:{type:'train', label:'Train to Dong Hoi → Phong Nha bus'}},
+        ],
+        overrides: {
+          'cat-ba': {type:'ferry', label:'Ferry + Bus to Ninh Binh via Hanoi', legs:[
+            {type:'ferry', label:'Ferry Cat Ba → Hai Phong area', toLat:20.8500, toLng:106.6800},
+            {type:'bus',   label:'Bus Hanoi → Ninh Binh ~2.5h', toLat:null, toLng:null}
+          ]},
+        },
+        disableSteps: [],
+        shadowSegments: [
+          {fromLat:20.7256, fromLng:107.0483, toLat:20.9500, toLng:106.9500, type:'ferry'},
+          {fromLat:20.9500, fromLng:106.9500, toLat:17.4714, toLng:106.5983, type:'train'},
+          {fromLat:17.4714, fromLng:106.5983, toLat:17.5917, toLng:106.2833, type:'bus'},
+        ],
+      },
+      'vip-bus': {
+        name: '🚌 VIP Mountain Bus LP→VV',
+        desc: 'Scenic highland road instead of Lao-China Railway',
+        mutuallyExclusiveWith: ['mekong'],
+        insertAfter: null,
+        newSteps: [],
+        overrides: {
+          'luang-prabang': {type:'bus', label:'VIP Mountain Bus ~4h scenic highland road',
+            waypoints:[{lat:19.3, lng:102.3}]},
+        },
+        disableSteps: [],
+        shadowSegments: [
+          {fromLat:19.8856, fromLng:102.1350, toLat:18.9225, toLng:102.4483, type:'train'},
+        ],
+      },
+      'lp-cm-flight': {
+        name: '✈️ Fly LP → Chiang Mai',
+        desc: 'Skip slow boat — fly LP direct to Chiang Mai + Pai → Bangkok. Also skips VV and Vientiane.',
+        mutuallyExclusiveWith: ['mekong', 'vip-bus'],
+        insertAfter: 'luang-prabang',
+        newSteps: [
+          { id:'chiang-mai-f', name:'Chiang Mai', country:'thailand', days:'~22–25', lat:18.7883, lng:98.9853, enabled:true,
+            pois:[
+              {id:'tha-phae-f', name:'Tha Phae Gate', lat:18.7872, lng:98.9933, tags:['CULTURAL'], desc:'Old city gate', day:22},
+              {id:'doi-inthanon-f', name:'Doi Inthanon', lat:18.5875, lng:98.4869, tags:['TREK'], desc:"Thailand's highest peak 2,565m", day:23},
+              {id:'crazy-horse-f', name:'Crazy Horse Buttress', lat:18.8600, lng:99.0300, tags:['CLIMB'], desc:'200+ bolted limestone routes', day:24},
+              {id:'elephant-park-f', name:'Elephant Nature Park', lat:18.8833, lng:98.8833, tags:['WILDLIFE'], desc:'Ethical elephant sanctuary', day:25},
+            ],
+            transportTo:{type:'bus', label:'Van to Pai 3h ~A$8'}},
+          { id:'pai-f', name:'Pai', country:'thailand', days:'~25–27', lat:19.3600, lng:98.4400, enabled:true,
+            pois:[
+              {id:'pai-canyon-f', name:'Pai Canyon', lat:19.3342, lng:98.4572, tags:['TREK'], desc:'Sunrise ridge walk', day:26},
+              {id:'pai-hot-f', name:'Sai Ngam Hot Springs', lat:19.3167, lng:98.4383, tags:['NATURAL'], desc:'Natural hot pools', day:26},
+              {id:'pai-wfall-f', name:'Mo Paeng Waterfall', lat:19.3833, lng:98.4167, tags:['WATERFALL'], desc:'Natural rock slides', day:27},
+            ],
+            transportTo:{type:'bus', label:'Van to Chiang Mai 3h → train/bus to Bangkok ~9h', legs:[
+              {type:'bus',   label:'Van back to Chiang Mai 3h', toLat:18.7883, toLng:98.9853},
+              {type:'train', label:'Train/bus to Bangkok ~9h',  toLat:null, toLng:null}
+            ]}},
+        ],
+        overrides: {
+          'luang-prabang': {type:'flight', label:'Flight LP → Chiang Mai ~1h'},
+        },
+        disableSteps: ['vang-vieng', 'vientiane'],
+        shadowSegments: [
+          {fromLat:19.8856, fromLng:102.1350, toLat:18.9225, toLng:102.4483, type:'train'},
+          {fromLat:18.9225, fromLng:102.4483, toLat:17.9667, toLng:102.6000, type:'train'},
+          {fromLat:17.9667, fromLng:102.6000, toLat:13.7381, toLng:100.5175, type:'train'},
+        ],
+      },
+      'koh-samui': {
+        name: '🏝️ Add Koh Samui',
+        desc: 'KP → Koh Samui (Ang Thong Marine Park, Fisherman\'s Village) → Koh Tao (adds 1–2 days)',
+        mutuallyExclusiveWith: [],
+        insertAfter: 'koh-phangan',
+        newSteps: [
+          { id:'koh-samui', name:'Koh Samui', country:'thailand', days:'~31', lat:9.5120, lng:100.0130, enabled:true,
+            pois:[
+              {id:'ang-thong', name:'Ang Thong Marine Park', lat:9.7500, lng:100.0500, tags:['KAYAK'], desc:'Emerald lagoon, kayak + snorkel day trip A$40–60', day:31},
+              {id:'fisherman-village', name:"Fisherman's Village Night Market", lat:9.5300, lng:100.0600, tags:['FOOD'], desc:'Best night market on Koh Samui (Bophut)', day:31},
+              {id:'big-buddha-s', name:'Big Buddha Temple', lat:9.5450, lng:100.0610, tags:['CULTURAL'], desc:'18m golden Buddha', day:31},
+              {id:'na-muang', name:'Na Muang Waterfalls', lat:9.4833, lng:100.0333, tags:['WATERFALL'], desc:'Twin waterfalls inland', day:31},
+            ],
+            transportTo:{type:'ferry', label:'Ferry Koh Samui → Koh Tao 2h'}},
+        ],
+        overrides: {
+          'koh-phangan': {type:'ferry', label:'Ferry KP → Koh Samui 30 min'},
+        },
+        disableSteps: [],
+        shadowSegments: [
+          {fromLat:9.7197, fromLng:100.0603, toLat:10.0994, toLng:99.8231, type:'ferry'},
+        ],
+      },
+      'krabi': {
+        name: '🧗 Krabi / Railay Detour',
+        desc: 'Koh Tao → ferry to Surat Thani → bus to Krabi → Railay Beach climbing + Phi Phi → fly Bangkok → Cebu (adds 2–3 days)',
+        mutuallyExclusiveWith: [],
+        insertAfter: 'koh-tao',
+        newSteps: [
+          { id:'krabi', name:'Krabi / Railay Beach', country:'thailand', days:'~35–37', lat:8.0863, lng:98.9063, enabled:true,
+            pois:[
+              {id:'railay-beach', name:'Railay Beach', lat:8.0119, lng:98.8356, tags:['CLIMB'], desc:'Sea cliff climbing + longtail-only beach — 150+ routes, beginner to 8a, A$40 half-day', day:35},
+              {id:'tiger-cave', name:'Tiger Cave Temple (Wat Tham Suea)', lat:8.1308, lng:98.9214, tags:['CULTURAL'], desc:'1,237 steps to panoramic summit', day:36},
+              {id:'phi-phi-day', name:'Phi Phi Islands Day Trip', lat:7.7407, lng:98.7784, tags:['BEACH'], desc:'Maya Bay, snorkelling by longtail, A$30–50', day:36},
+              {id:'four-islands-krabi', name:'Four Islands Longtail Tour', lat:7.9667, lng:98.8667, tags:['BOAT'], desc:'Beach hop + snorkel around Krabi islands, A$20–30', day:37},
+            ],
+            transportTo:{type:'flight', label:'Flight Krabi → Bangkok → fly to Cebu', legs:[
+              {type:'flight', label:'Flight Krabi → Bangkok ~1.5h', toLat:13.7381, toLng:100.5175},
+              {type:'flight', label:'Flight Bangkok → Cebu', toLat:null, toLng:null}
+            ]}},
+        ],
+        overrides: {
+          'koh-tao': {type:'ferry', label:'Ferry → Surat Thani → bus to Krabi ~5h', legs:[
+            {type:'ferry', label:'Ferry to Surat Thani area 2h', toLat:9.1382, toLng:99.3227},
+            {type:'bus', label:'Bus Surat Thani → Krabi ~3h', toLat:null, toLng:null}
+          ]},
+        },
+        disableSteps: [],
+        shadowSegments: [
+          {fromLat:10.0994, fromLng:99.8231, toLat:10.5000, toLng:99.1700, type:'ferry'},
+          {fromLat:10.5000, fromLng:99.1700, toLat:13.7381, toLng:100.5175, type:'train'},
+          {fromLat:13.7381, fromLng:100.5175, toLat:10.3157, toLng:123.8854, type:'flight'},
+        ],
+      },
+    };
+
+    // ── STATE ────────────────────────────────────────────────────────────────
+    let activeCountries = new Set(Object.keys(COUNTRY_COLORS));
+    let darkMode = false;
+    let activeAlternates = new Set();
+    let activeShadowSegments = {};
+    let allMarkers = [];
+    let routeLines = [];
+    let dragSrcId = null;
+
+    // ── MAP INIT ─────────────────────────────────────────────────────────────
+    const map = L.map('map').setView([13.0, 105.0], 5);
+    let tileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors, © CARTO', maxZoom: 20, minZoom: 3
+    }).addTo(map);
+
+    // ── HELPERS ──────────────────────────────────────────────────────────────
+    function getColor(type) { return TRANSPORT_COLORS[type] || '#6b7280'; }
+
+    function drawPolyline(coords, type, isShadow) {
+        const color = isShadow ? '#9ca3af' : getColor(type);
+        const dash  = isShadow ? '8,6' : (TRANSPORT_DASH[type] || null);
+        const wt    = isShadow ? 1.5 : (type === 'flight' ? 2 : 3);
+        const op    = isShadow ? 0.3 : 0.75;
+        const line  = L.polyline(coords, {color, weight:wt, opacity:op, dashArray:dash});
+        line.addTo(map);
+        return line;
+    }
+
+    function createMarker(lat, lng, color, size, popupHtml, opacity) {
+        const m = L.circleMarker([lat, lng], {
+            radius: size / 2, fillColor: color, color: '#fff',
+            weight: size > 10 ? 2 : 1.5, opacity: 1, fillOpacity: opacity || 0.85,
+        });
+        if (popupHtml) m.bindPopup(popupHtml);
+        return m;
+    }
+
+    function stepPopup(step) {
+        return `<div class="popup-title">${step.name}</div>
+                <div class="popup-day">Days ${step.days}</div>
+                <div class="popup-desc">${step.pois.length} POIs</div>`;
+    }
+    function poiPopup(poi) {
+        return `<div class="popup-title">${poi.name}</div>
+                <div class="popup-day">Day ${poi.day}</div>
+                <div class="popup-tags">${poi.tags.map(t=>`<span class="popup-tag">${t}</span>`).join('')}</div>
+                <div class="popup-desc">${poi.desc}</div>`;
+    }
+
+    // ── RENDER MARKERS ───────────────────────────────────────────────────────
+    function renderAllMarkers() {
+        allMarkers.forEach(({marker}) => map.removeLayer(marker));
+        allMarkers = [];
+        itinerarySteps.forEach(step => {
+            if (!activeCountries.has(step.country)) return;
+            const color = COUNTRY_COLORS[step.country];
+            const stepM = createMarker(step.lat, step.lng, color, step.enabled ? 18 : 12, stepPopup(step), 0.85);
+            stepM.on('click', () => stepM.openPopup());
+            if (step.enabled) stepM.addTo(map);
+            allMarkers.push({marker: stepM, stepId: step.id, isStep: true});
+
+            if (!step.enabled) return;
+            (step.pois || []).forEach(poi => {
+                if (poi.hidden) return;
+                const pm = createMarker(poi.lat, poi.lng, color, 9, poiPopup(poi), 0.45);
+                pm.on('click', () => pm.openPopup());
+                pm.addTo(map);
+                allMarkers.push({marker: pm, stepId: step.id, poiId: poi.id});
+            });
+        });
+    }
+
+    // ── RENDER ROUTE ─────────────────────────────────────────────────────────
+    function renderRoute() {
+        routeLines.forEach(l => map.removeLayer(l));
+        routeLines = [];
+
+        // Shadow segments (displaced by alternates)
+        Object.values(activeShadowSegments).forEach(segs => {
+            segs.forEach(seg => {
+                routeLines.push(drawPolyline([[seg.fromLat, seg.fromLng],[seg.toLat, seg.toLng]], seg.type, true));
+            });
+        });
+
+        // Main route
+        const enabled = itinerarySteps.filter(s => s.enabled && activeCountries.has(s.country));
+        for (let i = 0; i < enabled.length - 1; i++) {
+            const from = enabled[i], to = enabled[i + 1];
+            if (!from.transportTo) continue;
+            const tr = from.transportTo;
+            if (tr.legs) {
+                let pLat = from.lat, pLng = from.lng;
+                tr.legs.forEach(leg => {
+                    const tLat = (leg.toLat != null) ? leg.toLat : to.lat;
+                    const tLng = (leg.toLng != null) ? leg.toLng : to.lng;
+                    routeLines.push(drawPolyline([[pLat, pLng],[tLat, tLng]], leg.type, false));
+                    pLat = tLat; pLng = tLng;
+                });
+            } else {
+                const coords = [[from.lat, from.lng]];
+                if (tr.waypoints) tr.waypoints.forEach(wp => coords.push([wp.lat, wp.lng]));
+                coords.push([to.lat, to.lng]);
+                routeLines.push(drawPolyline(coords, tr.type, false));
             }
+        }
+    }
+
+    // ── RENDER STEP LIST ─────────────────────────────────────────────────────
+    function renderStepList() {
+        const container = document.getElementById('stepsContainer');
+        container.innerHTML = itinerarySteps.map((step, idx) => {
+            const color = COUNTRY_COLORS[step.country];
+            const vis = activeCountries.has(step.country) ? '' : 'display:none;';
+            const isAlt = !!step._altId;
+            const poiCount = (step.pois || []).length;
+            const trLabel = step.transportTo ? step.transportTo.label : null;
+            const trType  = step.transportTo ? step.transportTo.type : null;
+            const trColor = trType ? getColor(trType) : '#9ca3af';
+
+            // Inline editor HTML
+            const trTypeOpts = ['bus','train','ferry','flight','slow-boat','fast-boat','motorbike','none']
+                .map(t => `<option value="${t}"${t === (trType||'none') ? ' selected' : ''}>${t}</option>`).join('');
+            const trJsonSafe = step.transportTo ? JSON.stringify(step.transportTo, null, 2).replace(/</g,'&lt;').replace(/>/g,'&gt;') : '';
+            const editorHtml = `
+                <div class="step-editor" id="editor-${step.id}">
+                    <div class="edit-row">
+                        <div class="edit-field">
+                            <label>Name</label>
+                            <input type="text" id="en-name-${step.id}" value="${step.name.replace(/"/g,'&quot;')}">
+                        </div>
+                        <div class="edit-field">
+                            <label>Days</label>
+                            <input type="text" id="en-days-${step.id}" value="${step.days}">
+                        </div>
+                    </div>
+                    <div class="edit-row">
+                        <div class="edit-field">
+                            <label>Lat</label>
+                            <input type="number" id="en-lat-${step.id}" step="0.0001" value="${step.lat}">
+                        </div>
+                        <div class="edit-field">
+                            <label>Lng</label>
+                            <input type="number" id="en-lng-${step.id}" step="0.0001" value="${step.lng}">
+                        </div>
+                    </div>
+                    <div class="edit-field">
+                        <label>Country</label>
+                        <select id="en-country-${step.id}">
+                            ${['vietnam','laos','thailand','philippines','indonesia'].map(c=>`<option value="${c}"${c===step.country?' selected':''}>${c}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div class="edit-row">
+                        <div class="edit-field">
+                            <label>Transport Type</label>
+                            <select id="en-type-${step.id}">${trTypeOpts}</select>
+                        </div>
+                        <div class="edit-field">
+                            <label>Transport Label</label>
+                            <input type="text" id="en-label-${step.id}" value="${(trLabel||'').replace(/"/g,'&quot;')}">
+                        </div>
+                    </div>
+                    <span class="edit-advanced-toggle" onclick="toggleAdvanced('${step.id}')">▸ Advanced (multi-leg JSON)</span>
+                    <div class="edit-advanced" id="adv-${step.id}">
+                        <div class="edit-field">
+                            <label>Full transportTo JSON (overrides type+label when open)</label>
+                            <textarea id="en-json-${step.id}">${trJsonSafe}</textarea>
+                        </div>
+                    </div>
+                    <div class="edit-btns">
+                        <button class="edit-save-btn" onclick="saveStepEdit('${step.id}')">Save</button>
+                        <button class="edit-cancel-btn" onclick="closeStepEditor('${step.id}')">Cancel</button>
+                    </div>
+                </div>`;
+
+            return `<div class="step-card ${step.country}${step.enabled?'':' disabled'}${isAlt?' alt-step':''}"
+                        id="card-${step.id}" style="${vis}"
+                        draggable="true"
+                        ondragstart="onDragStart(event,'${step.id}')"
+                        ondragover="onDragOver(event)"
+                        ondrop="onDrop(event,'${step.id}')"
+                        ondragend="onDragEnd(event)">
+                <div class="step-card-header">
+                    <span class="drag-handle">⠿</span>
+                    <span class="country-dot" style="background:${color}"></span>
+                    <span class="step-name" onclick="flyToStep(${step.lat},${step.lng})" style="cursor:pointer" title="Fly to ${step.name}">${step.name}</span>
+                    <span class="step-days">${step.days}</span>
+                    <button class="step-toggle-btn${step.enabled?' on':''}" onclick="toggleStep('${step.id}')" title="${step.enabled?'Disable':'Enable'}">
+                        ${step.enabled ? '✓' : '○'}
+                    </button>
+                    ${poiCount>0 ? `<button class="step-expand-btn" id="expbtn-${step.id}" onclick="toggleExpand('${step.id}')">▾</button>` : '<span style="width:20px"></span>'}
+                    <button class="step-edit-btn" onclick="toggleStepEditor('${step.id}')" title="Edit step">✎</button>
+                </div>
+                ${editorHtml}
+                ${poiCount>0 ? `
+                <div class="step-poi-count" onclick="toggleExpand('${step.id}')">▸ ${poiCount} POI${poiCount>1?'s':''}</div>
+                <div class="poi-list" id="pois-${step.id}">
+                    ${(step.pois||[]).map(poi=>`
+                    <div class="poi-item">
+                        <button class="poi-eye-btn${poi.hidden?' hidden-poi':''}" onclick="togglePOI('${step.id}','${poi.id}')" title="Show/hide on map">👁</button>
+                        <span class="poi-name" onclick="flyToStep(${poi.lat},${poi.lng})">${poi.name}</span>
+                        <span class="poi-tag">${poi.tags[0]}</span>
+                    </div>`).join('')}
+                </div>` : ''}
+                ${trLabel && idx < itinerarySteps.length-1 ? `
+                <div class="step-transport-info" style="color:${trColor}">→ ${trLabel}</div>` : ''}
+            </div>`;
+        }).join('');
+        renderAltButtons();
+    }
+
+    function renderAltButtons() {
+        const container = document.getElementById('altBtnList');
+        if (!container) return;
+        container.innerHTML = Object.entries(alternates).map(([id, alt]) => {
+            const isActive = activeAlternates.has(id);
+            return `<div class="alt-btn-row">
+                <button class="alt-btn${isActive?' active':''}" id="altbtn-${id}" onclick="toggleAlternate('${id}')">
+                    ${alt.name}
+                    <div class="alt-btn-desc">${alt.desc || ''}</div>
+                </button>
+                <button class="alt-edit-icon" onclick="openAltEditor('${id}')" title="Edit alternate">✎</button>
+                <button class="alt-del-icon" onclick="confirmDeleteAlt('${id}')" title="Delete alternate">✕</button>
+            </div>`;
+        }).join('');
+        updateAltButtons();
+    }
+
+    // ── STEP INTERACTIONS ─────────────────────────────────────────────────────
+    function toggleStep(id) {
+        const step = itinerarySteps.find(s => s.id === id);
+        if (!step) return;
+        step.enabled = !step.enabled;
+        renderStepList();
+        renderAllMarkers();
+        renderRoute();
+    }
+
+    function toggleExpand(id) {
+        const list = document.getElementById('pois-' + id);
+        const btn  = document.getElementById('expbtn-' + id);
+        if (!list) return;
+        list.classList.toggle('open');
+        if (btn) btn.classList.toggle('open');
+    }
+
+    function togglePOI(stepId, poiId) {
+        const step = itinerarySteps.find(s => s.id === stepId);
+        if (!step) return;
+        const poi = step.pois.find(p => p.id === poiId);
+        if (!poi) return;
+        poi.hidden = !poi.hidden;
+        renderStepList();
+        renderAllMarkers();
+        // Re-open the poi list
+        const list = document.getElementById('pois-' + stepId);
+        const btn  = document.getElementById('expbtn-' + stepId);
+        if (list) { list.classList.add('open'); }
+        if (btn)  { btn.classList.add('open'); }
+    }
+
+    function flyToStep(lat, lng) { map.setView([lat, lng], 12); }
+    function fitToRoute() {
+        const pts = itinerarySteps.filter(s => s.enabled).map(s => [s.lat, s.lng]);
+        if (pts.length) map.fitBounds(L.latLngBounds(pts), {padding:[50,50]});
+    }
+
+    // ── DRAG AND DROP ─────────────────────────────────────────────────────────
+    function onDragStart(e, id) {
+        dragSrcId = id;
+        e.dataTransfer.effectAllowed = 'move';
+        document.getElementById('card-' + id).classList.add('dragging');
+    }
+    function onDragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; }
+    function onDrop(e, targetId) {
+        e.preventDefault();
+        if (!dragSrcId || dragSrcId === targetId) return;
+        const fromIdx = itinerarySteps.findIndex(s => s.id === dragSrcId);
+        const toIdx   = itinerarySteps.findIndex(s => s.id === targetId);
+        if (fromIdx < 0 || toIdx < 0) return;
+        const [moved] = itinerarySteps.splice(fromIdx, 1);
+        itinerarySteps.splice(toIdx, 0, moved);
+        dragSrcId = null;
+        renderStepList();
+        renderRoute();
+    }
+    function onDragEnd(e) {
+        dragSrcId = null;
+        document.querySelectorAll('.step-card.dragging').forEach(el => el.classList.remove('dragging'));
+    }
+
+    // ── ALTERNATES ────────────────────────────────────────────────────────────
+    function applyAlternate(altId) {
+        const alt = alternates[altId];
+        if (!alt) return;
+        // Override transportTo
+        for (const [sid, override] of Object.entries(alt.overrides || {})) {
+            const s = itinerarySteps.find(x => x.id === sid);
+            if (s) s.transportTo = Object.assign({}, override);
+        }
+        // Disable steps
+        (alt.disableSteps || []).forEach(sid => {
+            const s = itinerarySteps.find(x => x.id === sid);
+            if (s) s.enabled = false;
+        });
+        // Insert new steps
+        if (alt.insertAfter && alt.newSteps && alt.newSteps.length) {
+            const idx = itinerarySteps.findIndex(s => s.id === alt.insertAfter);
+            if (idx >= 0) {
+                const toInsert = alt.newSteps.map(s => Object.assign({}, s, {_altId: altId}));
+                itinerarySteps.splice(idx + 1, 0, ...toInsert);
+            }
+        }
+        activeShadowSegments[altId] = (alt.shadowSegments || []).slice();
+    }
+
+    function toggleAlternate(altId) {
+        const alt = alternates[altId];
+        if (!alt) return;
+        if (activeAlternates.has(altId)) {
+            activeAlternates.delete(altId);
+        } else {
+            // Mutual exclusion
+            (alt.mutuallyExclusiveWith || []).forEach(id => activeAlternates.delete(id));
+            activeAlternates.add(altId);
+        }
+        // Restore original steps
+        itinerarySteps.length = 0;
+        JSON.parse(JSON.stringify(originalSteps)).forEach(s => itinerarySteps.push(s));
+        activeShadowSegments = {};
+        // Re-apply all active alternates
+        activeAlternates.forEach(id => applyAlternate(id));
+
+        renderAllMarkers();
+        renderStepList();
+        renderRoute();
+        updateAltButtons();
+    }
+
+    function updateAltButtons() {
+        Object.keys(alternates).forEach(id => {
+            const btn = document.getElementById('altbtn-' + id);
+            if (btn) btn.classList.toggle('active', activeAlternates.has(id));
+        });
+    }
+
+    // ── EDIT MODE ─────────────────────────────────────────────────────────────
+    let editMode = false;
+
+    function toggleEditMode() {
+        editMode = !editMode;
+        document.body.classList.toggle('edit-mode', editMode);
+        const btn = document.getElementById('editModeBtn');
+        if (btn) btn.classList.toggle('active', editMode);
+        // Close any open step editors when leaving edit mode
+        if (!editMode) {
+            document.querySelectorAll('.step-editor.open').forEach(el => el.classList.remove('open'));
+        }
+    }
+
+    function toggleStepEditor(id) {
+        const editor = document.getElementById('editor-' + id);
+        if (!editor) return;
+        const isOpen = editor.classList.contains('open');
+        // Close all other open editors
+        document.querySelectorAll('.step-editor.open').forEach(el => el.classList.remove('open'));
+        if (!isOpen) editor.classList.add('open');
+    }
+
+    function closeStepEditor(id) {
+        const editor = document.getElementById('editor-' + id);
+        if (editor) editor.classList.remove('open');
+    }
+
+    function toggleAdvanced(id) {
+        const adv = document.getElementById('adv-' + id);
+        if (!adv) return;
+        adv.classList.toggle('open');
+        const toggle = adv.previousElementSibling;
+        if (toggle) toggle.textContent = adv.classList.contains('open')
+            ? '▾ Advanced (multi-leg JSON)' : '▸ Advanced (multi-leg JSON)';
+    }
+
+    function saveStepEdit(id) {
+        const step = itinerarySteps.find(s => s.id === id);
+        if (!step) return;
+
+        const adv = document.getElementById('adv-' + id);
+        if (adv && adv.classList.contains('open')) {
+            // Use raw JSON textarea
+            const rawEl = document.getElementById('en-json-' + id);
+            if (rawEl) {
+                try {
+                    const raw = rawEl.value.trim();
+                    step.transportTo = raw ? JSON.parse(raw) : null;
+                } catch(e) {
+                    alert('Invalid JSON in transportTo field:\n' + e.message);
+                    return;
+                }
+            }
+        } else {
+            // Use simple fields
+            const typeEl  = document.getElementById('en-type-' + id);
+            const labelEl = document.getElementById('en-label-' + id);
+            const type  = typeEl  ? typeEl.value  : null;
+            const label = labelEl ? labelEl.value.trim() : '';
+            if (!type || type === 'none') {
+                step.transportTo = null;
+            } else {
+                // Preserve existing legs/waypoints if type+label only changed
+                const existing = step.transportTo || {};
+                step.transportTo = Object.assign({}, existing, {type, label});
+            }
+        }
+
+        // Update basic fields
+        const nameEl    = document.getElementById('en-name-' + id);
+        const daysEl    = document.getElementById('en-days-' + id);
+        const latEl     = document.getElementById('en-lat-' + id);
+        const lngEl     = document.getElementById('en-lng-' + id);
+        const countryEl = document.getElementById('en-country-' + id);
+        if (nameEl    && nameEl.value.trim())    step.name    = nameEl.value.trim();
+        if (daysEl    && daysEl.value.trim())    step.days    = daysEl.value.trim();
+        if (latEl     && latEl.value)            step.lat     = parseFloat(latEl.value);
+        if (lngEl     && lngEl.value)            step.lng     = parseFloat(lngEl.value);
+        if (countryEl && countryEl.value)        step.country = countryEl.value;
+
+        renderStepList();
+        renderAllMarkers();
+        renderRoute();
+    }
+
+    // ── ALTERNATE EDITOR ──────────────────────────────────────────────────────
+    let _editingAltId = null; // null = new
+
+    function openAltEditor(id) {
+        _editingAltId = id;
+        const modal = document.getElementById('altModal');
+        const alt = id ? alternates[id] : null;
+
+        document.getElementById('altModalTitle').textContent = id ? 'Edit Alternate Route' : 'New Alternate Route';
+        document.getElementById('altModalKey').value = id || '';
+        document.getElementById('altModalKey').readOnly = !!id;
+        document.getElementById('altModalName').value = (alt && alt.name) || '';
+        document.getElementById('altModalMutex').value = (alt && alt.mutuallyExclusiveWith) ? alt.mutuallyExclusiveWith.join(', ') : '';
+        document.getElementById('altModalOverrides').value = (alt && alt.overrides) ? JSON.stringify(alt.overrides, null, 2) : '{}';
+        document.getElementById('altModalNewSteps').value = (alt && alt.newSteps && alt.newSteps.length) ? JSON.stringify(alt.newSteps, null, 2) : '[]';
+        document.getElementById('altModalShadow').value = (alt && alt.shadowSegments && alt.shadowSegments.length) ? JSON.stringify(alt.shadowSegments, null, 2) : '[]';
+
+        // Populate insertAfter dropdown
+        const sel = document.getElementById('altModalInsertAfter');
+        sel.innerHTML = '<option value="">— none —</option>';
+        originalSteps.forEach(s => {
+            const opt = document.createElement('option');
+            opt.value = s.id;
+            opt.textContent = s.name + ' (' + s.id + ')';
+            if (alt && alt.insertAfter === s.id) opt.selected = true;
+            sel.appendChild(opt);
+        });
+
+        // Populate disable steps checklist
+        const list = document.getElementById('altModalDisableList');
+        list.innerHTML = originalSteps.map(s => {
+            const checked = (alt && alt.disableSteps && alt.disableSteps.includes(s.id)) ? 'checked' : '';
+            return `<label class="disable-step-item">
+                <input type="checkbox" value="${s.id}" ${checked}> ${s.name} (${s.id})
+            </label>`;
+        }).join('');
+
+        // Show/hide delete button
+        document.getElementById('altModalDeleteBtn').style.display = id ? '' : 'none';
+
+        modal.classList.add('open');
+    }
+
+    function closeAltModal() {
+        document.getElementById('altModal').classList.remove('open');
+        _editingAltId = null;
+    }
+
+    function saveAltEdit() {
+        const key = document.getElementById('altModalKey').value.trim();
+        if (!key) { alert('Alternate ID is required.'); return; }
+        if (!/^[a-z0-9-]+$/.test(key)) { alert('ID must be lowercase letters, numbers, and hyphens only.'); return; }
+
+        let overrides, newSteps, shadowSegments;
+        try { overrides = JSON.parse(document.getElementById('altModalOverrides').value || '{}'); } catch(e) { alert('Overrides JSON error: ' + e.message); return; }
+        try { newSteps  = JSON.parse(document.getElementById('altModalNewSteps').value  || '[]'); } catch(e) { alert('New Steps JSON error: '  + e.message); return; }
+        try { shadowSegments = JSON.parse(document.getElementById('altModalShadow').value || '[]'); } catch(e) { alert('Shadow Segments JSON error: ' + e.message); return; }
+
+        const disableSteps = Array.from(document.querySelectorAll('#altModalDisableList input:checked')).map(el => el.value);
+        const mutex = document.getElementById('altModalMutex').value.trim();
+        const mutuallyExclusiveWith = mutex ? mutex.split(',').map(s=>s.trim()).filter(Boolean) : [];
+
+        const altData = {
+            name: document.getElementById('altModalName').value.trim() || key,
+            desc: newSteps.length
+                ? newSteps.map(s=>s.name).join(' → ')
+                : Object.keys(overrides).length ? 'Transport override' : '',
+            mutuallyExclusiveWith,
+            insertAfter: document.getElementById('altModalInsertAfter').value || null,
+            newSteps,
+            overrides,
+            disableSteps,
+            shadowSegments,
         };
 
-        // Transport routes with type and color
-        const transportRoutes = [
-            // Vietnam routes
-            {from: {id: 10, lat: 21.0320, lng: 105.7622}, to: {id: 11, lat: 22.8233, lng: 104.9833}, type: 'bus', days: '3'},
-            {from: {id: 11, lat: 22.8233, lng: 104.9833}, to: {id: 12, lat: 23.0664, lng: 105.0036}, type: 'motorbike', days: '3-4'},
-            {from: {id: 12, lat: 23.0664, lng: 105.0036}, to: {id: 13, lat: 23.1194, lng: 105.1488}, type: 'motorbike', days: '4'},
-            {from: {id: 13, lat: 23.1194, lng: 105.1488}, to: {id: 14, lat: 23.2736, lng: 105.3606}, type: 'motorbike', days: '4-5'},
-            {from: {id: 16, lat: 23.2461, lng: 105.4033}, to: {id: 17, lat: 23.2530, lng: 105.4070}, type: 'boat', days: '5-6'},
-            {from: {id: 18, lat: 23.1572, lng: 105.4103}, to: {id: 20, lat: 22.3364, lng: 103.8439}, type: 'motorbike', days: '6-7'},
-            {from: {id: 24, lat: 22.5036, lng: 103.9750}, to: {id: 25, lat: 20.7256, lng: 107.0483}, type: 'train', days: '8-9'},
-            {from: {id: 30, lat: 20.7500, lng: 107.0667}, to: {id: 31, lat: 17.5917, lng: 106.2833}, type: 'ferry', days: '12-13'},
-            {from: {id: 35, lat: 17.4714, lng: 106.5983}, to: {id: 36, lat: 15.8801, lng: 108.3380}, type: 'train', days: '16'},
-            {from: {id: 42, lat: 16.0556, lng: 108.1994}, to: {id: 43, lat: 19.8856, lng: 102.1350}, type: 'flight', days: '19'},
-            // Laos routes
-            {from: {id: 43, lat: 19.8856, lng: 102.1350}, to: {id: 51, lat: 18.9225, lng: 102.4483}, type: 'bus', days: '21-22'},
-            {from: {id: 51, lat: 18.9225, lng: 102.4483}, to: {id: 57, lat: 17.9667, lng: 102.6000}, type: 'bus', days: '25-26'},
-            // Thailand routes
-            {from: {id: 57, lat: 17.9667, lng: 102.6000}, to: {id: 62, lat: 13.7381, lng: 100.5175}, type: 'train', days: '26-27'},
-            {from: {id: 62, lat: 13.7381, lng: 100.5175}, to: {id: 70, lat: 9.7197, lng: 100.0603}, type: 'ferry', days: '27-28'},
-            {from: {id: 70, lat: 9.7197, lng: 100.0603}, to: {id: 78, lat: 10.0994, lng: 99.8231}, type: 'ferry', days: '30-31'},
-            {from: {id: 78, lat: 10.0994, lng: 99.8231}, to: {id: 62, lat: 13.7381, lng: 100.5175}, type: 'ferry', days: '34-35'},
-            {from: {id: 62, lat: 13.7381, lng: 100.5175}, to: {id: 84, lat: 18.7883, lng: 98.9853}, type: 'train', days: '35-37'},
-            {from: {id: 91, lat: 18.8833, lng: 98.8833}, to: {id: 92, lat: 19.3600, lng: 98.4400}, type: 'motorbike', days: '40'},
-            // Philippines routes
-            {from: {id: 62, lat: 13.7381, lng: 100.5175}, to: {id: 102, lat: 10.3157, lng: 123.8854}, type: 'flight', days: '42-43'},
-            {from: {id: 102, lat: 10.3157, lng: 123.8854}, to: {id: 103, lat: 9.9500, lng: 123.6833}, type: 'ferry', days: '43'},
-            {from: {id: 103, lat: 9.9500, lng: 123.6833}, to: {id: 107, lat: 9.5833, lng: 123.8333}, type: 'ferry', days: '45-47'},
-            {from: {id: 107, lat: 9.5833, lng: 123.8333}, to: {id: 113, lat: 9.7392, lng: 118.7353}, type: 'flight', days: '49-51'},
-            {from: {id: 113, lat: 9.7392, lng: 118.7353}, to: {id: 115, lat: 10.2750, lng: 119.1333}, type: 'ferry', days: '51-52'},
-            {from: {id: 115, lat: 10.2750, lng: 119.1333}, to: {id: 116, lat: 11.1753, lng: 119.3906}, type: 'ferry', days: '53-55'},
-            {from: {id: 116, lat: 11.1753, lng: 119.3906}, to: {id: 126, lat: 12.0056, lng: 120.2039}, type: 'ferry', days: '56-58'},
-            {from: {id: 126, lat: 12.0056, lng: 120.2039}, to: {id: 132, lat: 14.5086, lng: 121.0194}, type: 'flight', days: '60-61'},
-            // Indonesia routes
-            {from: {id: 132, lat: 14.5086, lng: 121.0194}, to: {id: 133, lat: -8.5069, lng: 115.2625}, type: 'flight', days: '61-62'},
-            {from: {id: 138, lat: -8.4231, lng: 115.3128}, to: {id: 139, lat: -8.3500, lng: 115.6500}, type: 'motorbike', days: '64-65'},
-            {from: {id: 142, lat: -8.3472, lng: 115.6472}, to: {id: 143, lat: -8.7275, lng: 115.5447}, type: 'ferry', days: '66-67'},
-            {from: {id: 143, lat: -8.7275, lng: 115.5447}, to: {id: 150, lat: -8.8292, lng: 115.0850}, type: 'ferry', days: '68-69'},
-            {from: {id: 150, lat: -8.8292, lng: 115.0850}, to: {id: 154, lat: -8.4964, lng: 119.8889}, type: 'flight', days: '69-70'},
-            {from: {id: 159, lat: -8.4800, lng: 119.5300}, to: {id: 163, lat: -8.6108, lng: 120.4639}, type: 'ferry', days: '72-73'},
-            {from: {id: 164, lat: -8.5667, lng: 120.4500}, to: {id: 165, lat: -8.7906, lng: 121.0789}, type: 'motorbike', days: '73-74'},
-            {from: {id: 168, lat: -8.7700, lng: 121.8200}, to: {id: 169, lat: -8.8500, lng: 121.6500}, type: 'motorbike', days: '75-76'},
-            {from: {id: 169, lat: -8.8500, lng: 121.6500}, to: {id: 170, lat: -8.3500, lng: 116.0333}, type: 'flight', days: '76-77'},
+        alternates[key] = altData;
+
+        // If it was active, re-apply
+        if (activeAlternates.has(key)) {
+            toggleAlternate(key); // remove
+            toggleAlternate(key); // re-add
+        }
+
+        closeAltModal();
+        renderStepList();
+    }
+
+    function confirmDeleteAlt(id) {
+        if (!confirm('Delete alternate "' + (alternates[id] ? alternates[id].name : id) + '"?')) return;
+        deleteAlt(id);
+    }
+
+    function deleteAlt(id) {
+        const altId = id || _editingAltId;
+        if (!altId) return;
+        if (activeAlternates.has(altId)) {
+            activeAlternates.delete(altId);
+            itinerarySteps.length = 0;
+            JSON.parse(JSON.stringify(originalSteps)).forEach(s => itinerarySteps.push(s));
+            activeShadowSegments = {};
+            activeAlternates.forEach(id2 => applyAlternate(id2));
+        }
+        delete alternates[altId];
+        closeAltModal();
+        renderStepList();
+        renderAllMarkers();
+        renderRoute();
+    }
+
+    // ── EXPORT DATA ───────────────────────────────────────────────────────────
+    function exportData() {
+        // Produce clean copies (strip _altId markers)
+        const cleanSteps = JSON.parse(JSON.stringify(originalSteps));
+        const cleanAlts  = JSON.parse(JSON.stringify(alternates));
+
+        let out = '// ── ITINERARY STEPS ──\nconst itinerarySteps = ';
+        out += JSON.stringify(cleanSteps, null, 2);
+        out += ';\n\n// ── ALTERNATES ──\nconst alternates = ';
+        out += JSON.stringify(cleanAlts, null, 2);
+        out += ';';
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(out).then(() => {
+                const btn = document.querySelector('.export-btn');
+                if (btn) { btn.textContent = '✓ Copied!'; setTimeout(()=>{ btn.textContent='📋 Copy Data'; },2000); }
+            }).catch(() => fallbackCopy(out));
+        } else {
+            fallbackCopy(out);
+        }
+    }
+
+    function fallbackCopy(text) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        alert('Data copied to clipboard (fallback). Paste into the itinerarySteps / alternates section of the HTML file.');
+    }
+
+    // ── COUNTRY FILTER ────────────────────────────────────────────────────────
+    function toggleCountry(country) {
+        document.querySelectorAll('.controls .btn[data-country]').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.country === country || (country === 'all' && btn.dataset.country === 'all'));
+        });
+        activeCountries = country === 'all' ? new Set(Object.keys(COUNTRY_COLORS)) : new Set([country]);
+        // Update step card visibility
+        itinerarySteps.forEach(s => {
+            const card = document.getElementById('card-' + s.id);
+            if (card) card.style.display = activeCountries.has(s.country) ? '' : 'none';
+        });
+        renderAllMarkers();
+        renderRoute();
+    }
+
+    // ── SEARCH ────────────────────────────────────────────────────────────────
+    function filterSteps() {
+        const q = document.getElementById('searchBox').value.toLowerCase().trim();
+        itinerarySteps.forEach(step => {
+            const card = document.getElementById('card-' + step.id);
+            if (!card || !activeCountries.has(step.country)) return;
+            if (!q) { card.style.display = ''; return; }
+            const text = (step.name + ' ' + step.days + ' ' + (step.pois||[]).map(p=>p.name).join(' ')).toLowerCase();
+            card.style.display = text.includes(q) ? '' : 'none';
+        });
+    }
+
+    // ── UI ─────────────────────────────────────────────────────────────────────
+    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('collapsed'); }
+    function toggleDarkMode() {
+        darkMode = !darkMode;
+        document.getElementById('sidebar').classList.toggle('dark-mode', darkMode);
+        document.getElementById('legend').classList.toggle('dark-mode', darkMode);
+        map.removeLayer(tileLayer);
+        tileLayer = L.tileLayer(darkMode
+            ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'
+            : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+            { attribution: '© OpenStreetMap contributors, © CARTO', maxZoom: 20, minZoom: 3 }
+        ).addTo(map);
+    }
+
+    // ── LEGEND ─────────────────────────────────────────────────────────────────
+    function createLegend() {
+        const modes = [
+            {type:'train',     label:'Train'},
+            {type:'bus',       label:'Bus'},
+            {type:'ferry',     label:'Ferry'},
+            {type:'flight',    label:'Flight'},
+            {type:'slow-boat', label:'Slow Boat'},
+            {type:'fast-boat', label:'Fast Boat'},
         ];
-
-        // Map initialization
-        const map = L.map('map').setView([13.0, 105.0], 5);
-
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{ext}', {
-            attribution: '© OpenStreetMap contributors, © CARTO',
-            ext: '.png',
-            maxZoom: 20,
-            minZoom: 3
-        }).addTo(map);
-
-        let allMarkers = [];
-        let activeCountries = new Set(Object.keys(tripData));
-        let darkMode = false;
-
-        function createMarker(stop, country, isMajor = false) {
-            const countryData = tripData[country];
-            const color = isMajor ? countryData.color : countryData.lightColor;
-            const size = isMajor ? 24 : 14;
-
-            const marker = L.circleMarker([stop.lat, stop.lng], {
-                radius: size / 2,
-                fillColor: color,
-                color: '#fff',
-                weight: isMajor ? 2 : 1.5,
-                opacity: 1,
-                fillOpacity: 0.8,
-                className: `marker-${country}`,
-            });
-
-            const popupContent = `
-                <div class="popup-title">${stop.name}</div>
-                <div class="popup-day">Day ${stop.day}</div>
-                <div class="popup-tags">
-                    ${stop.tags.map(tag => `<span class="popup-tag">${tag}</span>`).join('')}
+        const countries = Object.entries(COUNTRY_COLORS);
+        document.getElementById('legend').innerHTML = `
+            <div class="legend-title">🗺️ 85-Day SE Asia</div>
+            <div class="legend-section">
+                <div class="legend-section-title">Transport</div>
+                ${modes.map(m => {
+                    const color = getColor(m.type);
+                    const dash  = TRANSPORT_DASH[m.type];
+                    const lineStyle = dash
+                        ? `border-top: 2.5px dashed ${color}; height:0; background:none;`
+                        : `background:${color}; height:3px;`;
+                    return `<div class="legend-item">
+                        <div style="width:20px;flex-shrink:0;${lineStyle}"></div>
+                        <span>${m.label}</span>
+                    </div>`;
+                }).join('')}
+            </div>
+            <div class="legend-section">
+                <div class="legend-section-title">Countries</div>
+                ${countries.map(([k,c]) => `<div class="legend-item">
+                    <div class="legend-color" style="background:${c}"></div>
+                    <span style="text-transform:capitalize">${k}</span>
+                </div>`).join('')}
+            </div>
+            <div class="legend-section">
+                <div class="legend-section-title">Route Variants</div>
+                <div class="legend-item">
+                    <div style="width:20px;height:3px;background:#6b7280;flex-shrink:0;border-radius:2px"></div>
+                    <span>Active route</span>
                 </div>
-                <div class="popup-desc">${stop.desc}</div>
-            `;
-
-            marker.bindPopup(popupContent);
-            marker.on('click', function() {
-                this.openPopup();
-            });
-
-            return marker;
-        }
-
-        // Create all markers
-        Object.entries(tripData).forEach(([country, data]) => {
-            data.stops.forEach(stop => {
-                const isMajor = stop.type === 'CITY' || stop.type === 'OVERNIGHT' || stop.type === 'TRANSPORT';
-                const marker = createMarker(stop, country, isMajor);
-                allMarkers.push({marker, stop, country});
-                marker.addTo(map);
-            });
-        });
-
-        // Create polylines for transport routes
-        const polylines = [];
-        transportRoutes.forEach(route => {
-            const color = {
-                train: '#b45309',
-                bus: '#059669',
-                ferry: '#2563eb',
-                flight: '#dc2626',
-                motorbike: '#be123c',
-                boat: '#0891b2',
-                'fast-boat': '#0891b2'
-            }[route.type];
-
-            const options = {
-                color: color,
-                weight: route.type === 'flight' ? 2 : (route.type === 'bus' ? 2.5 : 3),
-                opacity: 0.7,
-                dashArray: route.type === 'flight' ? '10,10' :
-                          route.type === 'motorbike' ? '' :
-                          route.type === 'ferry' ? '5,5' : '0',
-                className: `route-${route.type}`
-            };
-
-            const line = L.polyline(
-                [[route.from.lat, route.from.lng], [route.to.lat, route.to.lng]],
-                options
-            ).addTo(map);
-
-            polylines.push(line);
-        });
-
-        // Populate sidebar
-        function populateSidebar() {
-            const container = document.getElementById('countries-container');
-            container.innerHTML = '';
-
-            Object.entries(tripData).forEach(([countryKey, countryData]) => {
-                const countryHtml = `
-                    <div class="country-group">
-                        <div class="country-header ${countryKey}" onclick="toggleCountryGroup('${countryKey}')">
-                            <span>${countryData.name}</span>
-                            <span>▼</span>
-                        </div>
-                        <div class="stops-list active" id="stops-${countryKey}">
-                            ${countryData.stops.map(stop => `
-                                <div class="stop-item" onclick="flyToStop(${stop.lat}, ${stop.lng})">
-                                    <div class="stop-day">Day ${stop.day}</div>
-                                    <div class="stop-name">${stop.name}</div>
-                                    <div class="stop-activity">${stop.tags.join(' • ')}</div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                `;
-                container.innerHTML += countryHtml;
-            });
-        }
-
-        function toggleCountryGroup(country) {
-            const stopsList = document.getElementById(`stops-${country}`);
-            stopsList.classList.toggle('active');
-        }
-
-        function toggleCountry(country) {
-            const buttons = document.querySelectorAll('.controls .btn');
-            buttons.forEach(btn => btn.classList.remove('active'));
-
-            if (country === 'all') {
-                activeCountries = new Set(Object.keys(tripData));
-                buttons[0].classList.add('active');
-            } else {
-                activeCountries.clear();
-                activeCountries.add(country);
-                event.target.classList.add('active');
-            }
-
-            updateMarkerVisibility();
-        }
-
-        function updateMarkerVisibility() {
-            allMarkers.forEach(({marker, country}) => {
-                marker.setStyle({display: activeCountries.has(country) ? '' : 'none'});
-                if (!activeCountries.has(country)) {
-                    map.removeLayer(marker);
-                } else {
-                    map.addLayer(marker);
-                }
-            });
-
-            polylines.forEach(line => {
-                const shouldShow = Array.from(activeCountries).some(country => {
-                    return line.toGeoJSON().geometry.coordinates.some(coord => {
-                        // Simple check - could be improved
-                        return true;
-                    });
-                });
-                if (shouldShow) {
-                    map.addLayer(line);
-                } else {
-                    map.removeLayer(line);
-                }
-            });
-        }
-
-        function filterStops() {
-            const query = document.getElementById('searchBox').value.toLowerCase();
-            const items = document.querySelectorAll('.stop-item');
-
-            items.forEach(item => {
-                const text = item.textContent.toLowerCase();
-                item.style.display = text.includes(query) ? 'block' : 'none';
-            });
-        }
-
-        function flyToStop(lat, lng) {
-            map.setView([lat, lng], 12);
-        }
-
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('collapsed');
-        }
-
-        function toggleDarkMode() {
-            darkMode = !darkMode;
-            document.getElementById('sidebar').classList.toggle('dark-mode');
-            document.getElementById('legend').classList.toggle('dark-mode');
-
-            if (darkMode) {
-                map.removeLayer(map._layers[Object.keys(map._layers)[0]]);
-                L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{ext}', {
-                    attribution: '© OpenStreetMap contributors, © CARTO',
-                    ext: '.png',
-                    maxZoom: 20,
-                    minZoom: 3
-                }).addTo(map);
-            } else {
-                map.removeLayer(map._layers[Object.keys(map._layers)[0]]);
-                L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{ext}', {
-                    attribution: '© OpenStreetMap contributors, © CARTO',
-                    ext: '.png',
-                    maxZoom: 20,
-                    minZoom: 3
-                }).addTo(map);
-            }
-        }
-
-        function fitToRoute() {
-            const bounds = L.latLngBounds();
-            allMarkers.forEach(({marker}) => {
-                bounds.extend(marker.getLatLng());
-            });
-            map.fitBounds(bounds, {padding: [50, 50]});
-        }
-
-        // Create legend
-        function createLegend() {
-            const legend = document.getElementById('legend');
-            const html = `
-                <div class="legend-title">🗺️ 85-Day SE Asia Trip</div>
-
-                <div class="legend-section">
-                    <div class="legend-section-title">TRANSPORT MODES</div>
-                    <div class="legend-item">
-                        <div class="legend-line train"></div>
-                        <span>Train</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-line bus"></div>
-                        <span>Bus</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-line ferry"></div>
-                        <span>Ferry</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-line flight"></div>
-                        <span>Flight</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-line motorbike"></div>
-                        <span>Motorbike</span>
-                    </div>
+                <div class="legend-item">
+                    <div style="width:20px;height:0;border-top:2px dashed #9ca3af;flex-shrink:0"></div>
+                    <span>Displaced (original)</span>
                 </div>
-
-                <div class="legend-section">
-                    <div class="legend-section-title">COUNTRIES</div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background: #dc2626;"></div>
-                        <span>Vietnam</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background: #b45309;"></div>
-                        <span>Laos</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background: #7c3aed;"></div>
-                        <span>Thailand</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background: #2563eb;"></div>
-                        <span>Philippines</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background: #e11d48;"></div>
-                        <span>Indonesia</span>
-                    </div>
+                <div class="legend-item">
+                    <div style="width:20px;height:3px;border:1px dashed #667eea;flex-shrink:0"></div>
+                    <span>Alternate step card</span>
                 </div>
+            </div>
+        `;
+    }
 
-                <div class="legend-section">
-                    <div class="legend-section-title">MARKER SIZES</div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="width: 24px; height: 24px; background: #667eea;"></div>
-                        <span>Major Stop</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="width: 14px; height: 14px; background: #ddd6fe;"></div>
-                        <span>POI</span>
-                    </div>
-                </div>
-            `;
-            legend.innerHTML = html;
-        }
-
-        // Initialize
-        populateSidebar();
-        createLegend();
-        fitToRoute();
+    // ── INIT ──────────────────────────────────────────────────────────────────
+    renderAllMarkers();
+    renderStepList();
+    renderRoute();
+    createLegend();
+    fitToRoute();
     </script>
 </body>
 </html>

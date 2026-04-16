@@ -157,6 +157,35 @@
   .trip-nav a{color:white;text-decoration:none;font-size:.85rem;font-weight:500;padding:5px 12px;border-radius:6px;transition:background .2s;}
   .trip-nav a:hover{background:rgba(255,255,255,.2);}
   .trip-nav a.active{background:rgba(255,255,255,.25);border-bottom:2px solid white;}
+
+  /* Country quick-jump pills */
+  .country-jump{max-width:880px;margin:20px auto 0;padding:0 20px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+  .country-jump .cj-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.8px;color:var(--dim);font-weight:600;margin-right:4px;}
+  .cj-pill{padding:5px 14px;border-radius:20px;font-size:.78rem;font-weight:700;border:2px solid;cursor:pointer;text-decoration:none;transition:all .15s;white-space:nowrap;}
+  .cj-pill:hover{filter:brightness(.9);}
+  .cj-pill.vn{background:#fee2e2;color:#dc2626;border-color:#dc2626;}
+  .cj-pill.la{background:#fef3c7;color:#b45309;border-color:#b45309;}
+  .cj-pill.th{background:#ede9fe;color:#7c3aed;border-color:#7c3aed;}
+  .cj-pill.ph{background:#dbeafe;color:#2563eb;border-color:#2563eb;}
+  .cj-pill.id{background:#fce7f3;color:#e11d48;border-color:#e11d48;}
+
+  /* View mode controls */
+  .view-controls{max-width:880px;margin:12px auto 0;padding:0 20px;display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+  .vc-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.8px;color:var(--dim);font-weight:600;margin-right:2px;}
+  .view-btn{padding:4px 12px;background:var(--card);border:1px solid var(--border);border-radius:6px;font-size:.76rem;cursor:pointer;transition:all .15s;font-family:inherit;color:var(--muted);}
+  .view-btn:hover{background:var(--surface);}
+  .view-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+  /* Collapsible alt-detour */
+  .alt-detour h4{cursor:pointer;display:flex;align-items:center;gap:6px;user-select:none;}
+  .alt-detour .toggle-icon{margin-left:auto;font-size:.7rem;font-weight:800;color:#15803d;background:#dcfce7;padding:2px 7px;border-radius:4px;flex-shrink:0;letter-spacing:.3px;}
+  .alt-detour.collapsed .alt-detour-body{display:none;}
+  .alt-detour.collapsed{padding-bottom:14px;}
+
+  /* Collapsible major alt-route sections */
+  .collapsible-box h3{cursor:pointer;display:flex;align-items:center;gap:6px;user-select:none;}
+  .collapsible-box .toggle-icon{margin-left:auto;font-size:.7rem;font-weight:800;padding:2px 7px;border-radius:4px;flex-shrink:0;letter-spacing:.3px;background:rgba(0,0,0,.06);color:inherit;}
+  .collapsible-box.collapsed .collapse-body{display:none;}
 </style>
 </head>
 <body>
@@ -193,7 +222,7 @@
 </div>
 
 <div class="approach">
-  <strong>Route:</strong> Hanoi → <em>(bus)</em> → Ha Giang Loop → <em>(road)</em> → Sapa → <em>(overnight train)</em> → Hanoi → <em>(bus+ferry)</em> → Cat Ba / Ha Long Bay → <em>(overnight train)</em> → Phong Nha → <em>(day train, Hai Van Pass)</em> → Hoi An → <em>(fly via Hanoi/BKK)</em> → Luang Prabang → <em>(Lao-China Railway)</em> → Vang Vieng → Vientiane → <em>(Friendship Bridge + overnight train)</em> → Bangkok → <em>(overnight trains)</em> → Gulf Islands → Chiang Mai → Pai → <em>(fly CM→BKK→Cebu)</em> → Philippines → <em>(fly)</em> → Indonesia
+  <strong>Route:</strong> Hanoi → <em>(bus)</em> → Ha Giang Loop → <em>(road)</em> → Sapa → <em>(overnight train)</em> → Hanoi → <em>(bus+ferry)</em> → Cat Ba / Ha Long Bay → <em>(overnight train)</em> → Phong Nha → <em>(day train, Hai Van Pass)</em> → Hoi An → <em>(fly via Hanoi/BKK)</em> → Luang Prabang → <em>(Lao-China Railway)</em> → Vang Vieng → Vientiane → <em>(Friendship Bridge + overnight train)</em> → Bangkok → <em>(overnight trains)</em> → Gulf Islands → <em>(fly BKK→Cebu)</em> → Philippines → <em>(fly)</em> → Indonesia
 </div>
 
 <div class="route-box">
@@ -212,10 +241,6 @@
     <span class="rf-stop" style="color:var(--thailand)">Bangkok</span><span class="rf-arrow train">train →</span>
     <span class="rf-stop" style="color:var(--thailand)">Koh Phangan</span><span class="rf-arrow ferry">ferry →</span>
     <span class="rf-stop" style="color:var(--thailand)">Koh Tao</span><span class="rf-arrow train">train →</span>
-    <span class="rf-stop" style="color:var(--thailand)">Bangkok</span><span class="rf-arrow train">train →</span>
-    <span class="rf-stop" style="color:var(--thailand)">Chiang Mai</span><span class="rf-arrow bus">van →</span>
-    <span class="rf-stop" style="color:var(--thailand)">Pai</span><span class="rf-arrow bus">van →</span>
-    <span class="rf-stop" style="color:var(--thailand)">Chiang Mai</span><span class="rf-arrow flight">fly →</span>
     <span class="rf-stop" style="color:var(--thailand)">Bangkok</span><span class="rf-arrow flight">fly →</span>
     <span class="rf-stop" style="color:var(--philippines)">Cebu</span><span class="rf-arrow ferry">ferry →</span>
     <span class="rf-stop" style="color:var(--philippines)">Bohol</span><span class="rf-arrow flight">fly →</span>
@@ -232,18 +257,33 @@
   <p><strong>Vietnam first:</strong> Start Hanoi, loop north (Ha Giang, Sapa), return for Cat Ba / Ha Long Bay, then one-way south by train through Phong Nha and Hoi An. Skip HCMC.</p>
   <p><strong>Da Nang → Laos:</strong> No direct Da Nang → LP flights exist — all route via Hanoi, HCMC, or Bangkok. Best options: fly via Hanoi or Bangkok (see alternatives). <strong>Or flip Laos upside-down</strong> — fly Da Nang → Bangkok (cheap direct), cross into Laos from Vientiane, go bottom-to-top, slow boat or fly LP → Chiang Mai.</p>
   <p><strong>Lao-China Railway:</strong> The 2021 railway cuts Laos transit from 10+ hours of mountain buses to 3 hours of comfortable trains. Works both directions — LP → Vientiane or Vientiane → LP.</p>
-  <p><strong>Pai added:</strong> 762 curves from Chiang Mai to Pai. Jungle hot springs, Pai Canyon, night market. Two days of mountain chill.</p>
-  <p><strong>BKK → Cebu:</strong> Fly via Bangkok to the Philippines — daily flights on Cebu Pacific, AirAsia, PAL. Way more options and better prices than connecting from Chiang Mai.</p>
-  <div class="verdict">8 flights total · 5 overnight trains · Lao-China Railway · Friendship Bridge crossing · Alternative: Laos bottom-to-top + Mekong slow boat</div>
+  <p><strong>BKK → Cebu:</strong> Fly direct from Bangkok to the Philippines — daily flights on Cebu Pacific, AirAsia, PAL. More options and better prices than any other exit point.</p>
+  <div class="verdict">8 flights total · 4 overnight trains · Lao-China Railway · Friendship Bridge crossing · Alternates on map: Mekong slow boat, fly LP→CM, Krabi detour, Koh Samui</div>
 </div>
 
 <div id="map" style="height:600px;"></div>
 <div id="map-key"></div>
 
+<div class="country-jump">
+  <span class="cj-label">Jump to:</span>
+  <a class="cj-pill vn" href="#sec-vietnam">🇻🇳 Vietnam</a>
+  <a class="cj-pill la" href="#sec-laos">🇱🇦 Laos</a>
+  <a class="cj-pill th" href="#sec-thailand">🇹🇭 Thailand</a>
+  <a class="cj-pill ph" href="#sec-philippines">🇵🇭 Philippines</a>
+  <a class="cj-pill id" href="#sec-indonesia">🇮🇩 Indonesia</a>
+</div>
+
+<div class="view-controls">
+  <span class="vc-label">Show:</span>
+  <button class="view-btn active" id="vbtn-full" onclick="setView('full')">Full itinerary</button>
+  <button class="view-btn" id="vbtn-days" onclick="setView('days')">Days only</button>
+  <button class="view-btn" id="vbtn-transit" onclick="setView('transit')">Days + transit</button>
+</div>
+
 <div class="wrap">
 
 <!-- ===================== VIETNAM ===================== -->
-<div class="country">
+<div class="country" id="sec-vietnam">
   <div class="c-head" style="border-color:var(--vietnam)">
     <div class="c-flag">🇻🇳</div>
     <div><h2 style="color:var(--vietnam)">Vietnam</h2><div>Hanoi → Ha Giang → Sapa → Cat Ba / Ha Long Bay → Phong Nha → Hoi An</div></div>
@@ -398,7 +438,7 @@
 
 
 <!-- ===================== LAOS ===================== -->
-<div class="country">
+<div class="country" id="sec-laos">
   <div class="c-head" style="border-color:var(--laos)">
     <div class="c-flag">🇱🇦</div>
     <div><h2 style="color:var(--laos)">Laos</h2><div>Luang Prabang → Vang Vieng → Vientiane</div></div>
@@ -487,17 +527,16 @@
 
 
 <!-- ===================== ALTERNATIVE: LAOS BOTTOM-TO-TOP ===================== -->
-<div class="decision-box" style="max-width:860px;margin:0 auto 24px;">
-  <h3>🔄 Major Alternative: Laos Bottom-to-Top + Slow Boat to Chiang Mai</h3>
-  <p style="margin-top:8px;">Instead of flying Da Nang → Luang Prabang (no direct flights — everything connects via Hanoi or Bangkok), flip Laos upside-down and avoid that awkward connection entirely. Fly Da Nang → Bangkok instead (easy, cheap, direct).</p>
+<div class="decision-box collapsible-box" style="max-width:860px;margin:0 auto 24px;">
+  <h3>🔄 Major Alternative: Laos Bottom-to-Top + Slow Boat to Chiang Mai <span class="toggle-icon">▸ expand</span></h3>
+  <div class="collapse-body">
+  <p style="margin-top:8px;">Instead of flying Da Nang → Luang Prabang (no direct flights — everything connects via Hanoi or Bangkok), flip Laos upside-down and enter from the south. Fly Da Nang direct to Vientiane, then travel north through Laos by railway.</p>
 
   <div class="alt-route" style="margin:14px 0;background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b744;">
     <h4 style="color:#065f46;">Alternative Route Flow</h4>
     <div style="font-size:.84rem;line-height:1.8;color:var(--muted);margin-bottom:12px;">
       <strong style="color:var(--text);">After Hoi An (Day 21):</strong><br>
-      Hoi An → <span class="mode mode-fly" style="font-size:.72rem;">Fly</span> Da Nang → Bangkok (2.5 hrs, AirAsia/Vietjet, A$80–160 — <em>easy direct flight, multiple daily</em>)<br>
-      → <span class="mode mode-train" style="font-size:.72rem;">Overnight Train</span> Bangkok → Nong Khai (10 hrs, A$29–54)<br>
-      → <span class="mode mode-bus" style="font-size:.72rem;">Bridge</span> Cross Friendship Bridge into Vientiane<br>
+      Hoi An → <span class="mode mode-fly" style="font-size:.72rem;">Fly</span> Da Nang → Vientiane direct (~2 hrs, A$80–160 via multiple carriers)<br>
       → <span class="mode mode-train" style="font-size:.72rem;">Lao Railway</span> Vientiane → Vang Vieng (1 hr, A$8–12) — <em>climbing, tubing, karsts</em><br>
       → <span class="mode mode-train" style="font-size:.72rem;">Lao Railway</span> Vang Vieng → Luang Prabang (2 hrs, A$10–18) — <em>waterfalls, monks, temples</em><br>
       → <strong>Then choose your exit from LP:</strong>
@@ -527,15 +566,16 @@
       <strong>Trade-offs:</strong> You pass through Bangkok twice (but that just means more time for the things you missed). The slow boat adds 4–5 days. Net trip length is ~2–3 days longer with slow boat, or roughly the same if you fly LP → CM.
     </div>
   </div>
+  </div><!-- end collapse-body -->
 </div>
 
 
 <!-- ===================== THAILAND ===================== -->
-<div class="country">
+<div class="country" id="sec-thailand">
   <div class="c-head" style="border-color:var(--thailand)">
     <div class="c-flag">🇹🇭</div>
-    <div><h2 style="color:var(--thailand)">Thailand</h2><div>Bangkok → Gulf Islands → Chiang Mai → Pai</div></div>
-    <div class="c-dates">Days 27–42 · Jun 18 – Jul 3</div>
+    <div><h2 style="color:var(--thailand)">Thailand</h2><div>Bangkok → Gulf Islands → fly to Philippines</div></div>
+    <div class="c-dates">Days 27–36 · Jun 18 – Jun 27</div>
   </div>
 
   <div class="photo-row">
@@ -543,13 +583,13 @@
     <div class="photo-card"><img src="https://images.unsplash.com/photo-1569671618687-9de58bd0a9cb?w=600&h=340&fit=crop&auto=format" alt="Koh Tao" loading="lazy"><div class="caption">Koh Tao — diver's island</div></div>
   </div>
   <div class="photo-row">
-    <div class="photo-card"><img src="https://images.unsplash.com/photo-1678455884083-bac5c34f2cfc?w=600&h=340&fit=crop&auto=format" alt="Chiang Mai temples" loading="lazy"><div class="caption">Chiang Mai — golden temples at dusk</div></div>
-    <div class="photo-card"><img src="https://images.unsplash.com/photo-1551966775-a4ddc8df052b?w=600&h=340&fit=crop&auto=format" alt="Doi Inthanon" loading="lazy"><div class="caption">Doi Inthanon — Thailand's roof</div></div>
+    <div class="photo-card"><img src="https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=600&h=340&fit=crop&auto=format" alt="Bangkok temples" loading="lazy"><div class="caption">Bangkok — Grand Palace at dusk</div></div>
+    <div class="photo-card"><img src="https://images.unsplash.com/photo-1559494007-9f5847c49d94?w=600&h=340&fit=crop&auto=format" alt="Railay Beach Krabi" loading="lazy"><div class="caption">Railay Beach — sea cliffs only reachable by longtail</div></div>
   </div>
 
-  <div class="c-sum">Arrive Bangkok by overnight train from Laos. Overnight train south to the Gulf Islands for Koh Phangan's jungle beaches and Koh Tao's world-class diving. Ferry back, two overnight trains north through Bangkok to Chiang Mai. Then 762 curves to Pai — hot springs, canyon walks, and night market hippie vibes. <strong>16 days — zero flights within Thailand.</strong></div>
-  <div class="weather">Gulf Islands: good season (monsoon is Oct–Dec, you're fine). 8/10. Chiang Mai / Pai: green season — warm mornings, afternoon thunderstorms, lush jungle. 7/10.</div>
-  <div class="dropped">Railay Beach (Andaman monsoon — wrong coast this time of year). Khao Yai (detour northeast). Climbing covered by Crazy Horse Buttress, Vang Vieng, and Cat Ba.</div>
+  <div class="c-sum">Arrive Bangkok by overnight train from Laos. Overnight train south to the Gulf Islands — Koh Phangan's jungle beaches and Koh Tao's world-class diving. Return ferry+train to Bangkok, then fly to the Philippines. Optional: detour to Krabi for Railay Beach sea-cliff climbing before flying out. <strong>10 days — one flight out of Bangkok.</strong></div>
+  <div class="weather">Gulf Islands: good season (monsoon is Oct–Dec, you're fine). 8/10. Krabi: June/July is Andaman monsoon — check forecasts, but clear stretches are common. 6/10 weather risk, 10/10 scenery if clear.</div>
+  <div class="dropped">Chiang Mai + Pai: accessible via the Mekong Slow Boat or LP→CM flight alternates — see the interactive map. Khao Yai (detour northeast).</div>
 
   <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">27</div><div class="dd">18 Jun</div><div class="dot" style="background:var(--thailand)"></div></div>
   <div class="day-r"><div class="loc">Arrive Bangkok</div><div class="act"><span class="t t-flex">Arrive</span> Arrive ~5am from the Nong Khai sleeper. Drop bags at hostel near Hua Lamphong station. Yaowarat (Chinatown) for pad thai and mango sticky rice. Wat Arun at golden hour (cross the river by ferry, A$0.50). Grand Palace. Thai massage (A$8–12 for an hour). Khao San Road if you want chaos.</div></div></div>
@@ -613,74 +653,49 @@
     <span class="tip">Lomprayah sells combined ferry+train tickets at their Koh Tao office. The afternoon ferry connects perfectly with the evening sleeper.</span>
   </div>
 
+  <div class="alt-detour">
+    <h4>🧗 Krabi &amp; Railay Beach — Optional Detour (adds 2–3 days)</h4>
+    <p>After Koh Tao, instead of heading straight back to Bangkok, detour to Krabi. If the Andaman coast weather is cooperating (check forecasts a few days out — June/July is monsoon season but you can get clear stretches), Railay Beach is one of Thailand's most spectacular spots: towering limestone karsts, world-class rock climbing, and beaches only accessible by longtail boat.</p>
+    <div class="alt-highlights">Highlights: Railay Beach (longtail boat access only, dramatic cliffs) · Rock climbing at Railay &amp; Tonsai (beginner to 8a, from A$40 half-day) · Phi Phi Islands day trip from Ao Nang (A$30–50, Maya Bay) · Tiger Cave Temple (1,237 steps to panoramic summit) · Ao Nang night market · Four Islands longtail tour (A$20–30)</div>
+    <div class="alt-logistics">
+      <strong>Getting there:</strong> Ferry Koh Tao → Surat Thani, then fly Surat Thani (URT) → Krabi (KBV) — short domestic hop, A$30–60 on AirAsia/Nok Air. Or ferry to Surat Thani + bus/van to Krabi (~3–4 hrs, A$12–20).<br><br>
+      <strong>Sample 3-day add-on:</strong><br>
+      • Day 1: Arrive Krabi, longtail to Railay Beach. Phra Nang cave beach, kayak the mangroves. Stay Railay or Tonsai.<br>
+      • Day 2: Half-day rock climbing at Railay (150+ routes on sea cliffs). Afternoon: Tiger Cave Temple (1,237 steps, incredible views). Ao Nang evening.<br>
+      • Day 3: Four Islands or Phi Phi day trip (weather dependent — operators cancel in rough seas). Fly out evening.<br><br>
+      <strong>Getting out — Krabi → Philippines:</strong><br>
+      • <strong>Krabi → Bangkok (A$40–100):</strong> AirAsia, Thai Lion Air, Nok Air — multiple daily, ~1.5 hrs. Then connect BKK → Cebu as planned.<br>
+      • <strong>Krabi → Cebu direct:</strong> ❌ Does not exist. All Philippines-bound flights route via Bangkok. No way around it.<br><br>
+      <strong>Cost comparison vs. current route:</strong><br>
+      • <em>Without Krabi:</em> Ferry+train Koh Tao → BKK (A$44–67) + fly BKK → Cebu (A$80–200) = <strong>A$124–267 total</strong><br>
+      • <em>With Krabi:</em> Ferry+transport to Krabi (A$30–60) + 2–3 nights (A$15–25/night) + fly KBV → BKK (A$40–100) + fly BKK → Cebu (A$80–200) = <strong>A$195–435 total</strong><br>
+      • Krabi adds roughly A$70–170 and 2–3 days. You lose the iconic overnight train but gain Railay's sea cliffs and possibly Phi Phi.<br><br>
+      <strong>⚠️ Monsoon warning:</strong> June/July is Andaman southwest monsoon. Expect afternoon storms, occasional full rain days, and rough seas. Phi Phi tours get cancelled in bad weather. Railay itself is more sheltered but longtail boats can be rough in big swells. Check the forecast 3–5 days ahead from Koh Tao — if it's showing clear windows, go for it. If it's a washout, stick with the overnight train to Bangkok and save Krabi for a dry-season trip.
+    </div>
+  </div>
+
   <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">36</div><div class="dd">27 Jun</div><div class="dot" style="background:var(--thailand)"></div></div>
   <div class="day-r"><div class="loc">Bangkok — Round 2</div><div class="act"><span class="t t-flex">Flex</span> Arrive early AM. Hit what you missed: Wat Pho (the massive reclining Buddha), Jim Thompson House, Chatuchak Weekend Market (Sat/Sun — 15,000 stalls). Rooftop bar sunset. Second crack at Bangkok.</div></div></div>
 
   <div class="transit">
-    <strong>Day 36 night:</strong> <span class="mode mode-train">Overnight Train</span> Bangkok → Chiang Mai <span class="overnight">Sleeper</span><br>
-    <span class="time">12–13 hrs</span> <span class="cost">~A$36–71 (2nd class sleeper)</span><br>
-    THE classic Thai backpacker train. Depart ~6:30pm. Dining car serves cold Chang beers and pad thai. Arrive Chiang Mai ~7–8am. This train is an experience in itself.
-    <span class="tip">Book 3–5 days ahead — this is Thailand's most popular train. 12Go.asia or at the station. 6:30pm departure is the one you want.</span>
+    <strong>Day 36 / 37:</strong> <span class="mode mode-fly">Fly</span> Bangkok → Cebu <span class="time">~3 hrs</span> <span class="cost">~A$80–200</span><br>
+    Cebu Pacific, AirAsia, or Philippine Airlines. Multiple daily flights. Free 30-day visa on arrival for most passports. Bus Cebu airport → Moalboal (3 hrs, A$12).
+    <span class="tip">Book BKK → CEB separately on Skyscanner — better prices than combined tickets. Breaking the journey with a Bangkok night gives a useful buffer day.</span>
   </div>
 
-  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">37</div><div class="dd">28 Jun</div><div class="dot" style="background:var(--thailand)"></div></div>
-  <div class="day-r"><div class="loc">Arrive Chiang Mai</div><div class="act"><span class="t t-flex">Arrive</span> Arrive 7–8am. Settle in the Old City. Tha Phae Gate, Wat Phra Singh, Wat Chedi Luang (700-year-old ruined chedi). Khao soi for lunch — Chiang Mai's signature coconut curry noodles (try Khao Soi Khun Yai). Night bazaar.</div></div></div>
-
-  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">38</div><div class="dd">29 Jun</div><div class="dot" style="background:var(--thailand)"></div></div>
-  <div class="day-r"><div class="loc">Doi Inthanon</div><div class="act"><span class="t t-trek">Trek</span> Thailand's highest peak (2,565m). King + Queen twin pagodas sitting in the clouds. Wachirathan waterfall. Cloud forest nature trail. Full-day trip (A$25–40 with transport).</div></div></div>
-
-  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">39</div><div class="dd">30 Jun</div><div class="dot" style="background:var(--thailand)"></div></div>
-  <div class="day-r"><div class="loc">Crazy Horse Buttress</div><div class="act"><span class="t t-climb">Climb</span> Southeast Asia's premier sport climbing crag. 200+ bolted limestone routes from 5a to 8a, 45 min from the city. Full-day with guide + gear rental (A$31–48). Multiple sectors for all levels.</div></div></div>
-
-  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">40</div><div class="dd">1 Jul</div><div class="dot" style="background:var(--thailand)"></div></div>
-  <div class="day-r"><div class="loc">Elephant Nature Park</div><div class="act"><span class="t t-wild">Wildlife</span> Ethical elephant sanctuary — feed, walk alongside, and bathe rescued elephants in the river. No riding, no chains. Book ahead (sells out). Half-day or full-day (A$62–80).</div></div></div>
-
-  <div class="transit">
-    <strong>Day 40 afternoon:</strong> <span class="mode mode-van">Minivan</span> Chiang Mai → Pai <span class="time">3 hrs (762 curves)</span> <span class="cost">~A$8–12</span><br>
-    Frequent departures from Chiang Mai Arcade bus station. The road has 762 counted curves through mountain jungle. Sit in front if you get carsick. Arrive Pai late afternoon.
-    <span class="tip">Take motion sickness pills 30 min before departure. Seriously. 762 curves is no joke. The return trip feels easier because you know what's coming.</span>
+  <div class="alt-detour">
+    <h4>🏔️ Chiang Mai + Pai — Via Mekong or LP→CM Flight</h4>
+    <p>Chiang Mai and Pai are best reached via the Laos alternates — they fit naturally at the end of the Mekong slow boat or LP→CM flight routes, before returning to Bangkok for the Gulf Islands.</p>
+    <div class="alt-highlights">Highlights: Crazy Horse Buttress (200+ limestone routes, SEA's best sport crag) · Doi Inthanon trek (Thailand's highest peak, 2,565m) · Elephant Nature Park (ethical sanctuary) · Pai Canyon sunrise · Sai Ngam hot springs · 762 curves through mountain jungle</div>
+    <div class="alt-logistics">Accessed via: 🚢 Mekong Slow Boat alternate (LP → 2-day boat → Chiang Rai → CM → Pai) or ✈️ Fly LP→CM alternate (faster, saves 4 days). Both routes return to Bangkok → Gulf Islands → fly to Philippines. Toggle the alternates on the <a href="trip-map-detailed.html">interactive map</a> to see the full routing.</div>
   </div>
 
-  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">40</div><div class="dd">1 Jul</div><div class="dot" style="background:var(--thailand)"></div></div>
-  <div class="day-r"><div class="loc">Arrive Pai</div><div class="act"><span class="t t-flex">Arrive</span> Arrive late afternoon. Settle into a bamboo bungalow (A$8–15/night — Pai has some of Thailand's best budget stays). Pai Walking Street night market — pad thai, smoothie bowls, live music, handmade jewellery. The vibe here is unlike anywhere else in Thailand.</div></div></div>
-
-  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">41</div><div class="dd">2 Jul</div><div class="dot" style="background:var(--thailand)"></div></div>
-  <div class="day-r"><div class="loc">Pai — Canyon + Hot Springs</div><div class="act"><span class="t t-trek">Trek</span> <span class="t t-water">Water</span> Pai Canyon at sunrise (narrow ridge walk with valley drops on both sides). Pam Bok waterfall swimming. Sai Ngam hot springs — natural hot pools in the jungle (A$5). Pai Land Split (earthquake crack you can walk into). Night market round 2.</div></div></div>
-
-  <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">42</div><div class="dd">3 Jul</div><div class="dot" style="background:var(--thailand)"></div></div>
-  <div class="day-r"><div class="loc">Pai — Waterfalls + Views</div><div class="act"><span class="t t-trek">Trek</span> <span class="t t-flex">Flex</span> Rent scooter (A$5–8/day). Mo Paeng waterfall (natural rock slides into pools). White Buddha viewpoint (panoramic valley). Pai Bamboo Bridge through the rice paddies. Yun Lai viewpoint for sunset. Afternoon: Thai cooking class or chill in a riverside hammock.</div></div></div>
-
-  <div class="transit">
-    <strong>Day 42 afternoon:</strong> <span class="mode mode-van">Minivan</span> Pai → Chiang Mai <span class="time">3 hrs</span> <span class="cost">~A$8–12</span><br>
-    Depart Pai ~1pm, arrive CM ~4pm. Head to airport for evening/next-day flight.<br><br>
-    <strong>Transit Day 43:</strong> <span class="mode mode-fly">Fly</span> Chiang Mai → Bangkok <span class="time">1 hr</span> <span class="cost">~A$40–90</span> + <span class="mode mode-fly">Fly</span> Bangkok → Cebu <span class="time">3 hrs</span> <span class="cost">~A$80–200</span><br>
-    Fly CM → BKK (AirAsia/Nok Air/Thai Smile — multiple daily, 1 hr). Then BKK → Cebu (Cebu Pacific/AirAsia/Philippine Airlines — daily, 3 hrs). Same-day connection or break it with a night in Bangkok.
-    <span class="tip">Philippines: free 30-day visa on arrival for most passports. Bus Cebu airport → Moalboal (3 hrs, A$12). Bangkok → Cebu has way more flight options than Chiang Mai → Cebu.</span>
-  </div>
-
-  <div class="alt-route">
-    <h4>Alternate Route: Thailand → Philippines</h4>
-    <div class="alt-opt recommended">
-      <div class="alt-label">✈ Recommended — Fly via Bangkok (BKK → Cebu)</div>
-      <p>Fly CM → Bangkok (1 hr, A$40–90) + Bangkok → Cebu (3 hrs, A$80–200). <strong>Total: A$120–290, multiple daily options.</strong> Cebu Pacific and AirAsia run daily BKK → Cebu with budget fares. Far more availability than trying to connect from CM. Can break the journey with a night in Bangkok — hit Chatuchak or a rooftop bar.</p>
-    </div>
-    <div class="alt-opt">
-      <div class="alt-label alt-b">🚆 Alternative — Night train CM → BKK + fly</div>
-      <p>Overnight sleeper train CM → Bangkok (12 hrs, A$36–71). Bangkok day, then fly BKK → Cebu next day (3 hrs, A$80–200). <strong>Total: ~A$116–271.</strong> Uses an extra day but saves on the CM → BKK flight. The classic backpacker train is an experience in itself.</p>
-    </div>
-    <div class="alt-opt">
-      <div class="alt-label alt-b">✈ Alternative — Fly Chiang Mai → Cebu direct routing</div>
-      <p>Via Manila or BKK connection, all on one ticket. <strong>~5–7 hrs, A$120–250.</strong> Less flexible but sometimes cheaper as a single booking. Cebu Pacific occasionally runs deals.</p>
-    </div>
-    <div class="alt-verdict">BKK → Cebu has the most flights and best prices. Book the legs separately on Skyscanner for cheapest fares. Breaking with a BKK night gives you a buffer day.</div>
-  </div>
-
-  <div class="why">Three overnight trains through Thailand: Bangkok→Surat Thani, Chumphon→Bangkok, Bangkok→Chiang Mai. Pai adds the perfect mountain chill. Then fly Chiang Mai → Bangkok → Cebu for the Philippines — BKK has the best connections and cheapest fares.</div>
+  <div class="why">Overnight train south from Laos hits Bangkok early morning. Same-night onward train to the Gulf Islands. Four days diving Koh Tao, then ferry+train back to Bangkok. Fly Bangkok → Cebu. Optional: detour Krabi for Railay sea-cliff climbing en route. Chiang Mai + Pai live on the Mekong alternate — reach them via the slow boat or direct LP→CM flight, then swing back through Bangkok to the islands.</div>
 </div>
 
 
 <!-- ===================== PHILIPPINES ===================== -->
-<div class="country">
+<div class="country" id="sec-philippines">
   <div class="c-head" style="border-color:var(--philippines)">
     <div class="c-flag">🇵🇭</div>
     <div><h2 style="color:var(--philippines)">Philippines</h2><div>Cebu → Bohol → Palawan → El Nido → Coron</div></div>
@@ -773,7 +788,7 @@
 </div>
 
 <!-- ===================== INDONESIA ===================== -->
-<div class="country">
+<div class="country" id="sec-indonesia">
   <div class="c-head" style="border-color:var(--indonesia)">
     <div class="c-flag">🇮🇩</div>
     <div><h2 style="color:var(--indonesia)">Indonesia</h2><div>Bali → Komodo → Flores Overland → Gilis</div></div>
@@ -996,7 +1011,8 @@
   <div class="info-c"><h4>Visas</h4><p><strong>Vietnam:</strong> E-visa (90 days, A$39). Apply evisa.xuatnhapcanh.gov.vn, 3+ working days. Print it.<br><strong>Laos:</strong> Visa on arrival (US$35–42). 1 passport photo + USD cash.<br><strong>Thailand:</strong> Free 30-day entry. Extendable 30 days at immigration (A$30).<br><strong>Philippines:</strong> Free 30-day entry.<br><strong>Indonesia:</strong> VOA 30 days (US$35), extendable once (A$30).</p></div>
   <div class="info-c"><h4>SIM Cards</h4><p><strong>Vietnam:</strong> Viettel (best rural coverage for Ha Giang). A$5–8/30 days.<br><strong>Laos:</strong> Unitel at airport. A$3–5.<br><strong>Thailand:</strong> AIS or TrueMove. A$8–12.<br><strong>Philippines:</strong> Globe or Smart. A$5–8.<br><strong>Indonesia:</strong> Telkomsel. A$5–8.</p></div>
   <div class="info-c"><h4>Money</h4><p>ATMs everywhere except remote areas (Port Barton, Flores villages, Ha Giang villages). Withdraw cash before heading rural. Wise or Revolut cards avoid foreign transaction fees. Vietnam and Laos are mostly cash. Thailand has widespread card acceptance in tourist areas.</p></div>
-  <div class="info-c"><h4>Booking</h4><p><strong>Trains:</strong> 12Go.asia, baolau.com, station counters.<br><strong>Lao Railway:</strong> LCR app or station.<br><strong>Buses:</strong> Vexere.com (Vietnam), station (Laos/Thailand).<br><strong>Ferries:</strong> Lomprayah.com (Thai islands), harbour offices.<br><strong>Flights:</strong> Skyscanner → book direct with airline for cheapest.</p></div>
+  <div class="info-c"><h4>Booking — Main Route</h4><p><strong>Trains:</strong> 12Go.asia, baolau.com, station counters.<br><strong>Lao Railway:</strong> LCR app or station.<br><strong>Buses:</strong> Vexere.com (Vietnam), station (Laos/Thailand).<br><strong>Ferries:</strong> Lomprayah.com (Thai islands), harbour offices.<br><strong>Flights:</strong> Skyscanner → book direct with airline for cheapest.<br><strong>BKK → Cebu:</strong> Cebu Pacific / AirAsia apps — multiple daily.</p></div>
+  <div class="info-c"><h4>Booking — Alternates</h4><p><strong>Mekong Slow Boat:</strong> Book through Nagi or The Slow Boat in Luang Prabang — A$30–50 for 2-day boat + hammock bed. Pay cash in LP.<br><strong>LP → CM Flight:</strong> Lao Airlines or Bangkok Airways — book direct on their sites or Skyscanner. A$80–180.<br><strong>Krabi Detour:</strong> Lomprayah KT → Surat Thani combo, then bus (A$12–20) or fly Surat Thani/Krabi Airport → BKK on AirAsia/Nok Air A$40–100.<br><strong>Koh Samui Add-on:</strong> Lomprayah or Raja Ferry KP → KSM A$8–12. Book day before on island.</p></div>
 </div>
 
 <!-- ===================== PACKING LIST ===================== -->
@@ -1025,51 +1041,110 @@
 </div>
 
 <p style="text-align:center;padding:40px 20px;color:var(--muted);font-size:.85rem;max-width:880px;margin:0 auto;">
-  8 flights — only where there's no sane ground option · 5 overnight trains · Lao-China Railway through Laos · Friendship Bridge into Thailand · 762 curves to Pai · BKK → Cebu · ~85 days · May 23 – Aug 15 · Alternative: flip Laos bottom-to-top + Mekong slow boat to Chiang Mai.
+  8 flights — only where there's no sane ground option · 4 overnight trains · Lao-China Railway through Laos · Friendship Bridge into Thailand · BKK → Cebu · ~85 days · May 23 – Aug 15 · Alternates: Mekong slow boat + Chiang Mai/Pai, LP→CM flight, Krabi sea-cliff detour.
 </p>
 
 <script>
+// ── INTERACTIVE ITINERARY ────────────────────────────────────────────────
+
+// Collapsible alt-detour blocks (collapsed by default)
+document.querySelectorAll('.alt-detour').forEach(el => {
+  const h4 = el.querySelector('h4');
+  if (!h4) return;
+  // Wrap everything after h4 into a body div
+  const body = document.createElement('div');
+  body.className = 'alt-detour-body';
+  const children = Array.from(el.children).slice(1); // skip h4
+  children.forEach(c => body.appendChild(c));
+  el.appendChild(body);
+  // Add toggle icon
+  const icon = document.createElement('span');
+  icon.className = 'toggle-icon';
+  icon.textContent = '▸ expand';
+  h4.appendChild(icon);
+  // Start collapsed
+  el.classList.add('collapsed');
+  h4.addEventListener('click', () => {
+    el.classList.toggle('collapsed');
+    icon.textContent = el.classList.contains('collapsed') ? '▸ expand' : '▾ collapse';
+  });
+});
+
+// Collapsible major sections (decision-box.collapsible-box)
+document.querySelectorAll('.collapsible-box').forEach(el => {
+  el.classList.add('collapsed');
+  const h3 = el.querySelector('h3');
+  if (!h3) return;
+  const icon = h3.querySelector('.toggle-icon');
+  h3.addEventListener('click', () => {
+    el.classList.toggle('collapsed');
+    if (icon) icon.textContent = el.classList.contains('collapsed') ? '▸ expand' : '▾ collapse';
+  });
+});
+
+// View mode toggle
+function setView(mode) {
+  document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('vbtn-' + mode).classList.add('active');
+  const transits = document.querySelectorAll('.transit');
+  const alts = document.querySelectorAll('.alt-detour, .alt-route, .collapsible-box');
+  if (mode === 'full') {
+    transits.forEach(el => el.style.display = '');
+    alts.forEach(el => el.style.display = '');
+  } else if (mode === 'days') {
+    transits.forEach(el => el.style.display = 'none');
+    alts.forEach(el => el.style.display = 'none');
+  } else if (mode === 'transit') {
+    transits.forEach(el => el.style.display = '');
+    alts.forEach(el => el.style.display = 'none');
+  }
+}
+
+// Map data
 const S=[
-  {n:"Hanoi",lat:21.028,lng:105.854,c:"vietnam"},
-  {n:"Ha Giang",lat:22.823,lng:104.984,c:"vietnam"},
-  {n:"Dong Van",lat:23.274,lng:105.363,c:"vietnam"},
-  {n:"Meo Vac",lat:23.152,lng:105.413,c:"vietnam"},
-  {n:"Sapa",lat:22.336,lng:103.844,c:"vietnam"},
-  {n:"Cat Ba",lat:20.727,lng:106.981,c:"vietnam"},
-  {n:"Phong Nha",lat:17.590,lng:106.283,c:"vietnam"},
-  {n:"Hoi An",lat:15.880,lng:108.338,c:"vietnam"},
-  {n:"Luang Prabang",lat:19.884,lng:102.135,c:"laos"},
-  {n:"Vang Vieng",lat:18.922,lng:102.447,c:"laos"},
-  {n:"Vientiane",lat:17.976,lng:102.633,c:"laos"},
-  {n:"Bangkok",lat:13.756,lng:100.502,c:"thailand"},
-  {n:"Koh Phangan",lat:9.748,lng:100.030,c:"thailand"},
-  {n:"Koh Tao",lat:10.096,lng:99.838,c:"thailand"},
-  {n:"Chiang Mai",lat:18.787,lng:98.993,c:"thailand"},
-  {n:"Pai",lat:19.358,lng:98.440,c:"thailand"},
-  {n:"Moalboal",lat:9.956,lng:123.399,c:"philippines"},
-  {n:"Bohol",lat:9.824,lng:124.024,c:"philippines"},
-  {n:"Puerto Princesa",lat:9.749,lng:118.758,c:"philippines"},
-  {n:"El Nido",lat:11.178,lng:119.393,c:"philippines"},
-  {n:"Coron",lat:11.999,lng:120.204,c:"philippines"},
-  {n:"Manila",lat:14.599,lng:120.984,c:"philippines"},
-  {n:"Ubud",lat:-8.507,lng:115.263,c:"indonesia"},
-  {n:"Amed",lat:-8.352,lng:115.658,c:"indonesia"},
-  {n:"Nusa Penida",lat:-8.728,lng:115.544,c:"indonesia"},
-  {n:"Uluwatu",lat:-8.829,lng:115.085,c:"indonesia"},
-  {n:"Komodo",lat:-8.497,lng:119.888,c:"indonesia"},
-  {n:"Kelimutu",lat:-8.774,lng:121.814,c:"indonesia"},
-  {n:"Gili T",lat:-8.351,lng:116.035,c:"indonesia"}
+  {n:"Hanoi",lat:21.028,lng:105.854,c:"vietnam"},          // 0
+  {n:"Ha Giang",lat:22.823,lng:104.984,c:"vietnam"},       // 1
+  {n:"Dong Van",lat:23.274,lng:105.363,c:"vietnam"},       // 2
+  {n:"Meo Vac",lat:23.152,lng:105.413,c:"vietnam"},        // 3
+  {n:"Sapa",lat:22.336,lng:103.844,c:"vietnam"},           // 4
+  {n:"Cat Ba",lat:20.727,lng:106.981,c:"vietnam"},         // 5
+  {n:"Phong Nha",lat:17.590,lng:106.283,c:"vietnam"},      // 6
+  {n:"Hoi An",lat:15.880,lng:108.338,c:"vietnam"},         // 7
+  {n:"Luang Prabang",lat:19.884,lng:102.135,c:"laos"},     // 8
+  {n:"Vang Vieng",lat:18.922,lng:102.447,c:"laos"},        // 9
+  {n:"Vientiane",lat:17.976,lng:102.633,c:"laos"},         // 10
+  {n:"Bangkok",lat:13.756,lng:100.502,c:"thailand"},       // 11
+  {n:"Koh Phangan",lat:9.748,lng:100.030,c:"thailand"},    // 12
+  {n:"Koh Tao",lat:10.096,lng:99.838,c:"thailand"},        // 13
+  {n:"Moalboal",lat:9.956,lng:123.399,c:"philippines"},    // 14
+  {n:"Bohol",lat:9.824,lng:124.024,c:"philippines"},       // 15
+  {n:"Puerto Princesa",lat:9.749,lng:118.758,c:"philippines"}, // 16
+  {n:"Port Barton",lat:10.275,lng:119.133,c:"philippines"},// 17
+  {n:"El Nido",lat:11.178,lng:119.393,c:"philippines"},    // 18
+  {n:"Coron",lat:11.999,lng:120.204,c:"philippines"},      // 19
+  {n:"Manila",lat:14.599,lng:120.984,c:"philippines"},     // 20
+  {n:"Ubud",lat:-8.507,lng:115.263,c:"indonesia"},         // 21
+  {n:"Amed",lat:-8.352,lng:115.658,c:"indonesia"},         // 22
+  {n:"Nusa Penida",lat:-8.728,lng:115.544,c:"indonesia"},  // 23
+  {n:"Uluwatu",lat:-8.829,lng:115.085,c:"indonesia"},      // 24
+  {n:"Komodo",lat:-8.497,lng:119.888,c:"indonesia"},       // 25
+  {n:"Kelimutu",lat:-8.774,lng:121.814,c:"indonesia"},     // 26
+  {n:"Gili T",lat:-8.351,lng:116.035,c:"indonesia"}        // 27
 ];
 const R=[
+  // Vietnam
   [0,1,"bus"],[1,2,"moto"],[2,3,"moto"],[3,1,"moto"],[1,4,"bus"],
   [4,0,"train"],[0,5,"ferry"],[5,0,"ferry"],[0,6,"train"],[6,7,"train"],
+  // Laos
   [7,8,"flight"],[8,9,"train"],[9,10,"train"],[10,11,"train"],
-  [11,12,"train"],[12,13,"ferry"],[13,11,"train"],
-  [11,14,"train"],[14,15,"bus"],[15,14,"bus"],[14,16,"flight"],
-  [16,17,"ferry"],[17,18,"flight"],[18,19,"bus"],
-  [19,20,"ferry"],[20,21,"flight"],[21,22,"flight"],
-  [22,23,"bus"],[23,24,"ferry"],[24,25,"ferry"],
-  [25,26,"flight"],[26,27,"bus"],[27,22,"flight"],[22,28,"ferry"]
+  // Thailand (main — no CM/Pai)
+  [11,12,"train"],[12,13,"ferry"],[13,11,"train"],[11,14,"flight"],
+  // Philippines
+  [14,15,"ferry"],[15,16,"flight"],[16,17,"bus"],
+  [17,18,"ferry"],[18,19,"flight"],[19,20,"flight"],
+  // Indonesia
+  [20,21,"flight"],[21,22,"bus"],[22,23,"ferry"],[22,24,"ferry"],
+  [24,25,"flight"],[25,26,"bus"],[26,21,"flight"],[21,27,"ferry"]
 ];
 const COL={thailand:'#7c3aed',laos:'#b45309',vietnam:'#dc2626',philippines:'#2563eb',indonesia:'#e11d48'};
 const MC={train:'#b45309',ferry:'#2563eb',bus:'#059669',flight:'#dc2626',moto:'#be123c'};
@@ -1095,7 +1170,10 @@ S.forEach((e,i)=>{
 const ALT=[
   {n:"Ninh Binh",lat:20.254,lng:105.975,c:"vietnam",desc:"Optional: Ha Long Bay on land — rowboats, karsts, Mua Cave"},
   {n:"Khao Sok",lat:8.938,lng:98.529,c:"thailand",desc:"Optional: Ancient rainforest, floating lake bungalows"},
-  {n:"Koh Samui",lat:9.512,lng:100.013,c:"thailand",desc:"Optional: Ang Thong Marine Park, biggest Gulf island"}
+  {n:"Koh Samui",lat:9.512,lng:100.013,c:"thailand",desc:"Optional: Ang Thong Marine Park, biggest Gulf island"},
+  {n:"Krabi / Railay",lat:8.086,lng:98.906,c:"thailand",desc:"Optional: Limestone sea cliffs, Railay Beach climbing, Phi Phi Islands"},
+  {n:"Chiang Mai",lat:18.787,lng:98.993,c:"thailand",desc:"Via Mekong or LP→CM alternate: temples, Doi Inthanon, Elephant Park, Crazy Horse"},
+  {n:"Pai",lat:19.358,lng:98.440,c:"thailand",desc:"Via Mekong or LP→CM alternate: canyon, hot springs, mountain hippie vibes"}
 ];
 ALT.forEach((e)=>{
   let sz=26;
