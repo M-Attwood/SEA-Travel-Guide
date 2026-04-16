@@ -259,6 +259,31 @@
             margin-left: 8px;
         }
 
+        .alt-badge {
+            display: inline-block;
+            background: #7c3aed;
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .05em;
+            padding: 2px 7px;
+            border-radius: 10px;
+            margin-left: 8px;
+            vertical-align: middle;
+            text-transform: uppercase;
+            flex-shrink: 0;
+        }
+
+        .alt-route-note {
+            font-size: 0.88em;
+            color: #6d28d9;
+            background: #f5f3ff;
+            border: 1px solid #c4b5fd;
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin: 0 0 18px 0;
+        }
+
         @media (max-width: 768px) {
             header h1 {
                 font-size: 1.8em;
@@ -1601,14 +1626,16 @@
                 <div class="country-header" style="border-bottom-color:#22c55e;">
                     <div class="country-flag">🗺️</div>
                     <div class="country-info">
-                        <h2 style="color:#15803d;">Alternate Routes</h2>
+                        <h2 style="color:#15803d;">Alternate Routes <span class="alt-badge">Optional</span></h2>
                         <p>Optionally replace parts of the main itinerary — toggle on the interactive map to visualise</p>
                     </div>
                 </div>
 
+                <p class="alt-route-note">These routes replace or extend portions of the main route. Toggle them on the <a href="trip-map-detailed.html">interactive map</a> to see how they connect.</p>
+
                 <!-- Mekong Slow Boat -->
                 <div class="destination-card" style="border-color:#6ee7b7;">
-                    <h3>🚢 Mekong Slow Boat — Laos Bottom-to-Top</h3>
+                    <h3>🚢 Mekong Slow Boat — Laos Bottom-to-Top <span class="alt-badge">Alt Route</span></h3>
                     <p class="destination-dates">Replaces: main Laos route (LP→VV→Vientiane) | Adds: Chiang Rai, Chiang Mai, Pai | Duration: adds ~4–5 days</p>
 
                     <div class="booking-category" style="border-left-color:#22c55e;">
@@ -1774,7 +1801,7 @@
 
                 <!-- LP→CM Flight -->
                 <div class="destination-card" style="border-color:#bfdbfe;">
-                    <h3>✈️ LP → Chiang Mai Direct Flight</h3>
+                    <h3>✈️ LP → Chiang Mai Direct Flight <span class="alt-badge">Alt Route</span></h3>
                     <p class="destination-dates">Faster Mekong alternative — skip slow boat, save 4 days | Still adds Chiang Mai + Pai</p>
 
                     <div class="booking-category" style="border-left-color:#2563eb;">
@@ -1818,7 +1845,7 @@
 
                 <!-- Krabi Detour -->
                 <div class="destination-card" style="border-color:#fca5a5;">
-                    <h3>🧗 Krabi / Railay Beach Detour</h3>
+                    <h3>🧗 Krabi / Railay Beach Detour <span class="alt-badge">Alt Route</span></h3>
                     <p class="destination-dates">After Koh Tao, before flying to Philippines | Adds 2–3 days | June/July monsoon season — check forecast</p>
 
                     <div class="booking-category" style="border-left-color:#dc2626;">
@@ -1945,7 +1972,7 @@
 
                 <!-- Koh Samui -->
                 <div class="destination-card" style="border-color:#c4b5fd;">
-                    <h3>🏝️ Koh Samui Add-On</h3>
+                    <h3>🏝️ Koh Samui Add-On <span class="alt-badge">Alt Route</span></h3>
                     <p class="destination-dates">Between Koh Phangan and Koh Tao | Adds 1–2 days</p>
 
                     <div class="booking-category" style="border-left-color:#7c3aed;">
