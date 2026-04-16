@@ -190,10 +190,16 @@
         .trip-nav a.active { background: rgba(255,255,255,.25); border-bottom: 2px solid white; }
 
         @media (max-width: 768px) {
-            .sidebar { width: 100%; }
-            .toggle-sidebar { left: 100%; }
-            .sidebar.collapsed ~ .toggle-sidebar { left: 10px; }
-            .legend { bottom: 10px; right: 10px; font-size: 11px; padding: 10px 12px; }
+            .sidebar { width: 100%; max-height: 70vh; overflow-y: auto; }
+            .toggle-sidebar {
+                position: fixed !important;
+                left: 10px !important;
+                top: 52px !important;
+                z-index: 200 !important;
+                box-shadow: 0 2px 8px rgba(0,0,0,.25);
+            }
+            .legend { display: none; }
+            .top-controls button:not(:first-child) { display: none; }
         }
 
         /* ── EDIT MODE ─────────────────────────────────────────────────────── */
@@ -849,23 +855,45 @@
       },
       'lp-cm-flight': {
         name: '✈️ Fly LP → Chiang Mai',
-        desc: 'Skip slow boat — fly LP direct to Chiang Mai + Pai → Bangkok. Also skips VV and Vientiane.',
+        desc: 'Da Nang → fly Vientiane → Lao Railway north → LP → fly direct CM + Pai → Bangkok. Same Laos as Mekong but skip the slow boat.',
         mutuallyExclusiveWith: ['mekong', 'vip-bus'],
-        insertAfter: 'luang-prabang',
+        insertAfter: 'hoi-an',
         newSteps: [
-          { id:'chiang-mai-f', name:'Chiang Mai', country:'thailand', days:'~22–25', lat:18.7883, lng:98.9853, enabled:true,
+          { id:'vientiane-lpc', name:'Vientiane', country:'laos', days:'~22', lat:17.9667, lng:102.6000, enabled:true,
             pois:[
-              {id:'tha-phae-f', name:'Tha Phae Gate', lat:18.7872, lng:98.9933, tags:['CULTURAL'], desc:'Old city gate', day:22},
-              {id:'doi-inthanon-f', name:'Doi Inthanon', lat:18.5875, lng:98.4869, tags:['TREK'], desc:"Thailand's highest peak 2,565m", day:23},
-              {id:'crazy-horse-f', name:'Crazy Horse Buttress', lat:18.8600, lng:99.0300, tags:['CLIMB'], desc:'200+ bolted limestone routes', day:24},
-              {id:'elephant-park-f', name:'Elephant Nature Park', lat:18.8833, lng:98.8833, tags:['WILDLIFE'], desc:'Ethical elephant sanctuary', day:25},
+              {id:'patuxai-lpc', name:'Patuxai Victory Gate', lat:17.9750, lng:102.6308, tags:['CULTURAL'], desc:"Laos' Arc de Triomphe", day:22},
+              {id:'pha-that-lpc', name:'Pha That Luang', lat:17.9756, lng:102.6367, tags:['TEMPLE'], desc:'Golden stupa — national symbol', day:22},
+              {id:'cope-lpc', name:'COPE Visitor Centre', lat:17.9619, lng:102.6203, tags:['CULTURAL'], desc:'UXO awareness exhibit', day:22},
+            ],
+            transportTo:{type:'train', label:'Lao-China Railway north → Vang Vieng ~1h'}},
+          { id:'vang-vieng-lpc', name:'Vang Vieng', country:'laos', days:'~23–25', lat:18.9225, lng:102.4483, enabled:true,
+            pois:[
+              {id:'gcm-lpc', name:'Green Climbers Home', lat:18.9450, lng:102.4250, tags:['CLIMB'], desc:'Thaiwand Wall, Sleeping Wall', day:23},
+              {id:'blue-lagoon-lpc', name:'Tham Phu Kham Cave + Blue Lagoon', lat:18.9128, lng:102.4344, tags:['CAVE'], desc:'Cave + Blue Lagoon swim', day:24},
+              {id:'tubing-lpc', name:'Nam Song River Tubing', lat:18.9225, lng:102.4450, tags:['WATER'], desc:'River float through karst valley', day:25},
+            ],
+            transportTo:{type:'train', label:'Lao-China Railway north → Luang Prabang ~2h'}},
+          { id:'luang-prabang-lpc', name:'Luang Prabang', country:'laos', days:'~26–28', lat:19.8856, lng:102.1350, enabled:true,
+            pois:[
+              {id:'phousi-lpc', name:'Phousi Hill', lat:19.8878, lng:102.1339, tags:['TREK'], desc:'328 steps, 360° sunset views', day:26},
+              {id:'kuang-si-lpc', name:'Kuang Si Falls', lat:19.7481, lng:101.9928, tags:['WATERFALL'], desc:'Turquoise cascading pools', day:27},
+              {id:'wat-xieng-lpc', name:'Wat Xieng Thong', lat:19.8933, lng:102.1411, tags:['TEMPLE'], desc:"LP's most beautiful temple", day:28},
+              {id:'alms-lpc', name:'Alms Giving Ceremony', lat:19.8878, lng:102.1344, tags:['CULTURAL'], desc:'5:30am monks collecting rice', day:28},
+            ],
+            transportTo:{type:'flight', label:'Flight LP → Chiang Mai ~1h A$80–180'}},
+          { id:'chiang-mai-f', name:'Chiang Mai', country:'thailand', days:'~29–32', lat:18.7883, lng:98.9853, enabled:true,
+            pois:[
+              {id:'tha-phae-f', name:'Tha Phae Gate', lat:18.7872, lng:98.9933, tags:['CULTURAL'], desc:'Old city gate', day:29},
+              {id:'doi-inthanon-f', name:'Doi Inthanon', lat:18.5875, lng:98.4869, tags:['TREK'], desc:"Thailand's highest peak 2,565m", day:30},
+              {id:'crazy-horse-f', name:'Crazy Horse Buttress', lat:18.8600, lng:99.0300, tags:['CLIMB'], desc:'200+ bolted limestone routes', day:31},
+              {id:'elephant-park-f', name:'Elephant Nature Park', lat:18.8833, lng:98.8833, tags:['WILDLIFE'], desc:'Ethical elephant sanctuary', day:32},
             ],
             transportTo:{type:'bus', label:'Van to Pai 3h ~A$8'}},
-          { id:'pai-f', name:'Pai', country:'thailand', days:'~25–27', lat:19.3600, lng:98.4400, enabled:true,
+          { id:'pai-f', name:'Pai', country:'thailand', days:'~32–34', lat:19.3600, lng:98.4400, enabled:true,
             pois:[
-              {id:'pai-canyon-f', name:'Pai Canyon', lat:19.3342, lng:98.4572, tags:['TREK'], desc:'Sunrise ridge walk', day:26},
-              {id:'pai-hot-f', name:'Sai Ngam Hot Springs', lat:19.3167, lng:98.4383, tags:['NATURAL'], desc:'Natural hot pools', day:26},
-              {id:'pai-wfall-f', name:'Mo Paeng Waterfall', lat:19.3833, lng:98.4167, tags:['WATERFALL'], desc:'Natural rock slides', day:27},
+              {id:'pai-canyon-f', name:'Pai Canyon', lat:19.3342, lng:98.4572, tags:['TREK'], desc:'Sunrise ridge walk', day:33},
+              {id:'pai-hot-f', name:'Sai Ngam Hot Springs', lat:19.3167, lng:98.4383, tags:['NATURAL'], desc:'Natural hot pools', day:33},
+              {id:'pai-wfall-f', name:'Mo Paeng Waterfall', lat:19.3833, lng:98.4167, tags:['WATERFALL'], desc:'Natural rock slides', day:34},
             ],
             transportTo:{type:'bus', label:'Van to Chiang Mai 3h → train/bus to Bangkok ~9h', legs:[
               {type:'bus',   label:'Van back to Chiang Mai 3h', toLat:18.7883, toLng:98.9853},
@@ -873,13 +901,19 @@
             ]}},
         ],
         overrides: {
-          'luang-prabang': {type:'flight', label:'Flight LP → Chiang Mai ~1h'},
+          'hoi-an': {type:'flight', label:'Flight Da Nang → Vientiane'},
         },
-        disableSteps: ['vang-vieng', 'vientiane'],
+        disableSteps: ['luang-prabang', 'vang-vieng', 'vientiane'],
         shadowSegments: [
+          // Original Hoi An → LP direct flight (displaced)
+          {fromLat:15.8801, fromLng:108.3380, toLat:19.8856, toLng:102.1350, type:'flight'},
+          // Original LP → VV → VTE → BKK (displaced since we enter from south)
           {fromLat:19.8856, fromLng:102.1350, toLat:18.9225, toLng:102.4483, type:'train'},
           {fromLat:18.9225, fromLng:102.4483, toLat:17.9667, toLng:102.6000, type:'train'},
           {fromLat:17.9667, fromLng:102.6000, toLat:13.7381, toLng:100.5175, type:'train'},
+          // Slow boat route (showing what Mekong slow boat would look like)
+          {fromLat:19.8856, fromLng:102.1350, toLat:19.8100, toLng:101.1200, type:'slow-boat'},
+          {fromLat:19.8100, fromLng:101.1200, toLat:20.1900, toLng:100.4000, type:'slow-boat'},
         ],
       },
       'koh-samui': {
@@ -907,7 +941,7 @@
       },
       'krabi': {
         name: '🧗 Krabi / Railay Detour',
-        desc: 'Koh Tao → ferry to Surat Thani → bus to Krabi → Railay Beach climbing + Phi Phi → fly Bangkok → Cebu (adds 2–3 days)',
+        desc: 'Koh Tao → ferry to Surat Thani → bus to Krabi → Railay Beach climbing + Phi Phi → overnight bus Bangkok → fly Cebu (adds 2–3 days)',
         mutuallyExclusiveWith: [],
         insertAfter: 'koh-tao',
         newSteps: [
@@ -918,8 +952,8 @@
               {id:'phi-phi-day', name:'Phi Phi Islands Day Trip', lat:7.7407, lng:98.7784, tags:['BEACH'], desc:'Maya Bay, snorkelling by longtail, A$30–50', day:36},
               {id:'four-islands-krabi', name:'Four Islands Longtail Tour', lat:7.9667, lng:98.8667, tags:['BOAT'], desc:'Beach hop + snorkel around Krabi islands, A$20–30', day:37},
             ],
-            transportTo:{type:'flight', label:'Flight Krabi → Bangkok → fly to Cebu', legs:[
-              {type:'flight', label:'Flight Krabi → Bangkok ~1.5h', toLat:13.7381, toLng:100.5175},
+            transportTo:{type:'bus', label:'Bus Krabi → Bangkok → fly to Cebu', legs:[
+              {type:'bus', label:'Overnight bus Krabi → Bangkok ~12h', toLat:13.7381, toLng:100.5175},
               {type:'flight', label:'Flight Bangkok → Cebu', toLat:null, toLng:null}
             ]}},
         ],
@@ -1610,6 +1644,11 @@
     renderRoute();
     createLegend();
     fitToRoute();
+
+    // Start sidebar collapsed on mobile
+    if (window.innerWidth <= 768) {
+        document.getElementById('sidebar').classList.add('collapsed');
+    }
     </script>
 </body>
 </html>
