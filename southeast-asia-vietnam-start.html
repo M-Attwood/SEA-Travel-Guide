@@ -4,8 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SE Asia — Vietnam Start (Hanoi → Laos → Thailand)</title>
+<!-- MAP-REMOVED-START
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+MAP-REMOVED-END -->
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
   :root {
@@ -186,6 +188,17 @@
   .collapsible-box h3{cursor:pointer;display:flex;align-items:center;gap:6px;user-select:none;}
   .collapsible-box .toggle-icon{margin-left:auto;font-size:.7rem;font-weight:800;padding:2px 7px;border-radius:4px;flex-shrink:0;letter-spacing:.3px;background:rgba(0,0,0,.06);color:inherit;}
   .collapsible-box.collapsed .collapse-body{display:none;}
+
+  /* Color-coded callouts */
+  .callout{border-radius:7px;padding:9px 13px;margin:7px 0;font-size:.82rem;line-height:1.55;}
+  .callout-tip  {background:#eff6ff;border-left:3px solid #3b82f6;color:#1e40af;}
+  .callout-tip::before{content:'Tip: ';font-weight:700;}
+  .callout-warn {background:#fff7ed;border-left:3px solid #f97316;color:#9a3412;}
+  .callout-warn::before{content:'Note: ';font-weight:700;}
+  .callout-vital{background:#fef2f2;border-left:3px solid #ef4444;color:#991b1b;font-weight:600;}
+  .callout-vital::before{content:'Important: ';font-weight:700;}
+  .callout-book {background:#f0fdf4;border-left:3px solid #22c55e;color:#14532d;}
+  .callout-book::before{content:'Book ahead: ';font-weight:700;}
 </style>
 </head>
 <body>
@@ -261,8 +274,10 @@
   <div class="verdict">8 flights total · 4 overnight trains · Lao-China Railway · Friendship Bridge crossing · Alternates on map: Mekong slow boat, fly LP→CM, Krabi detour, Koh Samui</div>
 </div>
 
+<!-- MAP-REMOVED-START
 <div id="map" style="height:600px;"></div>
 <div id="map-key"></div>
+MAP-REMOVED-END -->
 
 <div class="country-jump">
   <span class="cj-label">Jump to:</span>
@@ -315,7 +330,7 @@
   <div class="transit">
     <strong>Day 3 early AM:</strong> <span class="mode mode-bus">Limousine Bus</span> Hanoi → Ha Giang <span class="time">6–7 hrs</span> <span class="cost">~A$19–23</span><br>
     Depart My Dinh station ~7am. Comfortable reclining seats with blankets and WiFi. Arrive early afternoon. Rent motorbike (A$17–25/day, Honda XR150 recommended) or book an Easy Rider guide (A$60–96/day — they drive, you ride pillion and soak in the views).
-    <span class="tip">Easy Riders handle navigation on Ha Giang's mountain switchbacks. Highly recommended if not confident on motorbikes. If renting: check brakes, tyres, horn. Get automatic if inexperienced. International driving permit technically required.</span>
+    <div class="callout callout-warn">Easy Riders handle navigation on Ha Giang's mountain switchbacks. Highly recommended if not confident on motorbikes. If renting: check brakes, tyres, horn. Get automatic if inexperienced. International driving permit technically required.</div>
   </div>
 
   <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">3</div><div class="dd">25 May</div><div class="dot" style="background:var(--vietnam)"></div></div>
@@ -346,7 +361,7 @@
     <strong>Day 8 night:</strong> <span class="mode mode-train">Overnight Train</span> Lao Cai → Hanoi <span class="overnight">Sleeper</span><br>
     <span class="time">8 hrs</span> <span class="cost">~A$29–60 (soft sleeper)</span><br>
     Sapaly Express or King Express. Depart ~8–9pm, arrive Hanoi ~5–6am. 4-berth cabin, air-con, clean sheets, gentle rocking.
-    <span class="tip">Sapa explore → taxi to Lao Cai → board sleeper → wake up in Hanoi. Saves a hotel night. Book via baolau.com or 12Go.asia 2–3 days ahead.</span>
+    <div class="callout callout-book">Sapa explore → taxi to Lao Cai → board sleeper → wake up in Hanoi. Saves a hotel night. Book via baolau.com or 12Go.asia 2–3 days ahead.</div>
   </div>
 
   <div class="transit">
@@ -372,7 +387,7 @@
     <strong>Day 12 night:</strong> <span class="mode mode-train">Overnight Train</span> Hanoi → Dong Hoi <span class="overnight">Sleeper</span><br>
     <span class="time">8–10 hrs</span> <span class="cost">~A$36–60 (soft sleeper)</span><br>
     Reunification Express southbound. Depart Hanoi ~7–8pm, arrive Dong Hoi ~4–6am. SE1 or SE3 trains (newest rolling stock). Shuttle Dong Hoi → Phong Nha (45 min, A$8).
-    <span class="tip">Book soft sleeper (4-berth, air-con) via dsvn.vn or 12Go.asia. Lower berth slightly more expensive but worth it for the extra space.</span>
+    <div class="callout callout-book">Book soft sleeper (4-berth, air-con) via dsvn.vn or 12Go.asia. Lower berth slightly more expensive but worth it for the extra space.</div>
   </div>
 
   <div class="alt-detour">
@@ -394,7 +409,7 @@
   <div class="transit">
     <strong>Transit Day 16:</strong> <span class="mode mode-train">Day Train</span> Dong Hoi → Da Nang <span class="time">4.5–5 hrs</span> <span class="cost">~A$12–23</span><br>
     Shuttle Phong Nha → Dong Hoi station (45 min). Board the Reunification Express ~8am, arrive Da Nang ~12:30pm. <strong>Crosses the Hai Van Pass</strong> — mountains plunging into the South China Sea. One of Vietnam's most scenic rail sections. Grab/taxi Da Nang → Hoi An (30 min, A$5).
-    <span class="tip">Sit on the LEFT side of the train for Hai Van Pass ocean views. This is the section Top Gear called "one of the best coastal roads in the world" — you see it from the train above.</span>
+    <div class="callout callout-tip">Sit on the LEFT side of the train for Hai Van Pass ocean views. This is the section Top Gear called "one of the best coastal roads in the world" — you see it from the train above.</div>
   </div>
 
   <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">16</div><div class="dd">7 Jun</div><div class="dot" style="background:var(--vietnam)"></div></div>
@@ -411,7 +426,7 @@
   <div class="transit">
     <strong>Transit Day 19:</strong> <span class="mode mode-fly">Fly</span> Da Nang → Luang Prabang <span class="time">~5–8 hrs (connection required)</span> <span class="cost">~A$120–250</span><br>
     <strong>No direct flights exist.</strong> All routings connect via Hanoi, HCMC, or Bangkok. Shuttle Hoi An → Da Nang airport (30 min, A$8).
-    <span class="tip">Lao visa on arrival: US$35–42. Bring 1 passport photo + exact USD cash (they don't give change). Vietnam e-visa: apply at evisa.xuatnhapcanh.gov.vn 3+ days ahead.</span>
+    <div class="callout callout-vital">Lao visa on arrival: US$35–42. Bring 1 passport photo + exact USD cash (they don't give change). Vietnam e-visa: apply at evisa.xuatnhapcanh.gov.vn 3+ days ahead.</div>
   </div>
 
   <div class="alt-route">
@@ -433,6 +448,13 @@
       <p>Reunification Express Hoi An → Hanoi (15–17 hrs overnight, A$48–80). Then Hanoi → Luang Prabang by sleeper bus via Dien Bien Phu (22–26 hrs, A$36–48). Two border crossings, rough mountain roads, cramped sleeper bus. <strong>Total: ~40 hrs over 2 days, A$84–128.</strong> Only for dedicated overland travellers.</p>
     </div>
     <div class="alt-verdict">Via Hanoi is fastest if flights connect; via Bangkok is often cheapest and has better layover facilities. Check Skyscanner for both routings — prices vary wildly by date. Book the two legs separately for best prices.</div>
+  </div>
+
+  <div class="alt-detour">
+    <h4>🚌 VIP Bus — Hoi An to Luang Prabang Overland</h4>
+    <p>Skip the flight entirely. The VIP overnight bus from Da Nang/Hoi An crosses the Kaew Nua mountain pass into Laos and arrives Luang Prabang ~36 hours later. Adds 1–2 days but saves A$60–120 and is a genuine overland adventure through mountain jungle.</p>
+    <div class="alt-highlights">Highlights: Kaew Nua pass at dawn · Border crossing Nam Phao/Cau Treo · Budget A$40–55 total vs A$120–200 flight · Passes through the Lao highlands with few other travellers</div>
+    <div class="alt-logistics">Book: Sinh Tourist or Queen Café from Hoi An — depart evenings, bus stops overnight in central Laos before continuing to LP. Alternatively toggle "VIP Bus" on the <a href="trip-map-detailed.html">interactive map</a> to see the full routing.</div>
   </div>
 </div>
 
@@ -465,7 +487,7 @@
   <div class="transit">
     <strong>Transit Day 22:</strong> <span class="mode mode-train">Lao-China Railway</span> Luang Prabang → Vang Vieng <span class="time">~2 hrs</span> <span class="cost">~A$10–18</span><br>
     Modern Chinese-built railway. Multiple daily departures from LP station (15 min tuk-tuk from town). Air-con, comfortable seats, scenic mountain tunnels and valley views. Arrives Vang Vieng station (7 km from town, tuk-tuk A$3).
-    <span class="tip">What used to be a nauseating 6-hour mountain bus ride is now a smooth 2-hour train. Buy tickets at the station or via the LCR app — they rarely sell out in wet season.</span>
+    <div class="callout callout-tip">What used to be a nauseating 6-hour mountain bus ride is now a smooth 2-hour train. Buy tickets at the station or via the LCR app — they rarely sell out in wet season.</div>
   </div>
 
   <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">22</div><div class="dd">13 Jun</div><div class="dot" style="background:var(--laos)"></div></div>
@@ -508,7 +530,7 @@
     <span class="mode mode-train">Overnight Train</span> Nong Khai → Bangkok <span class="overnight">Sleeper</span><br>
     <span class="time">10–11 hrs</span> <span class="cost">~A$29–54 (2nd class sleeper)</span><br>
     State Railway of Thailand. Depart ~6:30pm, arrive Bangkok Hua Lamphong ~5am. Cross an international border and sleep your way to Bangkok in one evening. 2nd class sleeper: air-con, clean sheets, gentle rocking.
-    <span class="tip">Cross the Friendship Bridge before 5pm to catch the 6:30pm train. Book train tickets in advance via 12Go.asia or at Nong Khai station. Lower berth = wider + window.</span>
+    <div class="callout callout-warn">Cross the Friendship Bridge before 5pm to catch the 6:30pm train. Book train tickets in advance via 12Go.asia or at Nong Khai station. Lower berth = wider + window.</div>
   </div>
 
   <div class="alt-route">
@@ -598,7 +620,7 @@
     <strong>Day 27 night:</strong> <span class="mode mode-train">Overnight Train</span> Bangkok → Surat Thani <span class="overnight">Sleeper</span><br>
     <span class="time">10–11 hrs</span> <span class="cost">~A$29–60 (2nd class sleeper)</span><br>
     Depart Hua Lamphong ~5–7pm. Arrive Surat Thani ~5–6am. Combined train+bus+ferry ticket available — one ticket gets you all the way to Koh Phangan.
-    <span class="tip">Buy the combined train+bus+ferry ticket at Bangkok station. One ticket, seamless journey. Lower berth = more space + window. Both comfortable.</span>
+    <div class="callout callout-book">Buy the combined train+bus+ferry ticket at Bangkok station. One ticket, seamless journey. Lower berth = more space + window. Both comfortable.</div>
   </div>
 
   <div class="transit">
@@ -623,10 +645,10 @@
   <div class="day-r"><div class="loc">Koh Phangan — Flex</div><div class="act"><span class="t t-flex">Flex</span> Scooter the whole island. Snorkel Haad Khom (coral reef from shore). Hike Khao Ra (highest point, jungle viewpoint). Full Moon Party if timing aligns — otherwise, Half Moon or Jungle parties run weekly.</div></div></div>
 
   <div class="alt-detour">
-    <h4>Koh Samui — Ang Thong Marine Park</h4>
+    <h4>🏝️ Koh Samui — Ang Thong Marine Park (adds 1–2 days)</h4>
     <p>The ferry from Koh Phangan to Koh Tao passes right by Koh Samui. Stop for 1–2 days to explore Thailand's biggest Gulf island. The standout is Ang Thong Marine Park — a full-day boat trip to kayak through an emerald lagoon hidden inside a collapsed island.</p>
     <div class="alt-highlights">Highlights: Ang Thong Marine Park boat trip (kayak emerald lagoon, hike to viewpoints, snorkel) · Na Muang waterfalls · Fisherman's Village night market (Bophut) · Big Buddha temple · Lad Koh viewpoint</div>
-    <div class="alt-logistics">Adds 1–2 days. Ferry Koh Phangan → Koh Samui A$8–12 (30 min). Ang Thong day trip A$40–60. Ferry Koh Samui → Koh Tao A$19–25 (2 hrs). Hostels A$12–20/night.</div>
+    <div class="alt-logistics">Ferry Koh Phangan → Koh Samui A$8–12 (30 min). Ang Thong day trip A$40–60. Ferry Koh Samui → Koh Tao A$19–25 (2 hrs). Hostels A$12–20/night. Toggle "Add Koh Samui" on the <a href="trip-map-detailed.html">interactive map</a>.</div>
   </div>
 
   <div class="transit">
@@ -650,7 +672,7 @@
     <strong>Day 35:</strong> <span class="mode mode-ferry">Ferry</span> Koh Tao → Chumphon <span class="time">1.5 hrs</span> <span class="cost">~A$19</span> + <span class="mode mode-train">Overnight Train</span> Chumphon → Bangkok <span class="overnight">Sleeper</span><br>
     <span class="time">8–9 hrs</span> <span class="cost">~A$25–48</span><br>
     Lomprayah catamaran ~2:45pm. Arrive Chumphon, seafood dinner by the station, board ~7–8pm train. Wake up Bangkok ~4–5am.
-    <span class="tip">Lomprayah sells combined ferry+train tickets at their Koh Tao office. The afternoon ferry connects perfectly with the evening sleeper.</span>
+    <div class="callout callout-book">Lomprayah sells combined ferry+train tickets at their Koh Tao office. The afternoon ferry connects perfectly with the evening sleeper.</div>
   </div>
 
   <div class="alt-detour">
@@ -680,7 +702,7 @@
   <div class="transit">
     <strong>Day 36 / 37:</strong> <span class="mode mode-fly">Fly</span> Bangkok → Cebu <span class="time">~3 hrs</span> <span class="cost">~A$80–200</span><br>
     Cebu Pacific, AirAsia, or Philippine Airlines. Multiple daily flights. Free 30-day visa on arrival for most passports. Bus Cebu airport → Moalboal (3 hrs, A$12).
-    <span class="tip">Book BKK → CEB separately on Skyscanner — better prices than combined tickets. Breaking the journey with a Bangkok night gives a useful buffer day.</span>
+    <div class="callout callout-book">Book BKK → CEB separately on Skyscanner — better prices than combined tickets. Breaking the journey with a Bangkok night gives a useful buffer day.</div>
   </div>
 
   <div class="alt-detour">
@@ -747,7 +769,7 @@
 
   <div class="transit">
     <strong>Transit Day 52:</strong> <span class="mode mode-van">Van</span> Puerto Princesa → Port Barton <span class="time">3 hrs</span> <span class="cost">~A$12</span><br>
-    <span class="tip">No ATMs in Port Barton — withdraw cash in Puerto Princesa before leaving.</span>
+    <div class="callout callout-vital">No ATMs in Port Barton — withdraw cash in Puerto Princesa before leaving.</div>
   </div>
 
   <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">53</div><div class="dd">14 Jul</div><div class="dot" style="background:var(--philippines)"></div></div>
@@ -766,7 +788,7 @@
   <div class="transit">
     <strong>Transit Day 57:</strong> <span class="mode mode-ferry">Ferry</span> El Nido → Coron <span class="time">3.5 hrs</span> <span class="cost">~A$39–54</span><br>
     Fast ferry (Montenegro Lines or Atienza). Book 1–2 days ahead — can cancel in rough monsoon seas.
-    <span class="tip">Build in a buffer day. The El Nido→Coron ferry is the most cancellation-prone route in the Philippines during habagat.</span>
+    <div class="callout callout-warn">Build in a buffer day. The El Nido→Coron ferry is the most cancellation-prone route in the Philippines during habagat.</div>
   </div>
 
   <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">58</div><div class="dd">19 Jul</div><div class="dot" style="background:var(--philippines)"></div></div>
@@ -783,7 +805,7 @@
     Cebu Pacific or PAL. Island — no alternative.<br><br>
     <strong>Transit Day 62:</strong> <span class="mode mode-fly">Fly</span> Manila → Bali <span class="time">4 hrs</span> <span class="cost">~A$125–230</span><br>
     Cebu Pacific, AirAsia, or PAL. International. Shuttle Bali airport → Ubud (1.5 hrs, A$15–25).
-    <span class="tip">Stay near Manila airport (NAIA) the night before. Manila traffic is legendary — don't risk it for a morning flight.</span>
+    <div class="callout callout-warn">Stay near Manila airport (NAIA) the night before. Manila traffic is legendary — don't risk it for a morning flight.</div>
   </div>
 </div>
 
@@ -1100,7 +1122,7 @@ function setView(mode) {
   }
 }
 
-// Map data
+/* MAP-REMOVED-START
 const S=[
   {n:"Hanoi",lat:21.028,lng:105.854,c:"vietnam"},          // 0
   {n:"Ha Giang",lat:22.823,lng:104.984,c:"vietnam"},       // 1
@@ -1148,6 +1170,8 @@ const R=[
 ];
 const COL={thailand:'#7c3aed',laos:'#b45309',vietnam:'#dc2626',philippines:'#2563eb',indonesia:'#e11d48'};
 const MC={train:'#b45309',ferry:'#2563eb',bus:'#059669',flight:'#dc2626',moto:'#be123c'};
+MAP-REMOVED-END */
+/* MAP-REMOVED-START
 let m=L.map('map',{scrollWheelZoom:false}).setView([7,110],5);
 L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'CartoDB',maxZoom:19}).addTo(m);
 m.fitBounds(L.latLngBounds(S.map(e=>[e.lat,e.lng])),{padding:[50,50]});
@@ -1204,6 +1228,7 @@ ALT.forEach((e)=>{
 });
 html+='</div></div>';
 document.getElementById('map-key').innerHTML=html;
+MAP-REMOVED-END */
 </script>
 </body>
 </html>
