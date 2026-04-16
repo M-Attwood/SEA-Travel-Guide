@@ -157,6 +157,7 @@
             border: 1px solid #d1d5db; border-radius: 4px; padding: 8px 10px;
             cursor: pointer; z-index: 99; transition: left 0.3s ease;
         }
+        .toggle-sidebar .toggle-label { display: none; }
         .sidebar.collapsed ~ .toggle-sidebar { left: 10px; }
 
         .top-controls { position: absolute; top: 10px; right: 10px; z-index: 50; display: flex; gap: 8px; }
@@ -190,16 +191,71 @@
         .trip-nav a.active { background: rgba(255,255,255,.25); border-bottom: 2px solid white; }
 
         @media (max-width: 768px) {
-            .sidebar { width: 100%; max-height: 70vh; overflow-y: auto; }
+            /* Nav */
+            .trip-nav-inner { gap: 6px; padding: 0 10px; overflow-x: auto; flex-wrap: nowrap; }
+            .trip-nav a { font-size: .72rem; padding: 3px 8px; white-space: nowrap; }
+            /* Sidebar becomes full-width bottom panel */
+            .sidebar {
+                width: 100% !important;
+                max-height: 52vh;
+                overflow-y: auto;
+                bottom: 0;
+                top: auto;
+                left: 0;
+                right: 0;
+                height: auto;
+                border-top: 2px solid #667eea;
+                border-radius: 12px 12px 0 0;
+                box-shadow: 0 -4px 20px rgba(0,0,0,.2);
+            }
+            .sidebar.collapsed {
+                transform: translateY(100%) !important;
+            }
+            /* Map fills top portion */
+            #map {
+                top: 40px;
+                bottom: 52vh;
+            }
+            /* Toggle button — above sidebar */
             .toggle-sidebar {
                 position: fixed !important;
-                left: 10px !important;
-                top: 52px !important;
+                left: 50% !important;
+                transform: translateX(-50%);
+                bottom: 52vh !important;
+                top: auto !important;
                 z-index: 200 !important;
                 box-shadow: 0 2px 8px rgba(0,0,0,.25);
+                border-radius: 20px;
+                padding: 6px 16px;
+                font-size: 12px;
             }
+            .toggle-sidebar .toggle-label { display: inline; margin-left: 4px; }
+            .sidebar.collapsed ~ .toggle-sidebar {
+                bottom: 8px !important;
+                left: 50% !important;
+            }
+            /* Compact step cards on mobile */
+            .step-card-header { padding: 10px 8px; }
+            .step-name { font-size: 12px; }
+            .alt-btn { font-size: 11px; padding: 7px 10px; }
+            /* Top controls — show only essential buttons, stack them smaller */
+            .top-controls { top: 50px; right: 8px; gap: 5px; }
+            .top-controls button { font-size: 11px; padding: 5px 8px; }
+            /* Popups — wider on mobile */
+            .leaflet-popup-content { max-width: calc(100vw - 60px); font-size: 12px; }
+            /* Legend hidden */
             .legend { display: none; }
-            .top-controls button:not(:first-child) { display: none; }
+            /* Sidebar header compact */
+            .sidebar-header { padding: 12px; }
+            .sidebar-header h1 { font-size: 15px; }
+        }
+        @media (max-width: 480px) {
+            .sidebar { max-height: 48vh; }
+            #map { bottom: 48vh; }
+            .toggle-sidebar { bottom: 48vh !important; }
+            .sidebar.collapsed ~ .toggle-sidebar { bottom: 8px !important; }
+            .controls { gap: 4px; padding: 8px; }
+            .btn { font-size: 10px; padding: 4px 7px; }
         }
 
         /* ── EDIT MODE ─────────────────────────────────────────────────────── */
@@ -374,7 +430,7 @@
         <div class="steps-container" id="stepsContainer"></div>
     </div>
 
-    <button class="toggle-sidebar" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    <button class="toggle-sidebar" onclick="toggleSidebar()"><i class="fas fa-bars"></i> <span class="toggle-label">Route</span></button>
 
     <div class="top-controls">
         <button class="btn" onclick="fitToRoute()"><i class="fas fa-expand"></i> Fit</button>

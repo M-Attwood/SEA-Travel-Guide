@@ -9,11 +9,11 @@
         :root {
             --accent: #6c5ce7;
             --teal: #0d9488;
-            --bg-dark: #0f172a;
-            --bg-card: #1e293b;
-            --text-primary: #f1f5f9;
-            --text-secondary: #94a3b8;
-            --border: #334155;
+            --bg-dark: #ffffff;
+            --bg-card: #f8fafc;
+            --text-primary: #1a1a2e;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
             --success: #10b981;
             --warning: #f59e0b;
             --danger: #ef4444;
@@ -241,7 +241,7 @@
 
         .actual-input-row input {
             padding: 8px 12px;
-            background: var(--bg-dark);
+            background: #ffffff;
             border: 1px solid var(--border);
             border-radius: 4px;
             color: var(--text-primary);
@@ -320,7 +320,7 @@
         .form-group select,
         .form-group textarea {
             padding: 10px 12px;
-            background: var(--bg-dark);
+            background: #ffffff;
             border: 1px solid var(--border);
             border-radius: 6px;
             color: var(--text-primary);
@@ -460,7 +460,7 @@
         }
 
         .daily-bar.zero {
-            background: rgba(148, 163, 184, 0.15);
+            background: #e2e8f0;
             min-height: 4px;
         }
 
@@ -507,7 +507,7 @@
         .progress-bar-bg {
             width: 100%;
             height: 8px;
-            background: rgba(148, 163, 184, 0.1);
+            background: #e2e8f0;
             border-radius: 4px;
             overflow: hidden;
         }
@@ -571,7 +571,7 @@
         .settings-group label { color: var(--text-primary); font-weight: 500; font-size: 0.9rem; }
         .settings-group input, .settings-group select {
             padding: 10px 12px;
-            background: var(--bg-dark);
+            background: #ffffff;
             border: 1px solid var(--border);
             border-radius: 4px;
             color: var(--text-primary);
@@ -603,17 +603,40 @@
 
         /* Responsive */
         @media (max-width: 768px) {
+            nav .container { gap: 10px; padding: 0 12px; overflow-x: auto; flex-wrap: nowrap; }
+            nav a { font-size: 12px; padding: 6px 8px; white-space: nowrap; }
+            .hero { padding: 28px 16px; }
             .hero h1 { font-size: 1.8rem; }
-            .summary-grid { grid-template-columns: 1fr 1fr; }
-            .tabs { flex-wrap: wrap; }
-            .expense-item { flex-direction: column; align-items: flex-start; }
-            .cost-display { width: 100%; text-align: left; }
-            .bar-chart { height: 200px; }
+            .hero p { font-size: 0.95rem; }
+            .container { padding: 14px; }
+            .summary-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+            .summary-card { padding: 14px; }
+            .summary-card .value { font-size: 1.4rem; }
+            .tabs { flex-wrap: wrap; gap: 0; }
+            .tab-button { padding: 10px 14px; font-size: 0.88rem; }
+            .expense-item { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .cost-display { width: 100%; text-align: left; min-width: unset; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+            .skip-btn { width: 100%; text-align: center; }
+            .bar-chart { height: 180px; gap: 10px; }
+            .bar-label { font-size: 0.75rem; padding: 6px; }
             .category-cards { grid-template-columns: 1fr; }
+            .country-cards-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
             .form-row, .form-row.three-col { grid-template-columns: 1fr; }
             .actual-input-row { flex-direction: column; align-items: stretch; }
             .actual-input-row input { width: 100%; }
-            .daily-chart { gap: 4px; }
+            .daily-chart { gap: 3px; height: 160px; }
+            .daily-bar-label { font-size: 0.6rem; }
+            .settings-grid { grid-template-columns: 1fr; }
+            .button-group { flex-direction: column; }
+            .button-group button { width: 100%; }
+            .add-expense-card { padding: 16px; }
+            .chart-container { padding: 14px; }
+        }
+        @media (max-width: 480px) {
+            .summary-grid { grid-template-columns: 1fr; }
+            .country-cards-grid { grid-template-columns: 1fr 1fr; }
+            .tabs { overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; }
+            .tab-button { white-space: nowrap; }
         }
     </style>
 </head>
