@@ -55,8 +55,9 @@
             transition: background-color 0.2s;
         }
 
-        nav a:hover { background-color: rgba(255, 255, 255, 0.2); }
-        nav a.active { background-color: rgba(255, 255, 255, 0.3); }
+        nav a:hover { background-color: rgba(255, 255, 255, 0.2); transform: translateY(-1px); }
+        nav a.active { background-color: rgba(255, 255, 255, 0.22); position: relative; }
+        nav a.active::after { content: ''; position: absolute; bottom: -2px; left: 50%; transform: translateX(-50%); width: 20px; height: 3px; background: white; border-radius: 3px; }
 
         .hero {
             background: linear-gradient(135deg, var(--accent) 0%, var(--teal) 100%);
@@ -70,21 +71,30 @@
 
         .progress-bar {
             width: 100%;
-            height: 8px;
+            height: 10px;
             background-color: rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
+            border-radius: 10px;
             margin-top: 20px;
             overflow: hidden;
             max-width: 600px;
             margin-left: auto;
             margin-right: auto;
+            position: relative;
         }
 
         .progress-bar-fill {
             height: 100%;
-            background-color: var(--success);
+            background: linear-gradient(90deg, rgba(255,255,255,.6) 0%, rgba(255,255,255,.9) 50%, rgba(255,255,255,.6) 100%);
+            background-size: 200% 100%;
+            border-radius: 10px;
             width: 0%;
-            transition: width 0.3s;
+            transition: width 0.5s cubic-bezier(0.16,1,0.3,1);
+            animation: shimmer 2.5s ease infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% center; }
+            100% { background-position: -200% center; }
         }
 
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
@@ -110,26 +120,35 @@
 
         .tabs {
             display: flex;
-            gap: 10px;
+            gap: 5px;
             margin-bottom: 30px;
-            border-bottom: 1px solid var(--border);
+            background: var(--bg-card);
+            padding: 5px;
+            border-radius: 12px;
+            border-bottom: none;
             flex-wrap: wrap;
         }
 
         .tab-button {
-            background: none;
+            background: transparent;
             border: none;
             color: var(--text-secondary);
-            padding: 15px 20px;
+            padding: 10px 18px;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 0.92rem;
             font-weight: 500;
-            border-bottom: 3px solid transparent;
-            transition: all 0.2s;
+            border-radius: 8px;
+            border-bottom: none;
+            transition: all 0.2s cubic-bezier(0.16,1,0.3,1);
         }
 
-        .tab-button:hover { color: var(--text-primary); }
-        .tab-button.active { color: var(--accent); border-bottom-color: var(--accent); }
+        .tab-button:hover { background: rgba(255,255,255,.65); color: var(--text-primary); }
+        .tab-button.active {
+            background: white;
+            color: var(--accent);
+            font-weight: 600;
+            box-shadow: 0 1px 5px rgba(0,0,0,.09);
+        }
 
         .tab-content { display: none; animation: fadeIn 0.3s; }
         .tab-content.active { display: block; }
@@ -654,7 +673,7 @@
     <div class="hero">
         <div class="container">
             <h1>SE Asia Budget Tracker</h1>
-            <p>Track your spending across 6 countries and 85 days</p>
+            <p>Track your spending across 5 countries and 85 days</p>
             <div class="progress-bar">
                 <div class="progress-bar-fill" id="progressBar"></div>
             </div>
@@ -829,6 +848,10 @@
 
             <div class="settings-group">
                 <h3>Currency Exchange Rates</h3>
+                <div style="font-size:.8rem;color:#d97706;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.3);border-radius:8px;padding:10px 12px;margin-bottom:14px;display:flex;gap:8px;align-items:flex-start;">
+                  <span style="flex-shrink:0;">⚠️</span>
+                  <span>Rates last updated: April 2026 — verify at xe.com before your trip. These are estimates only.</span>
+                </div>
                 <div class="settings-grid">
                     <div class="form-group">
                         <label for="rateVND">VND to AUD</label>

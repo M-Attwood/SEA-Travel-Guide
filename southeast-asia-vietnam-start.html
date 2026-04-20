@@ -47,7 +47,12 @@ MAP-REMOVED-END -->
   #map{width:100%;border-bottom:1px solid var(--border);}
   .wrap{max-width:880px;margin:0 auto;padding:28px 20px 60px;}
   .country{margin-bottom:52px;}
-  .c-head{display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:2px solid var(--border);margin-bottom:4px;}
+  .c-head{display:flex;align-items:center;gap:12px;padding:16px 20px 14px;border-bottom:none;border-left:4px solid var(--dim);margin-bottom:4px;background:linear-gradient(135deg,rgba(108,92,231,.04) 0%,transparent 60%);border-radius:8px 8px 0 0;}
+  #vietnam .c-head,.country.vietnam .c-head{border-left-color:var(--vietnam);background:linear-gradient(135deg,rgba(220,38,38,.05) 0%,transparent 60%);}
+  #laos .c-head,.country.laos .c-head{border-left-color:var(--laos);background:linear-gradient(135deg,rgba(180,83,9,.05) 0%,transparent 60%);}
+  #thailand .c-head,.country.thailand .c-head{border-left-color:var(--thailand);background:linear-gradient(135deg,rgba(124,58,237,.05) 0%,transparent 60%);}
+  #philippines .c-head,.country.philippines .c-head{border-left-color:var(--philippines);background:linear-gradient(135deg,rgba(37,99,235,.05) 0%,transparent 60%);}
+  #indonesia .c-head,.country.indonesia .c-head{border-left-color:var(--indonesia);background:linear-gradient(135deg,rgba(225,29,72,.05) 0%,transparent 60%;)}
   .c-flag{font-size:1.8rem;}
   .c-head h2{font-size:1.5rem;font-weight:800;}
   .c-head .c-dates{margin-left:auto;font-size:.82rem;color:var(--muted);text-align:right;}
@@ -65,9 +70,11 @@ MAP-REMOVED-END -->
   .day-l{padding:10px 0;text-align:center;position:relative;}
   .day-l .dn{font-size:.68rem;text-transform:uppercase;letter-spacing:1px;color:var(--dim);font-weight:600;}
   .day-l .dv{font-size:1.1rem;font-weight:700;color:var(--teal);}
-  .day-l::after{content:'';position:absolute;right:0;top:0;bottom:0;width:2px;background:var(--border);}
+  .day-l::after{content:'';position:absolute;right:0;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,rgba(108,92,231,.3) 0%,rgba(13,148,136,.3) 100%);}
   .day-l .dd{font-size:.58rem;color:var(--dim);font-weight:400;margin-top:1px;letter-spacing:.3px;}
-  .day-l .dot{position:absolute;right:-5px;top:16px;width:10px;height:10px;border-radius:50%;border:2px solid var(--bg);z-index:1;}
+  .day-l .dot{position:absolute;right:-5px;top:16px;width:11px;height:11px;border-radius:50%;border:2px solid var(--bg);z-index:1;background:var(--accent);box-shadow:0 0 0 2px rgba(108,92,231,.2);transition:transform .2s cubic-bezier(0.34,1.56,0.64,1),box-shadow .2s;}
+  .day:hover .dot{transform:scale(1.45);box-shadow:0 0 0 4px rgba(108,92,231,.15);}
+  .day:hover .day-r{background:rgba(108,92,231,.025);border-radius:0 8px 8px 0;}
   .day-r{padding:8px 0 8px 18px;}
   .day-r .loc{font-weight:700;font-size:.93rem;}
   .day-r .act{font-size:.85rem;color:var(--muted);margin-top:2px;}
@@ -77,7 +84,8 @@ MAP-REMOVED-END -->
   .t-wild{background:#ede9fe;color:#5b21b6;}.t-water{background:#ccfbf1;color:#0f766e;}
   .t-go{background:#f1f5f9;color:#64748b;}.t-flex{background:#f8fafc;color:#94a3b8;}
   .t-moto{background:#ffe4e6;color:#be123c;}
-  .transit{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin:14px 0;font-size:.84rem;color:var(--muted);}
+  .transit{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 18px 14px 22px;margin:14px 0;font-size:.84rem;color:var(--muted);position:relative;overflow:hidden;}
+  .transit::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(135deg,#6c5ce7,#0d9488);border-radius:3px 0 0 3px;}
   .transit strong{color:var(--text);}
   .transit .mode{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-right:4px;}
   .transit .mode-train{background:#fef3c7;color:#92400e;border:1px solid #fbbf2444;}
@@ -220,8 +228,9 @@ MAP-REMOVED-END -->
   .trip-nav{position:sticky;top:0;z-index:9999;background:linear-gradient(135deg,#6c5ce7,#0d9488);padding:10px 0;box-shadow:0 4px 20px rgba(0,0,0,.15);}
   .trip-nav-inner{max-width:880px;margin:0 auto;padding:0 20px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
   .trip-nav a{color:white;text-decoration:none;font-size:.85rem;font-weight:500;padding:5px 12px;border-radius:6px;transition:background .2s;}
-  .trip-nav a:hover{background:rgba(255,255,255,.2);}
-  .trip-nav a.active{background:rgba(255,255,255,.25);border-bottom:2px solid white;}
+  .trip-nav a:hover:not(.active){background:rgba(255,255,255,.2);transform:translateY(-1px);}
+  .trip-nav a.active{background:rgba(255,255,255,.22);position:relative;}
+  .trip-nav a.active::after{content:'';position:absolute;bottom:-2px;left:50%;transform:translateX(-50%);width:20px;height:3px;background:white;border-radius:3px;}
 
   /* Country quick-jump pills */
   .country-jump{max-width:880px;margin:20px auto 0;padding:0 20px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
@@ -334,7 +343,7 @@ MAP-REMOVED-END -->
   <p><strong>Da Nang → Laos:</strong> No direct Da Nang → LP flights exist — all route via Hanoi, HCMC, or Bangkok. Best options: fly via Hanoi or Bangkok (see alternatives). <strong>Or flip Laos upside-down</strong> — fly Da Nang → Bangkok (cheap direct), cross into Laos from Vientiane, go bottom-to-top, slow boat or fly LP → Chiang Mai.</p>
   <p><strong>Lao-China Railway:</strong> The 2021 railway cuts Laos transit from 10+ hours of mountain buses to 3 hours of comfortable trains. Works both directions — LP → Vientiane or Vientiane → LP.</p>
   <p><strong>BKK → Cebu:</strong> Fly direct from Bangkok to the Philippines — daily flights on Cebu Pacific, AirAsia, PAL. More options and better prices than any other exit point.</p>
-  <div class="verdict">8 flights total · 4 overnight trains · Lao-China Railway · Friendship Bridge crossing · Alternates on map: Mekong slow boat, fly LP→CM, Krabi detour, Koh Samui</div>
+  <div class="verdict">8 flights total · 5 overnight trains · Lao-China Railway · Friendship Bridge crossing · Alternates on map: Mekong slow boat, fly LP→CM, Krabi detour, Koh Samui</div>
 </div>
 
 <!-- MAP-REMOVED-START
@@ -592,7 +601,7 @@ MAP-REMOVED-END -->
     Lao exit stamp → walk/shuttle across the Mekong on the Friendship Bridge (A$2) → Thai entry stamp (free, 30 days). Arrive Nong Khai, Thailand. The whole crossing takes ~1 hour.<br><br>
     <span class="mode mode-train">Overnight Train</span> Nong Khai → Bangkok <span class="overnight">Sleeper</span><br>
     <span class="time">10–11 hrs</span> <span class="cost">~A$29–54 (2nd class sleeper)</span><br>
-    State Railway of Thailand. Depart ~6:30pm, arrive Bangkok Hua Lamphong ~5am. Cross an international border and sleep your way to Bangkok in one evening. 2nd class sleeper: air-con, clean sheets, gentle rocking.
+    State Railway of Thailand. Depart ~6:30pm, arrive Bangkok Krung Thep Aphiwat (Bang Sue) ~5am. Cross an international border and sleep your way to Bangkok in one evening. 2nd class sleeper: air-con, clean sheets, gentle rocking.
     <div class="callout callout-warn">Cross the Friendship Bridge before 5pm to catch the 6:30pm train. Book train tickets in advance via 12Go.asia or at Nong Khai station. Lower berth = wider + window.</div>
   </div>
 
@@ -677,12 +686,12 @@ MAP-REMOVED-END -->
   <div class="dropped">Chiang Mai + Pai: accessible via the Mekong Slow Boat or LP→CM flight alternates — see the interactive map. Khao Yai (detour northeast).</div>
 
   <div class="day"><div class="day-l"><div class="dn">Day</div><div class="dv">27</div><div class="dd">18 Jun</div><div class="dot" style="background:var(--thailand)"></div></div>
-  <div class="day-r"><div class="loc">Arrive Bangkok</div><div class="act"><span class="t t-flex">Arrive</span> Arrive ~5am from the Nong Khai sleeper. Drop bags at hostel near Hua Lamphong station. Yaowarat (Chinatown) for pad thai and mango sticky rice. Wat Arun at golden hour (cross the river by ferry, A$0.50). Grand Palace. Thai massage (A$8–12 for an hour). Khao San Road if you want chaos.</div></div></div>
+  <div class="day-r"><div class="loc">Arrive Bangkok</div><div class="act"><span class="t t-flex">Arrive</span> Arrive ~5am from the Nong Khai sleeper. Drop bags at hostel near Krung Thep Aphiwat (Bang Sue) station. Yaowarat (Chinatown) for pad thai and mango sticky rice. Wat Arun at golden hour (cross the river by ferry, A$0.50). Grand Palace. Thai massage (A$8–12 for an hour). Khao San Road if you want chaos.</div></div></div>
 
   <div class="transit">
     <strong>Day 27 night:</strong> <span class="mode mode-train">Overnight Train</span> Bangkok → Surat Thani <span class="overnight">Sleeper</span><br>
     <span class="time">10–11 hrs</span> <span class="cost">~A$29–60 (2nd class sleeper)</span><br>
-    Depart Hua Lamphong ~5–7pm. Arrive Surat Thani ~5–6am. Combined train+bus+ferry ticket available — one ticket gets you all the way to Koh Phangan.
+    Depart Krung Thep Aphiwat (Bang Sue) ~5–7pm. Arrive Surat Thani ~5–6am. Combined train+bus+ferry ticket available — one ticket gets you all the way to Koh Phangan.
     <div class="callout callout-book">Buy the combined train+bus+ferry ticket at Bangkok station. One ticket, seamless journey. Lower berth = more space + window. Both comfortable.</div>
   </div>
 
@@ -1126,7 +1135,7 @@ MAP-REMOVED-END -->
 </div>
 
 <p style="text-align:center;padding:40px 20px;color:var(--muted);font-size:.85rem;max-width:880px;margin:0 auto;">
-  8 flights — only where there's no sane ground option · 4 overnight trains · Lao-China Railway through Laos · Friendship Bridge into Thailand · BKK → Cebu · ~85 days · May 23 – Aug 15 · Alternates: Mekong slow boat + Chiang Mai/Pai, LP→CM flight, Krabi sea-cliff detour.
+  8 flights — only where there's no sane ground option · 5 overnight trains · Lao-China Railway through Laos · Friendship Bridge into Thailand · BKK → Cebu · ~85 days · May 23 – Aug 15 · Alternates: Mekong slow boat + Chiang Mai/Pai, LP→CM flight, Krabi sea-cliff detour.
 </p>
 
 <script>

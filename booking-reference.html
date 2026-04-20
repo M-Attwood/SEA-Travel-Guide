@@ -27,7 +27,7 @@
         }
 
         header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #6c5ce7 0%, #0d9488 100%);
             color: white;
             padding: 40px 30px;
             text-align: center;
@@ -54,17 +54,27 @@
         }
 
         .stat-card {
-            background: white;
+            background: rgba(255,255,255,0.72);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
             padding: 20px;
-            border-radius: 6px;
-            border-left: 4px solid #667eea;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border-radius: 12px;
+            border-left: 4px solid #6c5ce7;
+            border: 1px solid rgba(255,255,255,0.55);
+            box-shadow: 0 8px 32px rgba(108,92,231,0.13);
+            transition: transform .22s cubic-bezier(0.34,1.56,0.64,1), box-shadow .22s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 40px rgba(108,92,231,0.18);
         }
 
         .stat-card .number {
             font-size: 2em;
             font-weight: 700;
-            color: #667eea;
+            background: linear-gradient(135deg,#6c5ce7,#0d9488);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .stat-card .label {
@@ -117,24 +127,67 @@
             display: flex;
             align-items: center;
             margin-bottom: 30px;
-            padding-bottom: 15px;
-            border-bottom: 3px solid;
+            padding: 20px;
+            border-radius: 12px;
+            border-bottom: none;
+            border-left: 5px solid transparent;
         }
 
         .country-header.vietnam {
-            border-bottom-color: #dc2626;
+            background: linear-gradient(135deg, rgba(220,38,38,.06) 0%, transparent 60%);
+            border-left-color: #dc2626;
         }
         .country-header.laos {
-            border-bottom-color: #b45309;
+            background: linear-gradient(135deg, rgba(180,83,9,.06) 0%, transparent 60%);
+            border-left-color: #b45309;
         }
         .country-header.thailand {
-            border-bottom-color: #7c3aed;
+            background: linear-gradient(135deg, rgba(124,58,237,.06) 0%, transparent 60%);
+            border-left-color: #7c3aed;
         }
         .country-header.philippines {
-            border-bottom-color: #2563eb;
+            background: linear-gradient(135deg, rgba(37,99,235,.06) 0%, transparent 60%);
+            border-left-color: #2563eb;
         }
         .country-header.indonesia {
-            border-bottom-color: #ec4899;
+            background: linear-gradient(135deg, rgba(236,72,153,.06) 0%, transparent 60%);
+            border-left-color: #ec4899;
+        }
+
+        /* Progress bar */
+        .booking-progress-bar {
+            position: sticky;
+            top: 44px;
+            z-index: 50;
+            background: white;
+            padding: 10px 30px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,.04);
+        }
+        .booking-progress-track {
+            flex: 1;
+            height: 6px;
+            background: #f1f5f9;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .booking-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg,#6c5ce7,#0d9488);
+            border-radius: 3px;
+            transition: width .4s cubic-bezier(0.16,1,0.3,1);
+            width: 0%;
+        }
+        .booking-progress-label {
+            font-size: .75rem;
+            font-weight: 700;
+            color: #6c5ce7;
+            white-space: nowrap;
+            min-width: 80px;
+            text-align: right;
         }
 
         .country-flag {
@@ -183,7 +236,7 @@
             border-radius: 6px;
             padding: 18px;
             margin-bottom: 15px;
-            border-left: 4px solid #667eea;
+            border-left: 4px solid #6c5ce7;
         }
 
         .booking-category h4 {
@@ -341,7 +394,9 @@
         .trip-nav-inner{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
         .trip-nav a{color:white;text-decoration:none;font-size:.85rem;font-weight:500;padding:5px 12px;border-radius:6px;transition:background .2s;}
         .trip-nav a:hover{background:rgba(255,255,255,.2);}
-        .trip-nav a.active{background:rgba(255,255,255,.25);border-bottom:2px solid white;}
+        .trip-nav a.active{background:rgba(255,255,255,.22);position:relative;}
+        .trip-nav a.active::after{content:'';position:absolute;bottom:-2px;left:50%;transform:translateX(-50%);width:20px;height:3px;background:white;border-radius:3px;}
+        .trip-nav a:hover:not(.active){transform:translateY(-1px);}
     </style>
 </head>
 <body>
@@ -352,6 +407,10 @@
 <a href="trip-map-detailed.html">Map</a>
 <a href="trip-budget-tracker.html">Budget</a>
 </div></div>
+    <div class="booking-progress-bar">
+        <div class="booking-progress-track"><div class="booking-progress-fill" id="progressFill"></div></div>
+        <div class="booking-progress-label" id="progressLabel">0 / 152 booked</div>
+    </div>
     <div class="container">
         <header>
             <h1>SE Asia 85-Day Adventure</h1>
@@ -362,7 +421,7 @@
         <div class="stats-section">
             <div class="stat-card">
                 <div class="number">24</div>
-                <div class="label">Accommodation Nights</div>
+                <div class="label">Destinations</div>
             </div>
             <div class="stat-card">
                 <div class="number">28</div>
@@ -1339,7 +1398,7 @@
                             <div class="item-content">
                                 <div class="item-title">Day 27 Night: Overnight Train Bangkok → Surat Thani</div>
                                 <div class="item-details">
-                                    Depart: Hua Lamphong station 5-7pm | Arrive: Surat Thani ~7-8am Day 28
+                                    Depart: Krung Thep Aphiwat (Bang Sue) station 5-7pm | Arrive: Surat Thani ~7-8am Day 28
                                     Duration: 10–11 hours | Cost: A$29–60 (2nd class sleeper)
                                     <span class="cost-badge">A$29–60</span>
                                     <strong>Combined option:</strong> Train+Bus+Ferry to Koh Phangan available (book 2–3 days ahead)
@@ -1872,7 +1931,7 @@
                             <div class="item-content">
                                 <div class="item-title">Koh Tao → ferry to Surat Thani → bus to Krabi → Railay Beach → fly Bangkok → Cebu</div>
                                 <div class="item-details">
-                                    Instead of taking the overnight train Bangkok→Cebu direct, break at Krabi for 2–3 days of sea-cliff climbing. Best if forecast shows clear weather (check 3–5 days ahead from Koh Tao). Phi Phi tours cancel in rough seas.
+                                    Instead of flying direct Bangkok→Cebu, break at Krabi for 2–3 days of sea-cliff climbing. Best if forecast shows clear weather (check 3–5 days ahead from Koh Tao). Phi Phi tours cancel in rough seas.
                                 </div>
                             </div>
                         </div>
@@ -2052,7 +2111,7 @@
                     <div class="country-flag">🇵🇭</div>
                     <div class="country-info">
                         <h2>Philippines</h2>
-                        <p>Days 37–56 | June 28 – July 17 | ~20 days</p>
+                        <p>Days 43–62 | July 4 – July 23 | 20 days</p>
                     </div>
                 </div>
 
@@ -3333,5 +3392,20 @@
             </div>
         </div>
     </div>
+<script>
+  (function() {
+    var total = document.querySelectorAll('.booking-item input[type="checkbox"]').length;
+    function updateProgress() {
+      var checked = document.querySelectorAll('.booking-item input[type="checkbox"]:checked').length;
+      var pct = total > 0 ? Math.round(checked / total * 100) : 0;
+      document.getElementById('progressFill').style.width = pct + '%';
+      document.getElementById('progressLabel').textContent = checked + ' / ' + total + ' booked';
+    }
+    document.querySelectorAll('.booking-item input[type="checkbox"]').forEach(function(cb) {
+      cb.addEventListener('change', updateProgress);
+    });
+    updateProgress();
+  })();
+</script>
 </body>
 </html>
