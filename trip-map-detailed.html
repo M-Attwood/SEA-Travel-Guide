@@ -996,6 +996,60 @@
           {fromLat:9.7197, fromLng:100.0603, toLat:10.0994, toLng:99.8231, type:'ferry'},
         ],
       },
+      'habagat-pivot': {
+        name: '🌪️ Habagat Pivot East (Siquijor + Siargao)',
+        desc: 'Weather contingency: if SW monsoon arrives early, skip Palawan/El Nido/Coron and detour east to Siquijor + Siargao — both sheltered from habagat winds. Pivot decision evening of Day 49 in Bohol.',
+        mutuallyExclusiveWith: [],
+        insertAfter: 'bohol',
+        newSteps: [
+          { id:'dumaguete-h', name:'Dumaguete (transit)', country:'philippines', days:'~50', lat:9.3107, lng:123.3081, enabled:true,
+            pois:[
+              {id:'apo-island-h', name:'Apo Island Day Trip', lat:9.0750, lng:123.2700, tags:['SNORKEL','DIVE'], desc:'Sea turtle sanctuary + marine reserve, sheltered Negros east coast, A$30–45', day:50},
+            ],
+            transportTo:{type:'ferry', label:'Fast ferry to Siquijor 1h'}
+          },
+          { id:'siquijor-h', name:'Siquijor', country:'philippines', days:'50–53', lat:9.2167, lng:123.5167, enabled:true,
+            pois:[
+              {id:'cambugahay-h', name:'Cambugahay Falls', lat:9.1539, lng:123.5808, tags:['WATERFALL'], desc:'3-tier waterfall, swimming + rope swings, A$2 entry', day:51},
+              {id:'salagdoong-h', name:'Salagdoong Beach', lat:9.1856, lng:123.6928, tags:['BEACH'], desc:'5m + 10m cliff jump platforms, turquoise water', day:51},
+              {id:'cantabon-h', name:'Cantabon Cave', lat:9.2125, lng:123.5969, tags:['CAVE'], desc:'Full-immersion spelunking ~250m, A$5–10 with guide', day:52},
+              {id:'lazi-h', name:'Lazi Convent + San Isidro', lat:9.1297, lng:123.6328, tags:['CULTURAL'], desc:"Spanish colonial — Asia's largest convent (1857)", day:52},
+              {id:'old-balete-h', name:'Old Enchanted Balete Tree', lat:9.1786, lng:123.6075, tags:['NATURAL'], desc:'400-year-old tree, fish-spa pools at the roots', day:53},
+            ],
+            transportTo:{type:'flight', label:'Ferry → Dumaguete → fly Cebu → fly Siargao', legs:[
+              {type:'ferry',  label:'Ferry to Dumaguete 1h',          toLat:9.3107,  toLng:123.3081},
+              {type:'flight', label:'Flight Dumaguete → Cebu 1h',     toLat:10.3157, toLng:123.8854},
+              {type:'flight', label:'Flight Cebu → Siargao (Sayak) 1h', toLat:9.8595, toLng:126.0140},
+            ]}
+          },
+          { id:'siargao-h', name:'Siargao (General Luna)', country:'philippines', days:'54–60', lat:9.8612, lng:126.0467, enabled:true,
+            pois:[
+              {id:'cloud9-h', name:'Cloud 9', lat:9.8083, lng:126.1667, tags:['SURF'], desc:'World-class right-hand reef break — Jacking Horse for beginners, A$25–40 lessons', day:54},
+              {id:'magpupungko-h', name:'Magpupungko Tidal Pools', lat:9.9356, lng:126.1242, tags:['SWIM'], desc:'Low-tide rock pools + cliff jumps, Pilar', day:55},
+              {id:'sugba-h', name:'Sugba Lagoon (Del Carmen)', lat:9.8722, lng:125.8403, tags:['KAYAK'], desc:'Turquoise lagoon, paddleboard + 3m cliff jump platform', day:56},
+              {id:'sohoton-h', name:'Sohoton Cove + Stingless Jellyfish', lat:10.0061, lng:125.6500, tags:['KAYAK'], desc:'Hidden lagoons + jellyfish sanctuary, Bucas Grande day trip, A$45–60', day:57},
+              {id:'island-hop-h', name:'Naked + Daku + Guyam Island Hop', lat:9.8264, lng:126.1069, tags:['ISLAND'], desc:'Three sandbar/jungle islets, Pacific-calm, A$15–25 group', day:58},
+              {id:'mangrove-h', name:'Del Carmen Mangrove Forest', lat:9.8714, lng:125.8389, tags:['NATURE'], desc:'4,200-hectare mangrove reserve, sunset paddle', day:59},
+            ],
+            transportTo:{type:'flight', label:'Flight Siargao → Manila → Bali', legs:[
+              {type:'flight', label:'Flight Siargao → Manila 1.5h', toLat:14.5086, toLng:121.0194},
+              {type:'flight', label:'Flight Manila → Bali 4h',      toLat:null,    toLng:null},
+            ]}
+          },
+        ],
+        overrides: {
+          'bohol': {type:'ferry', label:'Ferry Tagbilaran → Dumaguete 2h (skip Palawan)'},
+        },
+        disableSteps: ['puerto-princesa', 'port-barton', 'el-nido', 'coron'],
+        shadowSegments: [
+          // Original Bohol → Puerto Princesa → Port Barton → El Nido → Coron → Manila chain (now replaced)
+          {fromLat:9.5833,  fromLng:123.8333, toLat:9.7392,  toLng:118.7353, type:'flight'},
+          {fromLat:9.7392,  fromLng:118.7353, toLat:10.2750, toLng:119.1333, type:'bus'},
+          {fromLat:10.2750, fromLng:119.1333, toLat:11.1753, toLng:119.3906, type:'bus'},
+          {fromLat:11.1753, fromLng:119.3906, toLat:12.0056, toLng:120.2039, type:'ferry'},
+          {fromLat:12.0056, fromLng:120.2039, toLat:14.5086, toLng:121.0194, type:'flight'},
+        ],
+      },
       'krabi': {
         name: '🧗 Krabi / Railay Detour',
         desc: 'Koh Tao → ferry to Surat Thani → bus to Krabi → Railay Beach climbing + Phi Phi → overnight bus Bangkok → fly Cebu (adds 2–3 days)',
