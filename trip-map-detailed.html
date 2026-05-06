@@ -408,7 +408,7 @@
         <div class="sidebar-header">
             <h1><i class="fas fa-map-location-dot"></i> 85-Day SE Asia</h1>
             <div class="trip-stats">
-                <div>Days 1–85 &nbsp;•&nbsp; 5 Countries</div>
+                <div>Days 1–86 &nbsp;•&nbsp; 5 Countries</div>
                 <div id="statsLine">31 steps &nbsp;•&nbsp; 170+ POIs</div>
             </div>
         </div>
@@ -541,44 +541,55 @@
           {id:'muong-hoa', name:'Muong Hoa Valley', lat:22.2947, lng:103.8500, tags:['TREK'], desc:'Terraced rice paddies trek', day:8},
           {id:'cat-cat', name:'Cat Cat Village', lat:22.3264, lng:103.8386, tags:['CULTURAL'], desc:"H'mong village + waterfall", day:8},
         ],
-        transportTo:{type:'train', label:'Overnight train → Hanoi → Bus+Ferry to Cat Ba', legs:[
+        transportTo:{type:'train', label:'Overnight train → Hanoi → Cruise pickup', legs:[
           {type:'train', label:'Overnight train Lao Cai → Hanoi', toLat:21.0333, toLng:105.8500},
-          {type:'ferry', label:'Bus+Ferry Hanoi → Cat Ba', toLat:null, toLng:null}
+          {type:'bus', label:'Cruise shuttle Hanoi → Got Harbour', toLat:20.8167, toLng:106.8000}
         ]}
       },
-      { id:'cat-ba', name:'Cat Ba Island', country:'vietnam', days:'9–12', lat:20.7256, lng:107.0483, enabled:true,
+      { id:'lan-ha-cruise', name:'Lan Ha Bay (1N Cruise)', country:'vietnam', days:'10–11', lat:20.7500, lng:107.0667, enabled:true,
         pois:[
-          {id:'hospital-cave', name:'Hospital Cave', lat:20.7669, lng:107.0022, tags:['CAVE'], desc:'Wartime bunker', day:9},
-          {id:'cannon-fort', name:'Cannon Fort', lat:20.7289, lng:107.0467, tags:['VIEWPOINT'], desc:'Panoramic Ha Long Bay views', day:9},
-          {id:'climbing-barn', name:'Climbing Barn Crag', lat:20.7550, lng:107.0100, tags:['CLIMB'], desc:'Sport climbing', day:10},
-          {id:'dws-halong', name:'Ha Long Bay DWS', lat:20.8833, lng:107.0833, tags:['CLIMB'], desc:'Deep-water soloing on karst towers', day:10},
-          {id:'lan-ha', name:'Lan Ha Bay', lat:20.7500, lng:107.0667, tags:['KAYAK'], desc:'Quieter side, hidden lagoons', day:11},
+          {id:'lan-ha-kayak', name:'Lan Ha Bay Kayak Lagoons', lat:20.7500, lng:107.0667, tags:['KAYAK'], desc:'Hidden lagoons, Three Peaches', day:10},
+          {id:'lan-ha-cave', name:'Lan Ha Cave / Grotto', lat:20.7600, lng:107.0700, tags:['CAVE'], desc:'Cave grotto + swim stop', day:10},
+          {id:'cruise-overnight', name:'Junk Cruise Overnight', lat:20.7500, lng:107.0667, tags:['BOAT'], desc:'Sleep on the bay, sunset/sunrise on water', day:10},
+          {id:'cruise-morning', name:'Morning Cave / Beach', lat:20.7550, lng:107.0750, tags:['BOAT'], desc:'Day 2 morning excursion', day:11},
         ],
-        transportTo:{type:'ferry', label:'Ferry + Train + Bus to Phong Nha', legs:[
-          {type:'ferry', label:'Ferry to Hanoi area', toLat:20.9500, toLng:106.9500},
-          {type:'train', label:'Overnight train to Dong Hoi', toLat:17.4714, toLng:106.5983},
+        transportTo:{type:'bus', label:'Shuttle back to Hanoi → Train to Ninh Binh', legs:[
+          {type:'bus', label:'Shuttle Got → Hanoi', toLat:21.0333, toLng:105.8500},
+          {type:'train', label:'Train Hanoi → Ninh Binh ~2.5h', toLat:20.2500, toLng:105.9700}
+        ]}
+      },
+      { id:'ninh-binh', name:'Ninh Binh', country:'vietnam', days:'11–13', lat:20.2500, lng:105.9700, enabled:true,
+        pois:[
+          {id:'tam-coc', name:'Tam Coc Sampan Ride', lat:20.2167, lng:105.9333, tags:['BOAT'], desc:'Rowboat through 3 river caves', day:12},
+          {id:'mua-cave', name:'Mua Cave Viewpoint', lat:20.2231, lng:105.9258, tags:['VIEWPOINT'], desc:'500 steps to dragon statue + panoramic karsts', day:12},
+          {id:'bich-dong', name:'Bich Dong Pagoda', lat:20.2125, lng:105.9333, tags:['TEMPLE'], desc:'Cliff-face pagoda', day:12},
+          {id:'trang-an', name:'Trang An UNESCO Boat Complex', lat:20.2622, lng:105.8967, tags:['BOAT'], desc:'3-hour rowboat through 9 caves + temples', day:13},
+          {id:'hoa-lu', name:'Hoa Lu Ancient Capital', lat:20.2839, lng:105.8761, tags:['CULTURAL'], desc:'10th–11th-century Vietnam capital', day:13},
+        ],
+        transportTo:{type:'train', label:'Overnight train Ninh Binh → Dong Hoi', legs:[
+          {type:'train', label:'Overnight train Ninh Binh → Dong Hoi', toLat:17.4714, toLng:106.5983},
           {type:'bus',   label:'Bus to Phong Nha', toLat:null, toLng:null}
         ]}
       },
-      { id:'phong-nha', name:'Phong Nha', country:'vietnam', days:'13–15', lat:17.5917, lng:106.2833, enabled:true,
+      { id:'phong-nha', name:'Phong Nha', country:'vietnam', days:'14–16', lat:17.5917, lng:106.2833, enabled:true,
         pois:[
-          {id:'pub-cold-beer', name:'Pub with Cold Beer', lat:17.5889, lng:106.2861, tags:['FOOD'], desc:'Sunset drinks', day:13},
-          {id:'paradise-cave', name:'Paradise Cave', lat:17.5361, lng:106.2178, tags:['CAVE'], desc:'31km passages, cathedral chambers', day:14},
-          {id:'dark-cave', name:'Dark Cave', lat:17.5761, lng:106.2517, tags:['CAVE'], desc:'Zipline, underground river, mud bath', day:15},
+          {id:'pub-cold-beer', name:'Pub with Cold Beer', lat:17.5889, lng:106.2861, tags:['FOOD'], desc:'Sunset drinks', day:14},
+          {id:'paradise-cave', name:'Paradise Cave', lat:17.5361, lng:106.2178, tags:['CAVE'], desc:'31km passages, cathedral chambers', day:15},
+          {id:'dark-cave', name:'Dark Cave', lat:17.5761, lng:106.2517, tags:['CAVE'], desc:'Zipline, underground river, mud bath', day:16},
         ],
         transportTo:{type:'train', label:'Day train Dong Hoi → Da Nang, taxi to Hoi An (Hai Van Pass)'}
       },
-      { id:'hoi-an', name:'Hoi An', country:'vietnam', days:'16–18', lat:15.8801, lng:108.3380, enabled:true,
+      { id:'hoi-an', name:'Hoi An', country:'vietnam', days:'17–19', lat:15.8801, lng:108.3380, enabled:true,
         pois:[
-          {id:'covered-bridge', name:'Japanese Covered Bridge', lat:15.8775, lng:108.3262, tags:['CULTURAL'], desc:'Iconic bridge', day:16},
-          {id:'banh-mi', name:'Phuong Banh Mi', lat:15.8785, lng:108.3290, tags:['FOOD'], desc:"Bourdain's favourite", day:16},
-          {id:'coconut-village', name:'Cam Thanh Coconut Village', lat:15.8606, lng:108.3339, tags:['BOAT'], desc:'Basket boats', day:17},
-          {id:'my-son', name:'My Son Sanctuary', lat:15.7644, lng:108.1233, tags:['TEMPLE'], desc:'Cham Hindu temples 4th–13th c.', day:18},
-          {id:'an-bang', name:'An Bang Beach', lat:15.8989, lng:108.3617, tags:['BEACH'], desc:'Coastal beach', day:18},
+          {id:'covered-bridge', name:'Japanese Covered Bridge', lat:15.8775, lng:108.3262, tags:['CULTURAL'], desc:'Iconic bridge', day:17},
+          {id:'banh-mi', name:'Phuong Banh Mi', lat:15.8785, lng:108.3290, tags:['FOOD'], desc:"Bourdain's favourite", day:17},
+          {id:'coconut-village', name:'Cam Thanh Coconut Village', lat:15.8606, lng:108.3339, tags:['BOAT'], desc:'Basket boats', day:18},
+          {id:'my-son', name:'My Son Sanctuary', lat:15.7644, lng:108.1233, tags:['TEMPLE'], desc:'Cham Hindu temples 4th–13th c.', day:19},
+          {id:'an-bang', name:'An Bang Beach', lat:15.8989, lng:108.3617, tags:['BEACH'], desc:'Coastal beach', day:19},
         ],
         transportTo:{type:'flight', label:'Flight Da Nang → Luang Prabang'}
       },
-      { id:'luang-prabang', name:'Luang Prabang', country:'laos', days:'19–21', lat:19.8856, lng:102.1350, enabled:true,
+      { id:'luang-prabang', name:'Luang Prabang', country:'laos', days:'20–22', lat:19.8856, lng:102.1350, enabled:true,
         pois:[
           {id:'phousi', name:'Phousi Hill', lat:19.8878, lng:102.1339, tags:['TREK'], desc:'328 steps, 360° sunset views', day:19},
           {id:'lp-night-mkt', name:'Sisavangvong Night Market', lat:19.8878, lng:102.1344, tags:['FOOD'], desc:'Night market', day:19},
@@ -590,7 +601,7 @@
         ],
         transportTo:{type:'train', label:'Lao-China Railway ~2h to Vang Vieng'}
       },
-      { id:'vang-vieng', name:'Vang Vieng', country:'laos', days:'22–25', lat:18.9225, lng:102.4483, enabled:true,
+      { id:'vang-vieng', name:'Vang Vieng', country:'laos', days:'23–26', lat:18.9225, lng:102.4483, enabled:true,
         pois:[
           {id:'green-climbers', name:'Green Climbers Home', lat:18.9450, lng:102.4250, tags:['CLIMB'], desc:'Thaiwand Wall, Sleeping Wall', day:23},
           {id:'pha-ngern', name:'Pha Ngern Faces', lat:18.9350, lng:102.4350, tags:['CLIMB'], desc:'Multi-pitch karst', day:24},
@@ -600,7 +611,7 @@
         ],
         transportTo:{type:'train', label:'Lao-China Railway ~2h to Vientiane'}
       },
-      { id:'vientiane', name:'Vientiane', country:'laos', days:'26', lat:17.9667, lng:102.6000, enabled:true,
+      { id:'vientiane', name:'Vientiane', country:'laos', days:'27', lat:17.9667, lng:102.6000, enabled:true,
         pois:[
           {id:'patuxai', name:'Patuxai Victory Gate', lat:17.9750, lng:102.6308, tags:['CULTURAL'], desc:"Laos' Arc de Triomphe", day:26},
           {id:'pha-that-luang', name:'Pha That Luang', lat:17.9756, lng:102.6367, tags:['TEMPLE'], desc:'Golden stupa', day:26},
@@ -609,7 +620,7 @@
         ],
         transportTo:{type:'train', label:'Night train to Bangkok ~11h'}
       },
-      { id:'bangkok', name:'Bangkok', country:'thailand', days:'27, 35', lat:13.7381, lng:100.5175, enabled:true,
+      { id:'bangkok', name:'Bangkok', country:'thailand', days:'28, 36', lat:13.7381, lng:100.5175, enabled:true,
         pois:[
           {id:'yaowarat', name:'Yaowarat / Chinatown', lat:13.7403, lng:100.5086, tags:['FOOD'], desc:'Street food and markets', day:27},
           {id:'wat-arun', name:'Wat Arun', lat:13.7437, lng:100.4893, tags:['TEMPLE'], desc:'Temple of Dawn at golden hour', day:27},
@@ -624,7 +635,7 @@
           {type:'ferry', label:'Bus + Ferry to Koh Phangan', toLat:null, toLng:null}
         ]}
       },
-      { id:'koh-phangan', name:'Koh Phangan', country:'thailand', days:'28–30', lat:9.7197, lng:100.0603, enabled:true,
+      { id:'koh-phangan', name:'Koh Phangan', country:'thailand', days:'29–31', lat:9.7197, lng:100.0603, enabled:true,
         pois:[
           {id:'zen-beach', name:'Zen Beach', lat:9.7822, lng:100.0567, tags:['BEACH'], desc:'Sunset beach', day:28},
           {id:'haad-rin', name:'Haad Rin', lat:9.6694, lng:100.0689, tags:['BEACH'], desc:'Full Moon Party beach', day:'28/30'},
@@ -636,7 +647,7 @@
         ],
         transportTo:{type:'ferry', label:'Ferry to Koh Tao ~2h'}
       },
-      { id:'koh-tao', name:'Koh Tao', country:'thailand', days:'31–34', lat:10.0994, lng:99.8231, enabled:true,
+      { id:'koh-tao', name:'Koh Tao', country:'thailand', days:'32–35', lat:10.0994, lng:99.8231, enabled:true,
         pois:[
           {id:'japanese-gardens', name:'Japanese Gardens', lat:10.1150, lng:99.8200, tags:['SNORKEL'], desc:'Shore snorkelling', day:31},
           {id:'sail-rock', name:'Sail Rock', lat:9.9700, lng:99.9400, tags:['DIVE'], desc:'#1 dive site, underwater chimney', day:32},
@@ -650,11 +661,11 @@
           {type:'flight', label:'Flight Bangkok → Cebu', toLat:null, toLng:null}
         ]}
       },
-      { id:'cebu', name:'Cebu City', country:'philippines', days:'43', lat:10.3157, lng:123.8854, enabled:true,
+      { id:'cebu', name:'Cebu City', country:'philippines', days:'44', lat:10.3157, lng:123.8854, enabled:true,
         pois:[],
         transportTo:{type:'ferry', label:'Ferry to Moalboal 2h'}
       },
-      { id:'moalboal', name:'Moalboal', country:'philippines', days:'43–45', lat:9.9500, lng:123.6833, enabled:true,
+      { id:'moalboal', name:'Moalboal', country:'philippines', days:'44–46', lat:9.9500, lng:123.6833, enabled:true,
         pois:[
           {id:'sardine-run', name:'Sardine Run', lat:9.9472, lng:123.6800, tags:['SNORKEL'], desc:'Millions of sardines from shore', day:44},
           {id:'pescador', name:'Pescador Island', lat:9.9278, lng:123.6625, tags:['DIVE'], desc:'Wall dive', day:44},
@@ -662,7 +673,7 @@
         ],
         transportTo:{type:'ferry', label:'Ferry to Bohol (Tagbilaran) 2h'}
       },
-      { id:'bohol', name:'Bohol / Panglao', country:'philippines', days:'47–49', lat:9.5833, lng:123.8333, enabled:true,
+      { id:'bohol', name:'Bohol / Panglao', country:'philippines', days:'48–50', lat:9.5833, lng:123.8333, enabled:true,
         pois:[
           {id:'chocolate-hills', name:'Chocolate Hills', lat:9.8031, lng:124.1633, tags:['VIEWPOINT'], desc:'1,268 geological mounds', day:47},
           {id:'tarsier', name:'Philippine Tarsier Sanctuary', lat:9.7600, lng:124.0500, tags:['WILDLIFE'], desc:"World's smallest primates", day:47},
@@ -672,17 +683,17 @@
         ],
         transportTo:{type:'flight', label:'Flight to Puerto Princesa'}
       },
-      { id:'puerto-princesa', name:'Puerto Princesa', country:'philippines', days:'51', lat:9.7392, lng:118.7353, enabled:true,
+      { id:'puerto-princesa', name:'Puerto Princesa', country:'philippines', days:'52', lat:9.7392, lng:118.7353, enabled:true,
         pois:[
           {id:'underground-river', name:'Underground River', lat:10.1667, lng:118.9167, tags:['CAVE'], desc:'8.2km cave UNESCO New 7 Wonders', day:51},
         ],
         transportTo:{type:'bus', label:'Bus/van to Port Barton 3h'}
       },
-      { id:'port-barton', name:'Port Barton', country:'philippines', days:'52–53', lat:10.2750, lng:119.1333, enabled:true,
+      { id:'port-barton', name:'Port Barton', country:'philippines', days:'53–54', lat:10.2750, lng:119.1333, enabled:true,
         pois:[],
         transportTo:{type:'bus', label:'Van to El Nido 3h'}
       },
-      { id:'el-nido', name:'El Nido', country:'philippines', days:'55–56', lat:11.1753, lng:119.3906, enabled:true,
+      { id:'el-nido', name:'El Nido', country:'philippines', days:'56–57', lat:11.1753, lng:119.3906, enabled:true,
         pois:[
           {id:'big-lagoon', name:'Big Lagoon', lat:11.2100, lng:119.3400, tags:['KAYAK'], desc:'Tour A — kayak through narrow channel', day:55},
           {id:'small-lagoon', name:'Small Lagoon', lat:11.2050, lng:119.3420, tags:['KAYAK'], desc:'Tour A', day:55},
@@ -694,7 +705,7 @@
         ],
         transportTo:{type:'ferry', label:'Ferry to Coron ~4h'}
       },
-      { id:'coron', name:'Coron', country:'philippines', days:'58–60', lat:12.0056, lng:120.2039, enabled:true,
+      { id:'coron', name:'Coron', country:'philippines', days:'59–61', lat:12.0056, lng:120.2039, enabled:true,
         pois:[
           {id:'olympia-maru', name:'Olympia Maru Wreck', lat:11.9900, lng:120.1800, tags:['DIVE'], desc:'WWII cargo ship 25m', day:58},
           {id:'irako', name:'Irako Wreck', lat:11.9850, lng:120.1750, tags:['DIVE'], desc:'Refrigerator ship penetration dive', day:58},
@@ -707,7 +718,7 @@
           {type:'flight', label:'Flight Manila → Bali', toLat:null, toLng:null}
         ]}
       },
-      { id:'ubud', name:'Ubud', country:'indonesia', days:'62–64', lat:-8.5069, lng:115.2625, enabled:true,
+      { id:'ubud', name:'Ubud', country:'indonesia', days:'63–65', lat:-8.5069, lng:115.2625, enabled:true,
         pois:[
           {id:'tegallalang', name:'Tegallalang Rice Terraces', lat:-8.4314, lng:115.2794, tags:['TREK'], desc:'Famous cascading paddies', day:62},
           {id:'monkey-forest', name:'Sacred Monkey Forest', lat:-8.5186, lng:115.2589, tags:['WILDLIFE'], desc:'Monkey sanctuary', day:62},
@@ -717,7 +728,7 @@
         ],
         transportTo:{type:'bus', label:'Scooter/bus to Amed 2h'}
       },
-      { id:'amed', name:'Amed', country:'indonesia', days:'65–66', lat:-8.3500, lng:115.6500, enabled:true,
+      { id:'amed', name:'Amed', country:'indonesia', days:'66–67', lat:-8.3500, lng:115.6500, enabled:true,
         pois:[
           {id:'uss-liberty', name:'USS Liberty Wreck Tulamben', lat:-8.2750, lng:115.5931, tags:['DIVE'], desc:'WWII wreck 25m from shore', day:65},
           {id:'japanese-wreck', name:'Japanese Shipwreck Tulamben', lat:-8.2800, lng:115.5950, tags:['DIVE'], desc:'Second dive', day:65},
@@ -725,7 +736,7 @@
         ],
         transportTo:{type:'fast-boat', label:'Fast boat to Nusa Penida 1.5h'}
       },
-      { id:'nusa-penida', name:'Nusa Penida', country:'indonesia', days:'67–68', lat:-8.7275, lng:115.5447, enabled:true,
+      { id:'nusa-penida', name:'Nusa Penida', country:'indonesia', days:'68–69', lat:-8.7275, lng:115.5447, enabled:true,
         pois:[
           {id:'manta-point', name:'Manta Point', lat:-8.7500, lng:115.4500, tags:['DIVE'], desc:'3–5m wingspan mantas', day:67},
           {id:'crystal-bay', name:'Crystal Bay', lat:-8.7200, lng:115.4700, tags:['DIVE'], desc:'Wall dive', day:67},
@@ -736,7 +747,7 @@
         ],
         transportTo:{type:'ferry', label:'Ferry back to Bali → drive to Uluwatu'}
       },
-      { id:'uluwatu', name:'Uluwatu', country:'indonesia', days:'69', lat:-8.8292, lng:115.0850, enabled:true,
+      { id:'uluwatu', name:'Uluwatu', country:'indonesia', days:'70', lat:-8.8292, lng:115.0850, enabled:true,
         pois:[
           {id:'uluwatu-temple', name:'Uluwatu Temple', lat:-8.8292, lng:115.0850, tags:['TEMPLE'], desc:'70m cliff, Kecak fire dance', day:69},
           {id:'padang-padang', name:'Padang Padang Beach', lat:-8.8136, lng:115.1008, tags:['SURF'], desc:'Surf break', day:69},
@@ -745,7 +756,7 @@
         ],
         transportTo:{type:'flight', label:'Flight to Labuan Bajo'}
       },
-      { id:'labuan-bajo', name:'Labuan Bajo', country:'indonesia', days:'70–72', lat:-8.4964, lng:119.8889, enabled:true,
+      { id:'labuan-bajo', name:'Labuan Bajo', country:'indonesia', days:'71–73', lat:-8.4964, lng:119.8889, enabled:true,
         pois:[
           {id:'manta-alley', name:'Manta Alley Komodo', lat:-8.7100, lng:119.5700, tags:['DIVE'], desc:'Manta rays guaranteed in dry season', day:70},
           {id:'padar-island', name:'Padar Island', lat:-8.6500, lng:119.6000, tags:['TREK'], desc:'Iconic three-bay viewpoint sunset trek', day:70},
@@ -758,31 +769,31 @@
         ],
         transportTo:{type:'bus', label:'Bus overland to Ruteng 3h'}
       },
-      { id:'ruteng', name:'Ruteng', country:'indonesia', days:'73', lat:-8.6108, lng:120.4639, enabled:true,
+      { id:'ruteng', name:'Ruteng', country:'indonesia', days:'74', lat:-8.6108, lng:120.4639, enabled:true,
         pois:[
           {id:'cancar', name:'Cancar Spider-web Rice Paddies', lat:-8.5667, lng:120.4500, tags:['TREK'], desc:'Unique lingko terraces', day:73},
         ],
         transportTo:{type:'bus', label:'Bus to Bajawa 5h'}
       },
-      { id:'bajawa', name:'Bajawa', country:'indonesia', days:'74', lat:-8.7906, lng:121.0789, enabled:true,
+      { id:'bajawa', name:'Bajawa', country:'indonesia', days:'75', lat:-8.7906, lng:121.0789, enabled:true,
         pois:[
           {id:'ngada-villages', name:'Ngada Traditional Villages', lat:-8.8000, lng:121.0800, tags:['CULTURAL'], desc:'Megalithic structures', day:74},
           {id:'soa-springs', name:'Soa Hot Springs', lat:-8.7500, lng:121.1000, tags:['NATURAL'], desc:'Geothermal hot springs', day:74},
         ],
         transportTo:{type:'bus', label:'Bus to Kelimutu area 4h'}
       },
-      { id:'kelimutu', name:'Kelimutu', country:'indonesia', days:'75', lat:-8.7700, lng:121.8200, enabled:true,
+      { id:'kelimutu', name:'Kelimutu', country:'indonesia', days:'76', lat:-8.7700, lng:121.8200, enabled:true,
         pois:[],
         transportTo:{type:'bus', label:'Bus to Ende 1h'}
       },
-      { id:'ende', name:'Ende', country:'indonesia', days:'76', lat:-8.8500, lng:121.6500, enabled:true,
+      { id:'ende', name:'Ende', country:'indonesia', days:'77', lat:-8.8500, lng:121.6500, enabled:true,
         pois:[],
         transportTo:{type:'flight', label:'Flight Ende → Bali → fast boat to Gili T', legs:[
           {type:'flight', label:'Flight Ende → Bali', toLat:-8.6500, toLng:115.2100},
           {type:'fast-boat', label:'Fast boat Bali → Gili Trawangan', toLat:null, toLng:null}
         ]}
       },
-      { id:'gili-t', name:'Gili Trawangan', country:'indonesia', days:'77–79', lat:-8.3500, lng:116.0333, enabled:true,
+      { id:'gili-t', name:'Gili Trawangan', country:'indonesia', days:'78–80', lat:-8.3500, lng:116.0333, enabled:true,
         pois:[
           {id:'shark-point', name:'Shark Point Gili T', lat:-8.3400, lng:116.0200, tags:['SNORKEL'], desc:'Reef sharks + turtles', day:77},
           {id:'gili-meno', name:'Gili Meno', lat:-8.3500, lng:116.0500, tags:['ISLAND'], desc:'Quietest Gili', day:78},
